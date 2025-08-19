@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Leaderboard } from '@/components/Leaderboard';
 
 type ButtonType = 'hare' | 'krishna';
 type GameState = {
@@ -242,6 +243,17 @@ export default function Home() {
               }`}
             />
           </div>
+        </div>
+        
+        {/* Leaderboard Button */}
+        <div className="mt-8 flex justify-center">
+          <Leaderboard 
+            currentScore={gameState.score} 
+            onScoreSubmitted={() => {
+              // Optional: Add any feedback when score is submitted
+              console.log('Score submitted successfully!');
+            }}
+          />
         </div>
       </div>
     </div>
