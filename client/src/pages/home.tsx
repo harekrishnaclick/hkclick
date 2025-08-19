@@ -262,7 +262,7 @@ export default function Home() {
         </div>
         
         {/* Button Container */}
-        <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-center justify-center">
+        <div className="flex flex-row gap-4 md:gap-12 items-center justify-center">
           {/* HARE Button */}
           <GameButton
             type="hare"
