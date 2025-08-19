@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Leaderboard } from '@/components/Leaderboard';
 import backgroundImage from '@assets/36f57654-c1a0-4deb-84b1-5c5c107f8f27_1755631140560.jpeg';
+import button1Sound from '@assets/button_1_1755632167131.mp3';
+import button2Sound from '@assets/button_2_1755632167130.mp3';
 
 type ButtonType = 'hare' | 'krishna';
 type GameState = {
@@ -102,6 +104,10 @@ export default function Home() {
   const [particles, setParticles] = useState<string[]>([]);
   const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
   const [scoreAnimation, setScoreAnimation] = useState(false);
+  
+  // Audio objects for button sounds
+  const [audio1] = useState(new Audio(button1Sound));
+  const [audio2] = useState(new Audio(button2Sound));
 
   // Create floating particles
   const createParticle = useCallback(() => {
@@ -124,8 +130,29 @@ export default function Home() {
     const interval = setInterval(createParticle, 500);
     return () => clearInterval(interval);
   }, [createParticle]);
+  
+  // Preload audio on component mount
+  useEffect(() => {
+    audio1.preload = 'auto';
+    audio2.preload = 'auto';
+    audio1.volume = 0.7;
+    audio2.volume = 0.7;
+  }, [audio1, audio2]);
 
   const handleButtonClick = useCallback((buttonType: ButtonType) => {
+    // Play button sound
+    try {
+      if (buttonType === 'hare') {
+        audio1.currentTime = 0;
+        audio1.play().catch(console.warn);
+      } else {
+        audio2.currentTime = 0;
+        audio2.play().catch(console.warn);
+      }
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
+    }
+    
     // Button press animation
     setPressedButton(buttonType);
     setTimeout(() => setPressedButton(null), 100);
@@ -152,7 +179,7 @@ export default function Home() {
       
       return newState;
     });
-  }, []);
+  }, [audio1, audio2]);
 
   const getStatusText = () => {
     if (gameState.expecting === 'hare') {
