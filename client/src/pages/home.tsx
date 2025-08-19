@@ -68,6 +68,7 @@ const GameButton = ({
     flex items-center justify-center orbitron tracking-wider select-none
     shadow-2xl hover:shadow-golden/30
     ${isHare ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
+    ${isExpected ? 'animate-button-pulse-active' : 'animate-button-pulse'}
   `;
   
   const gradientClasses = isHare 
