@@ -1,0 +1,249 @@
+import { useState, useEffect, useCallback } from 'react';
+
+type ButtonType = 'hare' | 'krishna';
+type GameState = {
+  score: number;
+  lastClicked: ButtonType | null;
+  expecting: ButtonType;
+};
+
+// Floating particle component
+const FloatingParticle = ({ id }: { id: string }) => {
+  const [style, setStyle] = useState({
+    left: Math.random() * 100 + 'vw',
+    top: Math.random() * 100 + 'vh',
+    width: Math.random() * 4 + 2 + 'px',
+    animationDuration: Math.random() * 3 + 2 + 's',
+    opacity: Math.random() * 0.5 + 0.3,
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setStyle(prev => ({
+        ...prev,
+        left: Math.random() * 100 + 'vw',
+        top: Math.random() * 100 + 'vh',
+      }));
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div
+      key={id}
+      className="particle animate-twinkle"
+      style={{
+        left: style.left,
+        top: style.top,
+        width: style.width,
+        height: style.width,
+        animationDuration: style.animationDuration,
+        opacity: style.opacity,
+      }}
+    />
+  );
+};
+
+// Game button component
+const GameButton = ({ 
+  type, 
+  onClick, 
+  isExpected, 
+  isPressed 
+}: { 
+  type: ButtonType;
+  onClick: () => void;
+  isExpected: boolean;
+  isPressed: boolean;
+}) => {
+  const isHare = type === 'hare';
+  const label = isHare ? 'HARE' : 'KRISHNA';
+  
+  const baseClasses = `
+    w-48 h-48 md:w-56 md:h-56 rounded-full text-white font-bold button-glow 
+    transition-all duration-200 hover:scale-105 active:scale-95 border-4 
+    flex items-center justify-center orbitron tracking-wider select-none
+    ${isHare ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
+  `;
+  
+  const gradientClasses = isHare 
+    ? 'bg-gradient-to-br from-mystic-purple to-purple-800'
+    : 'bg-gradient-to-br from-blue-600 to-cosmic-blue';
+    
+  const borderClasses = isExpected 
+    ? 'border-golden' 
+    : 'border-golden/50 hover:border-golden';
+    
+  const pressedClasses = isPressed ? 'animate-button-press' : '';
+
+  return (
+    <button
+      data-testid={`button-${type}`}
+      className={`${baseClasses} ${gradientClasses} ${borderClasses} ${pressedClasses}`}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+};
+
+export default function Home() {
+  const [gameState, setGameState] = useState<GameState>({
+    score: 0,
+    lastClicked: null,
+    expecting: 'hare'
+  });
+  
+  const [particles, setParticles] = useState<string[]>([]);
+  const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
+  const [scoreAnimation, setScoreAnimation] = useState(false);
+
+  // Create floating particles
+  const createParticle = useCallback(() => {
+    const id = Math.random().toString(36).substr(2, 9);
+    setParticles(prev => [...prev, id]);
+    
+    setTimeout(() => {
+      setParticles(prev => prev.filter(p => p !== id));
+    }, 5000);
+  }, []);
+
+  // Initialize particles and set up periodic creation
+  useEffect(() => {
+    // Create initial particles
+    for (let i = 0; i < 10; i++) {
+      setTimeout(createParticle, i * 100);
+    }
+    
+    // Create particles periodically
+    const interval = setInterval(createParticle, 500);
+    return () => clearInterval(interval);
+  }, [createParticle]);
+
+  const handleButtonClick = useCallback((buttonType: ButtonType) => {
+    // Button press animation
+    setPressedButton(buttonType);
+    setTimeout(() => setPressedButton(null), 100);
+
+    setGameState(prev => {
+      const newState = { ...prev };
+      
+      if (buttonType === prev.expecting) {
+        // Correct button clicked
+        if (buttonType === 'krishna' && prev.lastClicked === 'hare') {
+          // Complete pair - increase score
+          newState.score = prev.score + 1;
+          setScoreAnimation(true);
+          setTimeout(() => setScoreAnimation(false), 300);
+        }
+        
+        newState.lastClicked = buttonType;
+        newState.expecting = buttonType === 'hare' ? 'krishna' : 'hare';
+      } else {
+        // Wrong button clicked - no score increase, but update expectation
+        newState.lastClicked = buttonType;
+        newState.expecting = buttonType === 'hare' ? 'krishna' : 'hare';
+      }
+      
+      return newState;
+    });
+  }, []);
+
+  const getStatusText = () => {
+    if (gameState.expecting === 'hare') {
+      return <span className="text-mystic-purple">Click HARE</span>;
+    } else {
+      return <span className="text-blue-400">Click KRISHNA</span>;
+    }
+  };
+
+  return (
+    <div className="min-h-screen cosmic-bg overflow-hidden">
+      {/* Animated Background */}
+      <div className="stars" />
+      
+      {/* Floating Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {particles.map(id => (
+          <FloatingParticle key={id} id={id} />
+        ))}
+      </div>
+      
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h1 className="orbitron text-4xl md:text-6xl font-bold text-golden score-glow animate-pulse-slow">
+            HARE KRISHNA
+          </h1>
+          <p className="text-white/80 text-lg md:text-xl mt-2 animate-float">
+            Click in alternating order
+          </p>
+        </div>
+        
+        {/* Score Display */}
+        <div className="text-center mb-12">
+          <div 
+            data-testid="score-display"
+            className={`orbitron text-6xl md:text-8xl font-black text-golden score-glow ${
+              scoreAnimation ? 'animate-score-increase' : ''
+            }`}
+          >
+            {gameState.score}
+          </div>
+          <p className="text-white/60 text-sm md:text-base mt-2">PAIRS COMPLETED</p>
+        </div>
+        
+        {/* Button Container */}
+        <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-center justify-center">
+          {/* HARE Button */}
+          <GameButton
+            type="hare"
+            onClick={() => handleButtonClick('hare')}
+            isExpected={gameState.expecting === 'hare'}
+            isPressed={pressedButton === 'hare'}
+          />
+          
+          {/* VS Indicator */}
+          <div className="text-golden/60 text-4xl md:text-6xl font-bold orbitron animate-pulse">
+            OM
+          </div>
+          
+          {/* KRISHNA Button */}
+          <GameButton
+            type="krishna"
+            onClick={() => handleButtonClick('krishna')}
+            isExpected={gameState.expecting === 'krishna'}
+            isPressed={pressedButton === 'krishna'}
+          />
+        </div>
+        
+        {/* Status Indicator */}
+        <div className="mt-8 text-center">
+          <div data-testid="status-text" className="text-white/80 text-lg md:text-xl">
+            {getStatusText()}
+          </div>
+          <div className="mt-2 flex justify-center space-x-2">
+            <div 
+              data-testid="indicator-hare"
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                gameState.expecting === 'hare' 
+                  ? 'bg-mystic-purple animate-pulse' 
+                  : 'bg-golden/30'
+              }`}
+            />
+            <div 
+              data-testid="indicator-krishna"
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                gameState.expecting === 'krishna' 
+                  ? 'bg-blue-400 animate-pulse' 
+                  : 'bg-golden/30'
+              }`}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
