@@ -9,6 +9,7 @@ type GameState = {
   score: number;
   lastClicked: ButtonType | null;
   expecting: ButtonType;
+  malaCount: number;
 };
 
 // Floating particle component
@@ -98,7 +99,8 @@ export default function Home() {
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
     lastClicked: null,
-    expecting: 'hare'
+    expecting: 'hare',
+    malaCount: 0
   });
   
   const [particles, setParticles] = useState<string[]>([]);
@@ -165,6 +167,12 @@ export default function Home() {
         if (buttonType === 'krishna' && prev.lastClicked === 'hare') {
           // Complete pair - increase score
           newState.score = prev.score + 1;
+          
+          // Check if we completed a mala (108 pairs)
+          if (newState.score > 0 && newState.score % 108 === 0) {
+            newState.malaCount = prev.malaCount + 1;
+          }
+          
           setScoreAnimation(true);
           setTimeout(() => setScoreAnimation(false), 300);
         }
@@ -212,6 +220,22 @@ export default function Home() {
         ))}
       </div>
       
+      {/* Mala Counter */}
+      <div className="absolute top-4 left-4 z-20">
+        <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-golden/30">
+          <div className="text-golden/80 text-sm font-semibold mb-1 orbitron">MALA COUNTER</div>
+          <div className="flex items-center space-x-2">
+            <span className="text-2xl">📿</span>
+            <div className="text-2xl font-bold orbitron text-golden score-glow">
+              {gameState.malaCount}
+            </div>
+          </div>
+          <div className="text-xs text-white/60 mt-1">
+            {108 - (gameState.score % 108)} to next mala
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
         {/* Title */}
