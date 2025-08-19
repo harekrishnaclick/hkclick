@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Leaderboard } from '@/components/Leaderboard';
+import backgroundImage from '@assets/36f57654-c1a0-4deb-84b1-5c5c107f8f27_1755631140560.jpeg';
 
 type ButtonType = 'hare' | 'krishna';
 type GameState = {
@@ -160,7 +161,18 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen cosmic-bg overflow-hidden">
+    <div 
+      className="min-h-screen overflow-hidden relative"
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      {/* Dark overlay for better text contrast */}
+      <div className="absolute inset-0 bg-black/40" />
       {/* Animated Background */}
       <div className="stars" />
       
