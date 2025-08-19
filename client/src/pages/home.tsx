@@ -71,8 +71,8 @@ const GameButton = ({
   `;
   
   const gradientClasses = isHare 
-    ? 'bg-gradient-to-br from-black/60 to-purple-900/80 backdrop-blur-sm'
-    : 'bg-gradient-to-br from-black/60 to-blue-900/80 backdrop-blur-sm';
+    ? 'bg-gradient-to-br from-black/20 to-purple-900/30 backdrop-blur-sm'
+    : 'bg-gradient-to-br from-black/20 to-blue-900/30 backdrop-blur-sm';
     
   const borderClasses = isExpected 
     ? 'border-golden/80 shadow-[0_0_30px_rgba(255,215,0,0.5)]' 
