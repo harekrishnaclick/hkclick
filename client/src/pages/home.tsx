@@ -63,19 +63,20 @@ const GameButton = ({
   const label = isHare ? 'HARE' : 'KRISHNA';
   
   const baseClasses = `
-    w-48 h-48 md:w-56 md:h-56 rounded-full text-white font-bold button-glow 
+    w-48 h-48 md:w-56 md:h-56 rounded-full text-white/90 font-bold 
     transition-all duration-200 hover:scale-105 active:scale-95 border-4 
     flex items-center justify-center orbitron tracking-wider select-none
+    shadow-2xl hover:shadow-golden/30
     ${isHare ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
   `;
   
   const gradientClasses = isHare 
-    ? 'bg-gradient-to-br from-mystic-purple to-purple-800'
-    : 'bg-gradient-to-br from-blue-600 to-cosmic-blue';
+    ? 'bg-gradient-to-br from-black/60 to-purple-900/80 backdrop-blur-sm'
+    : 'bg-gradient-to-br from-black/60 to-blue-900/80 backdrop-blur-sm';
     
   const borderClasses = isExpected 
-    ? 'border-golden' 
-    : 'border-golden/50 hover:border-golden';
+    ? 'border-golden/80 shadow-[0_0_30px_rgba(255,215,0,0.5)]' 
+    : 'border-white/30 hover:border-golden/60 hover:shadow-[0_0_20px_rgba(255,215,0,0.3)]';
     
   const pressedClasses = isPressed ? 'animate-button-press' : '';
 
