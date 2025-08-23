@@ -66,11 +66,11 @@ const GameButton = ({
   const label = isHare ? 'HARE' : 'KRISHNA';
   
   const baseClasses = `
-    w-48 h-48 md:w-56 md:h-56 rounded-full text-white/90 font-bold 
-    transition-all duration-200 hover:scale-105 active:scale-95 border-4 
+    w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-full text-white/90 font-bold 
+    transition-all duration-200 hover:scale-105 active:scale-95 border-2 md:border-4 
     flex items-center justify-center orbitron tracking-wider select-none
     shadow-2xl hover:shadow-golden/30
-    ${isHare ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'}
+    ${isHare ? 'text-lg sm:text-xl md:text-3xl' : 'text-base sm:text-lg md:text-2xl'}
     ${isExpected ? 'animate-button-pulse-active' : 'animate-button-pulse'}
   `;
   
@@ -221,23 +221,24 @@ export default function Home() {
       </div>
       
       {/* Mala Counter */}
-      <div className="absolute top-4 left-4 z-20">
-        <div className="bg-gradient-to-br from-black/30 to-blue-900/40 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] min-w-[200px]">
-          <div className="text-golden text-lg font-bold mb-4 orbitron tracking-wider text-center">MALA COUNTER</div>
+      <div className="absolute top-2 left-2 md:top-4 md:left-4 z-20">
+        <div className="bg-gradient-to-br from-black/30 to-blue-900/40 backdrop-blur-md rounded-xl md:rounded-2xl p-3 md:p-6 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] min-w-[140px] md:min-w-[200px]">
+          <div className="text-golden text-sm md:text-lg font-bold mb-2 md:mb-4 orbitron tracking-wider text-center">MALA COUNTER</div>
           
-          <div className="flex items-center justify-center space-x-4 mb-3">
+          <div className="flex items-center justify-center space-x-2 md:space-x-4 mb-2 md:mb-3">
             {/* Mala Bead Visual */}
             <div className="relative">
-              <div className="w-12 h-12 rounded-full border-2 border-golden/80 flex items-center justify-center relative">
+              <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-golden/80 md:border-2 flex items-center justify-center relative">
                 {/* Bead dots around circle */}
-                {[...Array(12)].map((_, i) => {
-                  const angle = (i * 30) * (Math.PI / 180);
-                  const x = Math.cos(angle) * 20;
-                  const y = Math.sin(angle) * 20;
+                {[...Array(8)].map((_, i) => {
+                  const angle = (i * 45) * (Math.PI / 180);
+                  const radius = window.innerWidth < 768 ? 12 : 20;
+                  const x = Math.cos(angle) * radius;
+                  const y = Math.sin(angle) * radius;
                   return (
                     <div
                       key={i}
-                      className="absolute w-1.5 h-1.5 bg-golden rounded-full"
+                      className="absolute w-1 h-1 md:w-1.5 md:h-1.5 bg-golden rounded-full"
                       style={{
                         transform: `translate(${x}px, ${y}px)`
                       }}
@@ -245,22 +246,22 @@ export default function Home() {
                   );
                 })}
                 {/* Tassel */}
-                <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-                  <div className="w-1 h-3 bg-golden rounded-sm"></div>
-                  <div className="w-3 h-2 bg-golden/60 rounded-b-sm transform -translate-x-1"></div>
+                <div className="absolute -bottom-2 md:-bottom-4 left-1/2 transform -translate-x-1/2">
+                  <div className="w-0.5 h-2 md:w-1 md:h-3 bg-golden rounded-sm"></div>
+                  <div className="w-2 h-1 md:w-3 md:h-2 bg-golden/60 rounded-b-sm transform -translate-x-1"></div>
                 </div>
               </div>
             </div>
             
             {/* Mala Count */}
-            <div className="text-5xl font-black orbitron text-golden" style={{
+            <div className="text-3xl md:text-5xl font-black orbitron text-golden" style={{
               textShadow: '0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4)'
             }}>
               {gameState.malaCount}
             </div>
           </div>
           
-          <div className="text-blue-300/80 text-center text-sm">
+          <div className="text-blue-300/80 text-center text-xs md:text-sm">
             {108 - (gameState.score % 108)} to next mala
           </div>
         </div>
@@ -269,30 +270,30 @@ export default function Home() {
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
         {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="orbitron text-4xl md:text-6xl font-bold text-golden score-glow animate-pulse-slow">
+        <div className="text-center mb-6 md:mb-8 mt-20 md:mt-0">
+          <h1 className="orbitron text-3xl sm:text-4xl md:text-6xl font-bold text-golden score-glow animate-pulse-slow">
             HARE KRISHNA
           </h1>
-          <p className="text-white/80 text-lg md:text-xl mt-2 animate-float">
+          <p className="text-white/80 text-base sm:text-lg md:text-xl mt-2 animate-float">
             Click in alternating order
           </p>
         </div>
         
         {/* Score Display */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-12">
           <div 
             data-testid="score-display"
-            className={`orbitron text-6xl md:text-8xl font-black text-golden score-glow ${
+            className={`orbitron text-4xl sm:text-6xl md:text-8xl font-black text-golden score-glow ${
               scoreAnimation ? 'animate-score-increase' : ''
             }`}
           >
             {gameState.score}
           </div>
-          <p className="text-white/60 text-sm md:text-base mt-2">PAIRS COMPLETED</p>
+          <p className="text-white/60 text-xs sm:text-sm md:text-base mt-2">PAIRS COMPLETED</p>
         </div>
         
         {/* Button Container */}
-        <div className="flex flex-row gap-4 md:gap-12 items-center justify-center">
+        <div className="flex flex-row gap-2 sm:gap-4 md:gap-12 items-center justify-center px-2">
           {/* HARE Button */}
           <GameButton
             type="hare"
@@ -302,7 +303,7 @@ export default function Home() {
           />
           
           {/* VS Indicator */}
-          <div className="text-golden/60 text-4xl md:text-6xl font-bold orbitron animate-pulse">
+          <div className="text-golden/60 text-2xl sm:text-3xl md:text-6xl font-bold orbitron animate-pulse">
             OM
           </div>
           
