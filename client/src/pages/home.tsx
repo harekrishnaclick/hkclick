@@ -222,7 +222,7 @@ export default function Home() {
       
       {/* Mala Counter */}
       <div className="absolute top-4 left-4 z-20">
-        <div className="bg-gradient-to-br from-blue-900/60 to-blue-950/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.3)] min-w-[200px]">
+        <div className="bg-gradient-to-br from-black/30 to-blue-900/40 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] min-w-[200px]">
           <div className="text-golden text-lg font-bold mb-4 orbitron tracking-wider text-center">MALA COUNTER</div>
           
           <div className="flex items-center justify-center space-x-4 mb-3">
