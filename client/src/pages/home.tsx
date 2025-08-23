@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Leaderboard } from '@/components/Leaderboard';
-import backgroundImage from '@assets/36f57654-c1a0-4deb-84b1-5c5c107f8f27_1755631140560.jpeg';
+import backgroundImage from '@assets/generated-image_1755976323185.png';
 import button1Sound from '@assets/button_1_1755632167131.mp3';
 import button2Sound from '@assets/button_2_1755632167130.mp3';
 
