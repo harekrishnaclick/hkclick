@@ -274,9 +274,6 @@ export default function Home() {
           <h1 className="orbitron text-3xl sm:text-4xl md:text-6xl font-bold text-golden score-glow animate-pulse-slow">
             HARE KRISHNA
           </h1>
-          <p className="text-white/80 text-base sm:text-lg md:text-xl mt-2 animate-float">
-            Click in alternating order
-          </p>
         </div>
         
         {/* Score Display */}
