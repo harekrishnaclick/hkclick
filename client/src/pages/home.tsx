@@ -321,7 +321,7 @@ export default function Home() {
               data-testid="indicator-hare"
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 gameState.expecting === 'hare' 
-                  ? 'bg-mystic-purple animate-pulse' 
+                  ? 'bg-mystic-purple animate-indicator-blink' 
                   : 'bg-golden/30'
               }`}
             />
@@ -329,7 +329,7 @@ export default function Home() {
               data-testid="indicator-krishna"
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 gameState.expecting === 'krishna' 
-                  ? 'bg-blue-400 animate-pulse' 
+                  ? 'bg-blue-400 animate-indicator-blink' 
                   : 'bg-golden/30'
               }`}
             />

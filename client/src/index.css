@@ -195,6 +195,11 @@
     50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(255, 215, 0, 0.6) }
   }
   
+  @keyframes indicatorBlink {
+    0%, 100% { opacity: 1 }
+    50% { opacity: 0.3 }
+  }
+  
   .animate-float {
     animation: float 3s ease-in-out infinite;
   }
@@ -221,5 +226,9 @@
   
   .animate-button-pulse-active {
     animation: buttonPulseActive 1.5s ease-in-out infinite;
+  }
+  
+  .animate-indicator-blink {
+    animation: indicatorBlink 2.5s ease-in-out infinite;
   }
 }
