@@ -302,11 +302,6 @@ export default function Home() {
             isPressed={pressedButton === 'hare'}
           />
           
-          {/* VS Indicator */}
-          <div className="text-golden/60 text-2xl sm:text-3xl md:text-6xl font-bold orbitron animate-pulse">
-            OM
-          </div>
-          
           {/* KRISHNA Button */}
           <GameButton
             type="krishna"
