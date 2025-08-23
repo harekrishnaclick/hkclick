@@ -222,15 +222,45 @@ export default function Home() {
       
       {/* Mala Counter */}
       <div className="absolute top-4 left-4 z-20">
-        <div className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-golden/30">
-          <div className="text-golden/80 text-sm font-semibold mb-1 orbitron">MALA COUNTER</div>
-          <div className="flex items-center space-x-2">
-            <span className="text-2xl">📿</span>
-            <div className="text-2xl font-bold orbitron text-golden score-glow">
+        <div className="bg-gradient-to-br from-blue-900/60 to-blue-950/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-blue-400/50 shadow-[0_0_20px_rgba(59,130,246,0.3)] min-w-[200px]">
+          <div className="text-golden text-lg font-bold mb-4 orbitron tracking-wider text-center">MALA COUNTER</div>
+          
+          <div className="flex items-center justify-center space-x-4 mb-3">
+            {/* Mala Bead Visual */}
+            <div className="relative">
+              <div className="w-12 h-12 rounded-full border-2 border-golden/80 flex items-center justify-center relative">
+                {/* Bead dots around circle */}
+                {[...Array(12)].map((_, i) => {
+                  const angle = (i * 30) * (Math.PI / 180);
+                  const x = Math.cos(angle) * 20;
+                  const y = Math.sin(angle) * 20;
+                  return (
+                    <div
+                      key={i}
+                      className="absolute w-1.5 h-1.5 bg-golden rounded-full"
+                      style={{
+                        transform: `translate(${x}px, ${y}px)`
+                      }}
+                    />
+                  );
+                })}
+                {/* Tassel */}
+                <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+                  <div className="w-1 h-3 bg-golden rounded-sm"></div>
+                  <div className="w-3 h-2 bg-golden/60 rounded-b-sm transform -translate-x-1"></div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Mala Count */}
+            <div className="text-5xl font-black orbitron text-golden" style={{
+              textShadow: '0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4)'
+            }}>
               {gameState.malaCount}
             </div>
           </div>
-          <div className="text-xs text-white/60 mt-1">
+          
+          <div className="text-blue-300/80 text-center text-sm">
             {108 - (gameState.score % 108)} to next mala
           </div>
         </div>
