@@ -51,11 +51,21 @@ export function AuthModal({ isOpen, onClose, initialStep = 'menu', token }: Auth
       const res = await apiRequest('POST', '/api/auth/create-account', data);
       return await res.json();
     },
-    onSuccess: () => {
-      toast({
-        title: 'Success!',
-        description: 'Check your email for verification instructions.',
-      });
+    onSuccess: (data) => {
+      if (data.developmentLink) {
+        toast({
+          title: 'Development Mode',
+          description: 'Email service not configured. Click the development link in console or check browser network tab.',
+        });
+        console.log('Development verification link:', data.developmentLink);
+        // Automatically open the verification link
+        window.open(data.developmentLink, '_blank');
+      } else {
+        toast({
+          title: 'Success!',
+          description: 'Check your email for verification instructions.',
+        });
+      }
       onClose();
       createAccountForm.reset();
     },

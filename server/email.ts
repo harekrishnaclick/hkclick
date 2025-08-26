@@ -22,7 +22,7 @@ export async function sendVerificationEmail(
   try {
     await mailService.send({
       to: email,
-      from: 'noreply@your-app.com', // Replace with your verified sender
+      from: 'noreply@example.com', // This needs to be a verified sender in SendGrid
       subject: 'Verify Your Email - HARE KRISHNA Game',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
