@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Leaderboard } from '@/components/Leaderboard';
+import { AuthModal } from '@/components/AuthModal';
+import { User } from 'lucide-react';
 import backgroundImage from '@assets/generated-image_1755976323185.png';
 import button1Sound from '@assets/button_1_1755632167131.mp3';
 import button2Sound from '@assets/button_2_1755632167130.mp3';
@@ -106,6 +108,9 @@ export default function Home() {
   const [particles, setParticles] = useState<string[]>([]);
   const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
   const [scoreAnimation, setScoreAnimation] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authStep, setAuthStep] = useState<'menu' | 'create-account' | 'login' | 'set-password'>('menu');
+  const [verificationToken, setVerificationToken] = useState<string>('');
   
   // Audio objects for button sounds
   const [audio1] = useState(new Audio(button1Sound));
@@ -140,6 +145,21 @@ export default function Home() {
     audio1.volume = 0.7;
     audio2.volume = 0.7;
   }, [audio1, audio2]);
+  
+  // Check for URL parameters on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const step = urlParams.get('step');
+    
+    if (token && step === 'set-password') {
+      setVerificationToken(token);
+      setAuthStep('set-password');
+      setAuthModalOpen(true);
+      // Clean up URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   const handleButtonClick = useCallback((buttonType: ButtonType) => {
     // Play button sound
@@ -266,6 +286,20 @@ export default function Home() {
           </div>
         </div>
       </div>
+      
+      {/* Login Icon */}
+      <div className="absolute top-2 right-2 md:top-4 md:right-4 z-20">
+        <button
+          data-testid="button-login-icon"
+          onClick={() => {
+            setAuthStep('menu');
+            setAuthModalOpen(true);
+          }}
+          className="bg-gradient-to-br from-black/30 to-blue-900/40 backdrop-blur-md rounded-full p-3 md:p-4 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:bg-golden/10 transition-all duration-300 group"
+        >
+          <User className="w-5 h-5 md:w-6 md:h-6 text-golden group-hover:text-white transition-colors" />
+        </button>
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
@@ -344,6 +378,14 @@ export default function Home() {
           />
         </div>
       </div>
+      
+      {/* Authentication Modal */}
+      <AuthModal 
+        isOpen={authModalOpen} 
+        onClose={() => setAuthModalOpen(false)} 
+        initialStep={authStep}
+        token={verificationToken}
+      />
     </div>
   );
 }
