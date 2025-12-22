@@ -28,7 +28,10 @@ export interface MongoLeaderboardEntry {
 export async function connectToMongoDB(): Promise<Db> {
   if (db) return db;
   
-  client = new MongoClient(MONGODB_URI!);
+  client = new MongoClient(MONGODB_URI!, {
+    tls: true,
+    tlsAllowInvalidCertificates: false,
+  });
   await client.connect();
   db = client.db('harekrishna');
   
