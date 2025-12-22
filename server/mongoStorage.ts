@@ -10,7 +10,12 @@ import { ObjectId } from 'mongodb';
 export interface User {
   id: string;
   username: string;
-  password: string;
+}
+
+interface UserInternal {
+  id: string;
+  username: string;
+  passwordHash: string;
 }
 
 export interface LeaderboardEntry {
@@ -60,7 +65,14 @@ function toUser(doc: MongoUser & { _id: ObjectId }): User {
   return {
     id: doc._id.toString(),
     username: doc.username,
-    password: doc.passwordHash,
+  };
+}
+
+function toUserInternal(doc: MongoUser & { _id: ObjectId }): UserInternal {
+  return {
+    id: doc._id.toString(),
+    username: doc.username,
+    passwordHash: doc.passwordHash,
   };
 }
 
@@ -90,7 +102,6 @@ export class MongoStorage implements IMongoStorage {
     return {
       id: result.insertedId.toString(),
       username: insertUser.username,
-      password: passwordHash,
     };
   }
 
