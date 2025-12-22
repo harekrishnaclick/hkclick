@@ -40,3 +40,8 @@ waitForPort = 5000
 
 [agent]
 integrations = ["javascript_log_in_with_replit:1.0.0", "javascript_database:1.0.0"]
+
+[userenv]
+
+[userenv.shared]
+MONGODB_URI = "mongodb+srv://harekrishnaclick_db_user:P77IoeIMyvoqbfag@cluster0.wjyvlj2.mongodb.net/harekrishna?retryWrites=true&w=majority"
