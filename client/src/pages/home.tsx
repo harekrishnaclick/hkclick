@@ -1,8 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Leaderboard } from '@/components/Leaderboard';
+import { AuthModal } from '@/components/AuthModal';
 import backgroundImage from '@assets/generated-image_1755976323185.png';
 import button1Sound from '@assets/button_1_1755632167131.mp3';
 import button2Sound from '@assets/button_2_1755632167130.mp3';
+
+interface AuthUser {
+  id: string;
+  username: string;
+}
 
 type ButtonType = 'hare' | 'krishna';
 type GameState = {
@@ -106,10 +112,24 @@ export default function Home() {
   const [particles, setParticles] = useState<string[]>([]);
   const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
   const [scoreAnimation, setScoreAnimation] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(() => {
+    const saved = localStorage.getItem('harekrishna_user');
+    return saved ? JSON.parse(saved) : null;
+  });
   
   // Audio objects for button sounds
   const [audio1] = useState(new Audio(button1Sound));
   const [audio2] = useState(new Audio(button2Sound));
+  
+  const handleLogin = useCallback((userData: AuthUser) => {
+    setUser(userData);
+    localStorage.setItem('harekrishna_user', JSON.stringify(userData));
+  }, []);
+  
+  const handleLogout = useCallback(() => {
+    setUser(null);
+    localStorage.removeItem('harekrishna_user');
+  }, []);
 
   // Create floating particles
   const createParticle = useCallback(() => {
@@ -265,6 +285,11 @@ export default function Home() {
             {108 - (gameState.score % 108)} to next mala
           </div>
         </div>
+      </div>
+
+      {/* Login Button - Top Right */}
+      <div className="absolute top-2 right-2 md:top-4 md:right-4 z-20">
+        <AuthModal user={user} onLogin={handleLogin} onLogout={handleLogout} />
       </div>
 
       {/* Main Content */}
