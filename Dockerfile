@@ -23,8 +23,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production
+# Install ALL dependencies (vite is needed even in production for the server imports)
+RUN npm ci
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
