@@ -35,9 +35,10 @@ const getFlagEmoji = (countryCode: string): string => {
 interface LeaderboardProps {
   currentScore: number;
   onScoreSubmitted?: () => void;
+  loggedInUsername?: string;
 }
 
-export function Leaderboard({ currentScore, onScoreSubmitted }: LeaderboardProps) {
+export function Leaderboard({ currentScore, onScoreSubmitted, loggedInUsername }: LeaderboardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const [userCountry, setUserCountry] = useState('XX');
@@ -50,13 +51,17 @@ export function Leaderboard({ currentScore, onScoreSubmitted }: LeaderboardProps
     getUserCountry().then(setUserCountry);
   }, []);
 
-  // Load saved player name from localStorage
+  // Use logged-in username if available, otherwise load from localStorage
   useEffect(() => {
-    const savedName = localStorage.getItem('hareKrishnaPlayerName');
-    if (savedName) {
-      setPlayerName(savedName);
+    if (loggedInUsername) {
+      setPlayerName(loggedInUsername);
+    } else {
+      const savedName = localStorage.getItem('hareKrishnaPlayerName');
+      if (savedName) {
+        setPlayerName(savedName);
+      }
     }
-  }, []);
+  }, [loggedInUsername]);
 
   // Fetch global leaderboard
   const { data: globalLeaderboard, isLoading: globalLoading } = useQuery<LeaderboardEntry[]>({

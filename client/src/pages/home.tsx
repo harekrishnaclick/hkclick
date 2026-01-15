@@ -362,8 +362,8 @@ export default function Home() {
         <div className="mt-8 flex justify-center">
           <Leaderboard 
             currentScore={gameState.score} 
+            loggedInUsername={user?.username}
             onScoreSubmitted={() => {
-              // Optional: Add any feedback when score is submitted
               console.log('Score submitted successfully!');
             }}
           />
