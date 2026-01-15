@@ -73,11 +73,9 @@ const GameButton = ({
   
   const baseClasses = `
     w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-full text-white/90 font-bold 
-    transition-all duration-200 hover:scale-105 active:scale-95 border-2 md:border-4 
-    flex items-center justify-center orbitron tracking-wider select-none
-    shadow-2xl hover:shadow-golden/30
+    border-2 md:border-4 flex items-center justify-center orbitron tracking-wider select-none
+    shadow-2xl touch-manipulation
     ${isHare ? 'text-lg sm:text-xl md:text-3xl' : 'text-base sm:text-lg md:text-2xl'}
-    ${isExpected ? 'animate-button-pulse-active' : 'animate-button-pulse'}
   `;
   
   const gradientClasses = isHare 
@@ -86,14 +84,18 @@ const GameButton = ({
     
   const borderClasses = isExpected 
     ? 'border-golden/80 shadow-[0_0_30px_rgba(255,215,0,0.5)]' 
-    : 'border-white/30 hover:border-golden/60 hover:shadow-[0_0_20px_rgba(255,215,0,0.3)]';
+    : 'border-white/30';
     
-  const pressedClasses = isPressed ? 'animate-button-press' : '';
+  const scaleStyle = {
+    transform: isPressed ? 'scale(0.92)' : 'scale(1)',
+    transition: 'transform 0.08s ease-out',
+  };
 
   return (
     <button
       data-testid={`button-${type}`}
-      className={`${baseClasses} ${gradientClasses} ${borderClasses} ${pressedClasses}`}
+      className={`${baseClasses} ${gradientClasses} ${borderClasses}`}
+      style={scaleStyle}
       onClick={onClick}
     >
       {label}
