@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { User, LogIn, LogOut, UserPlus } from 'lucide-react';
+import { LogIn, UserPlus } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
 interface AuthUser {
@@ -17,10 +17,11 @@ interface AuthModalProps {
   user: AuthUser | null;
   onLogin: (user: AuthUser) => void;
   onLogout: () => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
-  const [isOpen, setIsOpen] = useState(false);
+export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
   const [isRegister, setIsRegister] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +34,7 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
     },
     onSuccess: (data) => {
       onLogin(data);
-      setIsOpen(false);
+      onOpenChange(false);
       setUsername('');
       setPassword('');
       toast({
@@ -57,7 +58,7 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
     },
     onSuccess: (data) => {
       onLogin(data);
-      setIsOpen(false);
+      onOpenChange(false);
       setUsername('');
       setPassword('');
       toast({
@@ -94,41 +95,9 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
 
   const isPending = loginMutation.isPending || registerMutation.isPending;
 
-  if (user) {
-    return (
-      <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-golden/30">
-          <User className="w-4 h-4 text-golden" />
-          <span className="text-white/90 text-sm font-medium" data-testid="text-username">
-            {user.username}
-          </span>
-        </div>
-        <Button
-          onClick={onLogout}
-          variant="ghost"
-          size="sm"
-          className="text-white/70 hover:text-white hover:bg-white/10 rounded-full"
-          data-testid="button-logout"
-        >
-          <LogOut className="w-4 h-4" />
-        </Button>
-      </div>
-    );
-  }
-
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-golden/30 hover:bg-white/20 hover:border-golden/50 transition-all duration-300 text-white"
-          data-testid="button-login"
-        >
-          <LogIn className="w-4 h-4 mr-2" />
-          Login
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="bg-cosmic-dark/95 backdrop-blur-xl border-golden/30 text-white max-w-sm">
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="bg-cosmic-dark/95 backdrop-blur-xl border-golden/30 text-white max-w-sm" style={{ backgroundColor: 'rgba(10, 5, 30, 0.95)' }}>
         <DialogHeader>
           <DialogTitle className="text-golden orbitron text-xl text-center">
             {isRegister ? 'Create Account' : 'Welcome Back'}
@@ -146,7 +115,6 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
               placeholder="Enter username"
               className="bg-white/10 border-golden/30 text-white placeholder:text-white/40 focus:border-golden"
               disabled={isPending}
-              data-testid="input-username"
             />
           </div>
           
@@ -160,7 +128,6 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
               placeholder="Enter password"
               className="bg-white/10 border-golden/30 text-white placeholder:text-white/40 focus:border-golden"
               disabled={isPending}
-              data-testid="input-password"
             />
           </div>
           
@@ -168,7 +135,6 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
             type="submit"
             className="w-full bg-gradient-to-r from-golden/80 to-amber-600 hover:from-golden hover:to-amber-500 text-cosmic-dark font-bold rounded-full transition-all duration-300"
             disabled={isPending}
-            data-testid="button-submit-auth"
           >
             {isPending ? (
               <span className="animate-pulse">Processing...</span>
@@ -191,7 +157,6 @@ export function AuthModal({ user, onLogin, onLogout }: AuthModalProps) {
             type="button"
             onClick={() => setIsRegister(!isRegister)}
             className="text-golden/70 hover:text-golden text-sm transition-colors"
-            data-testid="button-toggle-auth-mode"
           >
             {isRegister ? 'Already have an account? Login' : "Don't have an account? Register"}
           </button>

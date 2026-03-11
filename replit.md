@@ -1,6 +1,6 @@
 # Overview
 
-This is a full-stack web application built with React (frontend) and Express.js (backend), featuring a modern UI component library and database integration. The project demonstrates a monorepo structure with shared TypeScript schemas and follows modern development practices with Drizzle ORM for database management and shadcn/ui for the component system.
+Cosmic-themed spiritual clicking game (popcat.click style) with multiple deity pages. Features include alternating button clicking, mala counting (108-point cycles), global leaderboard with user authentication, MongoDB Atlas persistence, PWA support, and a hamburger menu for navigation/login.
 
 # User Preferences
 
@@ -9,59 +9,59 @@ Preferred communication style: Simple, everyday language.
 # System Architecture
 
 ## Frontend Architecture
-- **React with TypeScript**: Single-page application using React 18 with TypeScript for type safety
-- **Vite Build System**: Modern build tool providing fast development server and optimized production builds
-- **shadcn/ui Component Library**: Comprehensive UI component system built on Radix UI primitives with Tailwind CSS styling
-- **TanStack Query**: State management and data fetching with caching, background updates, and error handling
-- **Wouter Router**: Lightweight client-side routing solution
-- **Tailwind CSS**: Utility-first CSS framework with custom design system configuration
+- **React with TypeScript**: SPA using React 18 with TypeScript
+- **Vite Build System**: Fast dev server and optimized production builds
+- **shadcn/ui Component Library**: UI components built on Radix UI + Tailwind CSS
+- **TanStack Query**: Data fetching with caching for leaderboard data
+- **Wouter Router**: Client-side routing for deity pages (`/krishna`, `/radha`, `/rama`, etc.)
+- **Tailwind CSS**: Utility-first CSS with cosmic glassmorphism theme
+
+## Page Structure
+- **Multiple Deity Pages**: 11 deity/spiritual figure pages, each using the reusable `DeityGame` component with unique config
+  - Deities: Krishna, Radha, Rama, Shivji, Hanuman, Ganesh, Durga, Sai Baba, Guru Nanak, Buddha, Mahavir
+  - Routes: `/{deityKey}` (e.g., `/krishna`, `/radha`, `/shivji`)
+  - `/` redirects to `/krishna`
+- **Config-driven**: All deity configs defined in `client/src/lib/deityConfigs.ts`
+
+## Key Components
+- **DeityGame** (`client/src/components/DeityGame.tsx`): Reusable game component accepting deity config (name, button labels, colors, background, sounds)
+- **HamburgerMenu** (`client/src/components/HamburgerMenu.tsx`): Glassmorphic slide-in menu with deity navigation links, login/logout, mute toggle
+- **AuthModal** (`client/src/components/AuthModal.tsx`): Controlled dialog for login/registration
+- **Leaderboard** (`client/src/components/Leaderboard.tsx`): Global + country leaderboard with score submission
+- **Collapsible Mala Counter**: Built into DeityGame, tracks 108-pair cycles with progress bar
+
+## State Management
+- **Auth state**: Lifted to App level, shared across all pages via props, persisted in localStorage
+- **Mute state**: App-level, passed to HamburgerMenu and DeityGame, persisted in localStorage
+- **Game state**: Per-page in DeityGame component (score, mala count, expecting button)
 
 ## Backend Architecture
-- **Express.js Server**: RESTful API server with middleware for JSON parsing, CORS, and error handling
-- **TypeScript**: Full type safety across server-side code
-- **Storage Layer Abstraction**: Interface-based storage system allowing multiple implementations (currently in-memory)
-- **Modular Route System**: Organized API routes under `/api` prefix with centralized registration
+- **Express.js Server**: RESTful API for auth and leaderboard
+- **MongoDB Atlas**: Primary database via `mongoStorage`
+- **Routes**: `/api/auth/login`, `/api/auth/register`, `/api/leaderboard/score`, `/api/leaderboard/global`, `/api/leaderboard/country/:country`, `/api/leaderboard/total`
 
-## Data Management
-- **Drizzle ORM**: Type-safe database toolkit with PostgreSQL dialect configuration
-- **Shared Schema**: Common TypeScript types and Zod validation schemas shared between frontend and backend
-- **Database Migrations**: Automated migration system with Drizzle Kit
-- **Validation Layer**: Input validation using Zod schemas derived from database schema
-
-## Development Environment
-- **Monorepo Structure**: Organized with separate `client`, `server`, and `shared` directories
-- **Hot Reload**: Vite HMR for frontend and tsx for backend development
-- **Path Aliases**: Simplified imports using TypeScript path mapping
-- **ESM Modules**: Modern ES module system throughout the application
+## PWA Support
+- **manifest.json**: App manifest with SVG icons (icon-192.svg, icon-512.svg)
+- **sw.js**: Service worker with network-first + cache fallback strategy
+- **Meta tags**: iOS/Android install support in index.html
 
 ## Build and Deployment
-- **Production Build**: Separate client (Vite) and server (esbuild) build processes
+- **Production Build**: Vite (client) + esbuild (server)
+- **Docker**: docker-compose files available for deployment
 - **Static Asset Serving**: Express serves built client assets in production
-- **Environment Configuration**: Environment variables for database connection and runtime configuration
 
 # External Dependencies
 
 ## Database
-- **Neon Database**: Serverless PostgreSQL database with `@neondatabase/serverless` driver
-- **Connection Pooling**: Built-in connection management through Neon's serverless driver
+- **MongoDB Atlas**: Cloud MongoDB database via `MONGODB_URI` env var
 
 ## UI and Styling
-- **Radix UI**: Accessible, unstyled UI primitives for complex components
-- **Tailwind CSS**: Utility-first CSS framework with PostCSS processing
-- **Lucide React**: Icon library for consistent iconography
-- **Google Fonts**: Custom font loading for Orbitron, Space Grotesk, and other typefaces
+- **Radix UI**: Accessible UI primitives
+- **Tailwind CSS**: With cosmic theme colors (cosmic-purple, golden, deep-space, mystic-purple)
+- **Lucide React**: Icon library
+- **Google Fonts**: Orbitron + Space Grotesk
 
-## Development Tools
-- **Replit Integration**: Development environment optimizations and runtime error handling
-- **TypeScript Compiler**: Type checking and compilation
-- **ESLint/Prettier**: Code formatting and linting (implied by project structure)
-
-## State Management and Data Fetching
-- **TanStack Query**: Server state management with caching and synchronization
-- **React Hook Form**: Form state management with validation
-- **Zod Resolvers**: Form validation integration with Zod schemas
-
-## Build Tools
-- **Vite**: Frontend build tool with plugin ecosystem
-- **esbuild**: Backend bundling for production deployment
-- **PostCSS**: CSS processing with Tailwind CSS and Autoprefixer
+## Key Packages
+- **TanStack Query v5**: Server state (object-form API only)
+- **wouter**: Client routing with Redirect support
+- **Zod**: Request validation on backend
