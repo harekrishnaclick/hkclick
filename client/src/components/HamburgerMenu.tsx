@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Menu, X, User, LogIn, LogOut, Volume2, VolumeX } from 'lucide-react';
+import { Menu, X, User, LogIn, LogOut, Volume2, VolumeX, Languages } from 'lucide-react';
+import type { Language, Translations } from '@/lib/translations';
 
 interface AuthUser {
   id: string;
@@ -8,23 +9,23 @@ interface AuthUser {
 }
 
 interface DeityLink {
-  name: string;
+  key: string;
   path: string;
   icon: string;
 }
 
 const deityLinks: DeityLink[] = [
-  { name: 'Krishna', path: '/krishna', icon: '🙏' },
-  { name: 'Radha', path: '/radha', icon: '🌸' },
-  { name: 'Rama', path: '/rama', icon: '🏹' },
-  { name: 'Shivji', path: '/shivji', icon: '🔱' },
-  { name: 'Hanuman', path: '/hanuman', icon: '🐒' },
-  { name: 'Ganesh', path: '/ganesh', icon: '🐘' },
-  { name: 'Durga', path: '/durga', icon: '🦁' },
-  { name: 'Sai Baba', path: '/saibaba', icon: '🙏' },
-  { name: 'Guru Nanak', path: '/gurunanak', icon: '☬' },
-  { name: 'Buddha', path: '/buddha', icon: '☸' },
-  { name: 'Mahavir', path: '/mahavir', icon: '✋' },
+  { key: 'krishna', path: '/krishna', icon: '🙏' },
+  { key: 'radha', path: '/radha', icon: '🌸' },
+  { key: 'rama', path: '/rama', icon: '🏹' },
+  { key: 'shivji', path: '/shivji', icon: '🔱' },
+  { key: 'hanuman', path: '/hanuman', icon: '🐒' },
+  { key: 'ganesh', path: '/ganesh', icon: '🐘' },
+  { key: 'durga', path: '/durga', icon: '🦁' },
+  { key: 'saibaba', path: '/saibaba', icon: '🙏' },
+  { key: 'gurunanak', path: '/gurunanak', icon: '☬' },
+  { key: 'buddha', path: '/buddha', icon: '☸' },
+  { key: 'mahavir', path: '/mahavir', icon: '✋' },
 ];
 
 interface HamburgerMenuProps {
@@ -33,9 +34,12 @@ interface HamburgerMenuProps {
   onLogout: () => void;
   isMuted: boolean;
   onToggleMute: () => void;
+  language: Language;
+  onToggleLanguage: () => void;
+  t: Translations;
 }
 
-export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleMute }: HamburgerMenuProps) {
+export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleMute, language, onToggleLanguage, t }: HamburgerMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [location] = useLocation();
 
@@ -79,7 +83,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
       >
         <div className="h-full bg-gradient-to-b from-black/90 via-cosmic-purple/80 to-deep-space/90 backdrop-blur-xl border-l border-golden/30 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between p-4 border-b border-golden/20">
-            <span className="orbitron text-golden text-lg font-bold tracking-wider">MENU</span>
+            <span className="orbitron text-golden text-lg font-bold tracking-wider">{t.menu.title}</span>
             <button
               onClick={() => setIsOpen(false)}
               className="p-2 rounded-full hover:bg-white/10 transition-colors"
@@ -97,7 +101,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
                 </div>
                 <div>
                   <p className="text-white/90 text-sm font-medium">{user.username}</p>
-                  <p className="text-white/40 text-xs">Logged in</p>
+                  <p className="text-white/40 text-xs">{t.menu.loggedIn}</p>
                 </div>
               </div>
             </div>
@@ -105,7 +109,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
 
           <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
             <div className="px-4 py-2">
-              <p className="text-golden/60 text-xs orbitron tracking-widest uppercase mb-2">Deities</p>
+              <p className="text-golden/60 text-xs orbitron tracking-widest uppercase mb-2">{t.menu.deities}</p>
             </div>
             {deityLinks.map((deity) => {
               const isActive = location === deity.path || (location === '/' && deity.path === '/krishna');
@@ -120,7 +124,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
                     }`}
                   >
                     <span className="text-lg w-7 text-center">{deity.icon}</span>
-                    <span className="text-sm font-medium">{deity.name}</span>
+                    <span className="text-sm font-medium">{t.deityNames[deity.key]}</span>
                     {isActive && (
                       <div className="ml-auto w-1.5 h-1.5 rounded-full bg-golden shadow-[0_0_8px_rgba(255,215,0,0.8)]" />
                     )}
@@ -132,6 +136,14 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
 
           <div className="border-t border-golden/20 p-4 space-y-2">
             <button
+              onClick={onToggleLanguage}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+            >
+              <Languages className="w-5 h-5 text-golden" />
+              <span className="text-sm font-medium">{language === 'en' ? 'हिंदी' : 'English'}</span>
+            </button>
+
+            <button
               onClick={onToggleMute}
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
             >
@@ -140,7 +152,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
               ) : (
                 <Volume2 className="w-5 h-5 text-golden" />
               )}
-              <span className="text-sm font-medium">{isMuted ? 'Unmute Sound' : 'Mute Sound'}</span>
+              <span className="text-sm font-medium">{isMuted ? t.menu.unmuteSound : t.menu.muteSound}</span>
             </button>
 
             {user ? (
@@ -149,7 +161,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/5 hover:bg-red-500/20 transition-colors text-white/80 hover:text-red-300"
               >
                 <LogOut className="w-5 h-5" />
-                <span className="text-sm font-medium">Logout</span>
+                <span className="text-sm font-medium">{t.menu.logout}</span>
               </button>
             ) : (
               <button
@@ -157,7 +169,7 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-golden/10 hover:bg-golden/20 border border-golden/30 transition-colors text-golden"
               >
                 <LogIn className="w-5 h-5" />
-                <span className="text-sm font-medium">Login / Register</span>
+                <span className="text-sm font-medium">{t.menu.loginRegister}</span>
               </button>
             )}
           </div>

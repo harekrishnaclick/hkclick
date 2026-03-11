@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Leaderboard } from '@/components/Leaderboard';
+import type { Translations } from '@/lib/translations';
 
 interface AuthUser {
   id: string;
@@ -26,7 +27,25 @@ interface DeityGameProps {
   config: DeityGameConfig;
   user: AuthUser | null;
   isMuted: boolean;
+  t: Translations;
+  deityKey: string;
 }
+
+const CLICK_COOLDOWN_MS = 100;
+
+const MalaIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" fill="none" />
+    <circle cx="12" cy="3.5" r="1.5" fill="currentColor" />
+    <circle cx="17.5" cy="5.5" r="1.2" fill="currentColor" opacity="0.8" />
+    <circle cx="20" cy="10.5" r="1.2" fill="currentColor" opacity="0.8" />
+    <circle cx="18.5" cy="16" r="1.2" fill="currentColor" opacity="0.8" />
+    <circle cx="12" cy="20.5" r="1.5" fill="currentColor" />
+    <circle cx="5.5" cy="16" r="1.2" fill="currentColor" opacity="0.8" />
+    <circle cx="4" cy="10.5" r="1.2" fill="currentColor" opacity="0.8" />
+    <circle cx="6.5" cy="5.5" r="1.2" fill="currentColor" opacity="0.8" />
+  </svg>
+);
 
 const FloatingParticle = ({ id }: { id: string }) => {
   const [style] = useState({
@@ -94,8 +113,11 @@ const GameButton = ({
   );
 };
 
-export function DeityGame({ config, user, isMuted }: DeityGameProps) {
-  const { deityName, buttonLabels, colors, backgroundImage, sounds } = config;
+export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps) {
+  const { buttonLabels, colors, backgroundImage, sounds } = config;
+
+  const localizedTitle = t.deityTitles[deityKey] || config.deityName;
+  const localizedButtons = t.deityButtons[deityKey] || buttonLabels;
 
   const [gameState, setGameState] = useState<GameState>({
     score: 0,
@@ -113,6 +135,7 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
 
   const [audio1] = useState(new Audio(sounds[0]));
   const [audio2] = useState(new Audio(sounds[1]));
+  const lastClickTime = useRef<number>(0);
 
   const createParticle = useCallback(() => {
     const id = Math.random().toString(36).substr(2, 9);
@@ -140,6 +163,12 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
 
   const handleButtonClick = useCallback(
     (buttonType: ButtonType) => {
+      const now = Date.now();
+      if (now - lastClickTime.current < CLICK_COOLDOWN_MS) {
+        return;
+      }
+      lastClickTime.current = now;
+
       if (!isMuted) {
         try {
           if (buttonType === 'button1') {
@@ -188,12 +217,12 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
   const getStatusText = () => {
     if (gameState.expecting === 'button1') {
       return (
-        <span style={{ color: colors.primary }}>Click {buttonLabels[0]}</span>
+        <span style={{ color: colors.primary }}>{t.game.click} {localizedButtons[0]}</span>
       );
     } else {
       return (
         <span style={{ color: colors.secondary }}>
-          Click {buttonLabels[1]}
+          {t.game.click} {localizedButtons[1]}
         </span>
       );
     }
@@ -226,7 +255,7 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
             className="w-full flex items-center justify-between px-3 py-2 md:px-4 md:py-3 text-golden text-xs md:text-sm font-bold orbitron tracking-wider touch-manipulation"
           >
             <span className="flex items-center gap-2">
-              <span>📿</span>
+              <MalaIcon />
               <span>{gameState.malaCount}</span>
             </span>
             <svg
@@ -251,11 +280,11 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
                 >
                   {gameState.malaCount}
                 </div>
-                <span className="text-golden/60 text-xs orbitron">MALAS</span>
+                <span className="text-golden/60 text-xs orbitron">{t.game.malas}</span>
               </div>
 
               <div className="text-blue-300/80 text-center text-xs">
-                {108 - (gameState.score % 108)} to next mala
+                {108 - (gameState.score % 108)} {t.game.toNextMala}
               </div>
 
               <div className="mt-2 w-full bg-white/10 rounded-full h-1">
@@ -272,7 +301,7 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
         <div className="text-center mb-6 md:mb-8 mt-16 md:mt-0">
           <h1 className="orbitron text-3xl sm:text-4xl md:text-6xl font-bold text-golden score-glow animate-pulse-slow">
-            {deityName}
+            {localizedTitle}
           </h1>
         </div>
 
@@ -285,36 +314,36 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
             {gameState.score}
           </div>
           <p className="text-white/60 text-xs sm:text-sm md:text-base mt-2">
-            PAIRS COMPLETED
+            {t.game.pairsCompleted}
           </p>
         </div>
 
         <div className="flex flex-row gap-2 sm:gap-4 md:gap-12 items-center justify-center px-2">
           <GameButton
-            label={buttonLabels[0]}
+            label={localizedButtons[0]}
             onClick={() => handleButtonClick('button1')}
             isExpected={gameState.expecting === 'button1'}
             isPressed={pressedButton === 'button1'}
             gradientClass="bg-gradient-to-br from-black/20 to-purple-900/30 backdrop-blur-sm"
             textSizeClass={
-              buttonLabels[0].length <= 4
+              localizedButtons[0].length <= 4
                 ? 'text-lg sm:text-xl md:text-3xl'
-                : buttonLabels[0].length <= 8
+                : localizedButtons[0].length <= 8
                   ? 'text-base sm:text-lg md:text-2xl'
                   : 'text-xs sm:text-sm md:text-xl'
             }
           />
 
           <GameButton
-            label={buttonLabels[1]}
+            label={localizedButtons[1]}
             onClick={() => handleButtonClick('button2')}
             isExpected={gameState.expecting === 'button2'}
             isPressed={pressedButton === 'button2'}
             gradientClass="bg-gradient-to-br from-black/20 to-blue-900/30 backdrop-blur-sm"
             textSizeClass={
-              buttonLabels[1].length <= 6
+              localizedButtons[1].length <= 6
                 ? 'text-lg sm:text-xl md:text-3xl'
-                : buttonLabels[1].length <= 10
+                : localizedButtons[1].length <= 10
                   ? 'text-base sm:text-lg md:text-2xl'
                   : 'text-xs sm:text-sm md:text-xl'
             }
@@ -353,6 +382,7 @@ export function DeityGame({ config, user, isMuted }: DeityGameProps) {
           <Leaderboard
             currentScore={gameState.score}
             loggedInUsername={user?.username}
+            t={t}
             onScoreSubmitted={() => {
               console.log('Score submitted successfully!');
             }}

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { LogIn, UserPlus } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import type { Translations } from '@/lib/translations';
 
 interface AuthUser {
   id: string;
@@ -19,9 +20,10 @@ interface AuthModalProps {
   onLogout: () => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  t: Translations;
 }
 
-export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
+export function AuthModal({ onLogin, isOpen, onOpenChange, t }: AuthModalProps) {
   const [isRegister, setIsRegister] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -38,14 +40,14 @@ export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
       setUsername('');
       setPassword('');
       toast({
-        title: 'Welcome back!',
-        description: `Logged in as ${data.username}`,
+        title: t.auth.welcomeBackToast,
+        description: `${t.auth.loggedInAs} ${data.username}`,
       });
     },
     onError: (error: any) => {
       toast({
-        title: 'Login failed',
-        description: error.message || 'Invalid username or password',
+        title: t.auth.loginFailed,
+        description: error.message || t.auth.invalidCredentials,
         variant: 'destructive',
       });
     },
@@ -62,14 +64,14 @@ export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
       setUsername('');
       setPassword('');
       toast({
-        title: 'Account created!',
-        description: `Welcome, ${data.username}!`,
+        title: t.auth.accountCreated,
+        description: `${t.auth.welcomeUser} ${data.username}!`,
       });
     },
     onError: (error: any) => {
       toast({
-        title: 'Registration failed',
-        description: error.message || 'Username may already be taken',
+        title: t.auth.registrationFailed,
+        description: error.message || t.auth.usernameTaken,
         variant: 'destructive',
       });
     },
@@ -79,8 +81,8 @@ export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
     e.preventDefault();
     if (username.length < 3 || password.length < 4) {
       toast({
-        title: 'Invalid input',
-        description: 'Username must be 3+ characters, password 4+ characters',
+        title: t.auth.invalidInput,
+        description: t.auth.inputRequirements,
         variant: 'destructive',
       });
       return;
@@ -100,32 +102,32 @@ export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
       <DialogContent className="bg-cosmic-dark/95 backdrop-blur-xl border-golden/30 text-white max-w-sm" style={{ backgroundColor: 'rgba(10, 5, 30, 0.95)' }}>
         <DialogHeader>
           <DialogTitle className="text-golden orbitron text-xl text-center">
-            {isRegister ? 'Create Account' : 'Welcome Back'}
+            {isRegister ? t.auth.createAccount : t.auth.welcomeBack}
           </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="username" className="text-white/80">Username</Label>
+            <Label htmlFor="username" className="text-white/80">{t.auth.username}</Label>
             <Input
               id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
+              placeholder={t.auth.enterUsername}
               className="bg-white/10 border-golden/30 text-white placeholder:text-white/40 focus:border-golden"
               disabled={isPending}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password" className="text-white/80">Password</Label>
+            <Label htmlFor="password" className="text-white/80">{t.auth.password}</Label>
             <Input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
+              placeholder={t.auth.enterPassword}
               className="bg-white/10 border-golden/30 text-white placeholder:text-white/40 focus:border-golden"
               disabled={isPending}
             />
@@ -137,16 +139,16 @@ export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
             disabled={isPending}
           >
             {isPending ? (
-              <span className="animate-pulse">Processing...</span>
+              <span className="animate-pulse">{t.auth.processing}</span>
             ) : isRegister ? (
               <>
                 <UserPlus className="w-4 h-4 mr-2" />
-                Create Account
+                {t.auth.createAccountBtn}
               </>
             ) : (
               <>
                 <LogIn className="w-4 h-4 mr-2" />
-                Login
+                {t.auth.login}
               </>
             )}
           </Button>
@@ -158,7 +160,7 @@ export function AuthModal({ onLogin, isOpen, onOpenChange }: AuthModalProps) {
             onClick={() => setIsRegister(!isRegister)}
             className="text-golden/70 hover:text-golden text-sm transition-colors"
           >
-            {isRegister ? 'Already have an account? Login' : "Don't have an account? Register"}
+            {isRegister ? t.auth.alreadyHaveAccount : t.auth.dontHaveAccount}
           </button>
         </div>
       </DialogContent>

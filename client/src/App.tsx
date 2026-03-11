@@ -8,6 +8,7 @@ import { HamburgerMenu } from "@/components/HamburgerMenu";
 import { AuthModal } from "@/components/AuthModal";
 import DeityPage from "@/pages/deity";
 import NotFound from "@/pages/not-found";
+import { getTranslations, type Language } from "@/lib/translations";
 
 interface AuthUser {
   id: string;
@@ -29,7 +30,13 @@ function AppContent() {
     return localStorage.getItem('harekrishna_muted') === 'true';
   });
 
+  const [language, setLanguage] = useState<Language>(() => {
+    return (localStorage.getItem('harekrishna_lang') as Language) || 'en';
+  });
+
   const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  const t = getTranslations(language);
 
   const handleLogin = useCallback((userData: AuthUser) => {
     setUser(userData);
@@ -49,6 +56,14 @@ function AppContent() {
     });
   }, []);
 
+  const handleToggleLanguage = useCallback(() => {
+    setLanguage(prev => {
+      const next = prev === 'en' ? 'hi' : 'en';
+      localStorage.setItem('harekrishna_lang', next);
+      return next as Language;
+    });
+  }, []);
+
   return (
     <div className="relative">
       <div className="fixed top-2 right-2 md:top-4 md:right-4 z-50">
@@ -58,6 +73,9 @@ function AppContent() {
           onLogout={handleLogout}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
+          language={language}
+          onToggleLanguage={handleToggleLanguage}
+          t={t}
         />
       </div>
 
@@ -67,6 +85,7 @@ function AppContent() {
         onLogout={handleLogout}
         isOpen={authModalOpen}
         onOpenChange={setAuthModalOpen}
+        t={t}
       />
 
       <Switch>
@@ -75,7 +94,7 @@ function AppContent() {
         </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>
-            <DeityPage deityKey={key} user={user} isMuted={isMuted} />
+            <DeityPage deityKey={key} user={user} isMuted={isMuted} t={t} />
           </Route>
         ))}
         <Route component={NotFound} />

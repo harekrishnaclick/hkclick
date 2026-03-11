@@ -30,9 +30,19 @@ Preferred communication style: Simple, everyday language.
 - **Leaderboard** (`client/src/components/Leaderboard.tsx`): Global + country leaderboard with score submission
 - **Collapsible Mala Counter**: Built into DeityGame, tracks 108-pair cycles with progress bar
 
+## Internationalization (i18n)
+- **Language toggle**: Hindi/English switch in HamburgerMenu, persisted in localStorage (`harekrishna_lang`)
+- **Translations file**: `client/src/lib/translations.ts` — all UI text in English and Hindi
+- **Translations cover**: deity names, button labels, titles, menu labels, auth modal, leaderboard, game UI
+
+## Anti-Spam
+- **Click cooldown**: 100ms minimum between button clicks in DeityGame (via `useRef` timestamp)
+- Prevents auto-clicker scripts and rapid spam from inflating scores
+
 ## State Management
 - **Auth state**: Lifted to App level, shared across all pages via props, persisted in localStorage
 - **Mute state**: App-level, passed to HamburgerMenu and DeityGame, persisted in localStorage
+- **Language state**: App-level, persisted in localStorage, passed to all components via `t` (translations) prop
 - **Game state**: Per-page in DeityGame component (score, mala count, expecting button)
 
 ## Backend Architecture
