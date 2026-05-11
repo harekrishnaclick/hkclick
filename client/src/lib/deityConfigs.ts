@@ -2,13 +2,13 @@ import backgroundImage from '@assets/generated-image_1755976323185.png';
 import button1Sound from '@assets/button_1_1755632167131.mp3';
 import button2Sound from '@assets/button_2_1755632167130.mp3';
 
-import krishnaImg from '@assets/deities/krishna.png';
-import radhaImg from '@assets/deities/radha.png';
-import ramaImg from '@assets/deities/rama.png';
-import shivjiImg from '@assets/deities/shivji.png';
-import hanumanImg from '@assets/deities/hanuman.png';
-import ganeshImg from '@assets/deities/ganesh.png';
-import durgaImg from '@assets/deities/durga.png';
+import krishnaImg from '@assets/deities/krishna.webp';
+import radhaImg from '@assets/deities/radha.webp';
+import ramaImg from '@assets/deities/rama.webp';
+import shivjiImg from '@assets/deities/shivji.webp';
+import hanumanImg from '@assets/deities/hanuman.webp';
+import ganeshImg from '@assets/deities/ganesh.webp';
+import durgaImg from '@assets/deities/durga.webp';
 
 
 import type { DeityGameConfig } from '@/components/DeityGame';
