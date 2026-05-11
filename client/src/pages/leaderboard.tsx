@@ -10,8 +10,10 @@ interface AuthUser { id: string; username: string; }
 interface LeaderboardPageProps { user: AuthUser | null; t: Translations; }
 
 const getUserCountry = async (): Promise<string> => {
-  try { return (await (await fetch('https://ipapi.co/country/')).text()) || 'XX'; }
-  catch { return 'XX'; }
+  try {
+    const data = await (await fetch('/api/country')).json();
+    return data.country || 'XX';
+  } catch { return 'XX'; }
 };
 
 function getSessionScore(): string {

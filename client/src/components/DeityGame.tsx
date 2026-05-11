@@ -133,9 +133,9 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   useEffect(() => { userRef.current = user; }, [user]);
 
   useEffect(() => {
-    fetch('https://ipapi.co/country/')
-      .then((r) => r.text())
-      .then((c) => { if (c && c.length === 2) countryRef.current = c; })
+    fetch('/api/country')
+      .then((r) => r.json())
+      .then((d) => { if (d.country && d.country.length === 2) countryRef.current = d.country; })
       .catch(() => {});
   }, []);
 

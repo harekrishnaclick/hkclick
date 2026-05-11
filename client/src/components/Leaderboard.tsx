@@ -11,9 +11,9 @@ import type { Translations } from '@/lib/translations';
 
 const getUserCountry = async (): Promise<string> => {
   try {
-    const response = await fetch('https://ipapi.co/country/');
-    const country = await response.text();
-    return country || 'XX';
+    const response = await fetch('/api/country');
+    const data = await response.json();
+    return data.country || 'XX';
   } catch {
     return 'XX';
   }

@@ -15,6 +15,22 @@ const authSchema = z.object({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Country lookup proxy (avoids CORS issues with ipapi.co on the frontend)
+  app.get("/api/country", async (req, res) => {
+    try {
+      const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
+      const url = ip && ip !== '::1' && ip !== '127.0.0.1'
+        ? `https://ipapi.co/${ip}/country/`
+        : 'https://ipapi.co/country/';
+      const response = await fetch(url);
+      const country = await response.text();
+      const code = country.trim();
+      res.json({ country: code.length === 2 ? code : 'XX' });
+    } catch {
+      res.json({ country: 'XX' });
+    }
+  });
+
   // Auth routes
   
   // Register new user
