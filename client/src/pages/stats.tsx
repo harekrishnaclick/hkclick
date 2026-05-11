@@ -40,6 +40,7 @@ function timeAgo(ts: number): string {
 export default function StatsPage() {
   const [, forceUpdate] = useState(0);
   useEffect(() => { forceUpdate((n) => n + 1); }, []);
+  const lastDeity = typeof localStorage !== 'undefined' ? localStorage.getItem('cosmicMantra_lastDeity') || '' : '';
 
   const dailyMalas = getDailyMalas();
   const dailyPairs = getDailyPairs();
@@ -96,6 +97,22 @@ export default function StatsPage() {
             style={{ fontFamily: 'Sora, sans-serif' }}>{dailyPairs} pairs today</p>
           <p className="text-[#d0c6ab] text-xs mt-0.5"
             style={{ fontFamily: 'Inter, sans-serif' }}>{streak.currentStreak} day streak 🔥</p>
+          {lastDeity && (
+            <a
+              href={`/${lastDeity}`}
+              className="mt-4 flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                fontFamily: 'Sora, sans-serif',
+                background: 'linear-gradient(135deg, #e9c400, #ffd700)',
+                color: '#3a3000',
+                boxShadow: '0 0 14px rgba(255,215,0,0.4)',
+                textDecoration: 'none',
+              }}
+            >
+              <span className="material-symbols-outlined text-xl">spa</span>
+              Continue Journey
+            </a>
+          )}
         </div>
 
         {/* Weekly Activity — 8/12 cols on md+, full width below */}
