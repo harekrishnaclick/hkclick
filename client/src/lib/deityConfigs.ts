@@ -1,6 +1,7 @@
 import backgroundImage from '@assets/generated-image_1755976323185.png';
 import button1Sound from '@assets/button_1_1755632167131.mp3';
 import button2Sound from '@assets/button_2_1755632167130.mp3';
+import radhaSound from '@assets/speech_20260511190441320_1778526436172.mp3';
 
 import krishnaImg from '@assets/deities/krishna.webp';
 import radhaImg from '@assets/deities/radha.webp';
@@ -28,7 +29,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     colors: { primary: '#ec4899', secondary: '#f472b6' },
     backgroundImage: backgroundImage,
     deityImage: radhaImg,
-    sounds: [button1Sound, button2Sound],
+    sounds: [radhaSound, radhaSound],
   },
   rama: {
     deityName: 'JAI SHRI RAM',
