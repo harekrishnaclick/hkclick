@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import type { LeaderboardEntry, UpdateScore } from '@shared/schema';
 import type { Translations } from '@/lib/translations';
+import { getTotalPairs } from '@/lib/statsStorage';
 
 interface AuthUser { id: string; username: string; }
 interface LeaderboardPageProps { user: AuthUser | null; t: Translations; }
@@ -11,6 +12,11 @@ const getUserCountry = async (): Promise<string> => {
   try { return (await (await fetch('https://ipapi.co/country/')).text()) || 'XX'; }
   catch { return 'XX'; }
 };
+
+function getSessionScore(): string {
+  const total = getTotalPairs();
+  return total > 0 ? String(total) : '';
+}
 
 const getFlagEmoji = (code: string) => {
   if (!code || code === 'XX') return '🌍';
@@ -35,7 +41,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
     () => localStorage.getItem('hareKrishnaPlayerName') || (user?.username ?? ''),
   );
   const [userCountry, setUserCountry] = useState('XX');
-  const [scoreInput, setScoreInput] = useState('');
+  const [scoreInput, setScoreInput] = useState(() => getSessionScore());
   const [activeTab, setActiveTab] = useState<'global' | 'country'>('global');
   const [search, setSearch] = useState('');
 

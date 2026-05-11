@@ -8,17 +8,17 @@ interface DeityGalleryProps {
 }
 
 const deityTaglines: Record<string, string> = {
-  krishna: 'The Cosmic Enchanter',
-  radha: 'Divine Love Personified',
-  rama: 'The Eternal Guardian',
-  shivji: 'The Eternal Meditator',
-  hanuman: 'The Strength of Devotion',
-  ganesh: 'Remover of Obstacles',
-  durga: 'The Invincible Mother',
-  saibaba: 'The Divine Compassion',
-  gurunanak: 'The Enlightened Guide',
-  buddha: 'The Awakened One',
-  mahavir: 'The Great Victor',
+  krishna: "The Cosmic Enchanter",
+  radha: "Divine Love Personified",
+  rama: "The Eternal Guardian",
+  shivji: "The Eternal Meditator",
+  hanuman: "The Strength of Devotion",
+  ganesh: "Remover of Obstacles",
+  durga: "The Invincible Mother",
+  saibaba: "Patron of All Faiths",
+  gurunanak: "The First Sikh Guru",
+  buddha: "The Awakened One",
+  mahavir: "The Last Tirthankara",
 };
 
 const deityIcons: Record<string, string> = {
@@ -145,7 +145,7 @@ export default function DeityGallery({ t }: DeityGalleryProps) {
       {selectedKey && (
         <Link
           href={`/${selectedKey}`}
-          className="hidden md:flex fixed bottom-8 right-[310px] z-40 items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-sm shadow-2xl transition-all hover:scale-105 active:scale-95"
+          className="hidden md:flex fixed bottom-8 right-[332px] z-40 items-center gap-2.5 px-6 py-3.5 rounded-full font-bold text-sm shadow-2xl transition-all hover:scale-105 active:scale-95"
           style={{
             fontFamily: 'Sora, sans-serif',
             background: 'linear-gradient(135deg, #e9c400, #ffd700)',

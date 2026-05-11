@@ -31,17 +31,17 @@ interface DeityGameProps {
 const CLICK_COOLDOWN_MS = 100;
 
 const deityTaglines: Record<string, string> = {
-  krishna: 'The Cosmic Enchanter',
-  radha: 'Divine Love Personified',
-  rama: 'The Eternal Guardian',
-  shivji: 'The Eternal Meditator',
-  hanuman: 'The Strength of Devotion',
-  ganesh: 'Remover of Obstacles',
-  durga: 'The Invincible Mother',
-  saibaba: 'The Divine Compassion',
-  gurunanak: 'The Enlightened Guide',
-  buddha: 'The Awakened One',
-  mahavir: 'The Great Victor',
+  krishna: "The Cosmic Enchanter",
+  radha: "Divine Love Personified",
+  rama: "The Eternal Guardian",
+  shivji: "The Eternal Meditator",
+  hanuman: "The Strength of Devotion",
+  ganesh: "Remover of Obstacles",
+  durga: "The Invincible Mother",
+  saibaba: "Patron of All Faiths",
+  gurunanak: "The First Sikh Guru",
+  buddha: "The Awakened One",
+  mahavir: "The Last Tirthankara",
 };
 
 function formatTime(seconds: number): string {

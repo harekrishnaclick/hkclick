@@ -174,7 +174,7 @@ export function AppShell({
     >
       {/* Top header */}
       <header
-        className="fixed top-0 left-0 right-0 md:right-72 z-50 flex items-center justify-between px-5 md:px-8 py-3"
+        className="fixed top-0 left-0 right-0 md:right-80 z-50 flex items-center justify-between px-5 md:px-8 py-3"
         style={{
           background: 'rgba(13,18,40,0.7)',
           backdropFilter: 'blur(20px)',
@@ -231,7 +231,7 @@ export function AppShell({
 
       {/* Right sidebar */}
       <aside
-        className={`fixed right-0 top-0 h-full w-72 z-[70] p-5 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 h-full w-80 z-[70] p-5 flex flex-col transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0'
         }`}
         style={{
@@ -259,7 +259,7 @@ export function AppShell({
       </aside>
 
       {/* Page content */}
-      <main className="md:pr-72 pt-14 pb-16 md:pb-0 min-h-screen">
+      <main className="md:pr-80 pt-14 pb-16 md:pb-0 min-h-screen">
         {children}
       </main>
 
