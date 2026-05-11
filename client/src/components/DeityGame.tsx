@@ -82,6 +82,10 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
       : 0;
 
   useEffect(() => {
+    localStorage.setItem('cosmicMantra_lastDeity', deityKey);
+  }, [deityKey]);
+
+  useEffect(() => {
     audio1.preload = 'auto';
     audio2.preload = 'auto';
     audio1.volume = 0.7;
@@ -348,14 +352,14 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             {
               icon: 'military_tech',
               color: '#ffd700',
-              value: userRank > 0 ? `#${userRank}` : '#—',
-              label: 'GLOBAL RANK',
+              value: userRank > 0 ? `#${userRank}` : '—',
+              label: 'DAILY RANK',
             },
             {
-              icon: 'favorite',
+              icon: 'bolt',
               color: '#dcb8ff',
-              value: String(malaCount),
-              label: 'MALAS',
+              value: malaCount > 0 ? `${malaCount} Mala${malaCount !== 1 ? 's' : ''}` : 'Pure',
+              label: 'ENERGY',
             },
           ].map(({ icon, color, value, label }) => (
             <div key={label} className="glass-card px-2 py-4 text-center">
