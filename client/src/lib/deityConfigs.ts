@@ -2,6 +2,8 @@ import backgroundImage from '@assets/generated-image_1755976323185.png';
 import button1Sound from '@assets/button_1_1755632167131.mp3';
 import button2Sound from '@assets/button_2_1755632167130.mp3';
 import radhaSound from '@assets/speech_20260511190441320_1778526436172.mp3';
+import ramaSound1 from '@assets/speech_1_1778526563771.mp3';
+import ramaSound2 from '@assets/speech_2_1778526560238.mp3';
 
 import krishnaImg from '@assets/deities/krishna.webp';
 import radhaImg from '@assets/deities/radha.webp';
@@ -37,7 +39,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     colors: { primary: '#f97316', secondary: '#fbbf24' },
     backgroundImage: backgroundImage,
     deityImage: ramaImg,
-    sounds: [button1Sound, button2Sound],
+    sounds: [ramaSound1, ramaSound2],
   },
   shivji: {
     deityName: 'HAR HAR MAHADEV',
