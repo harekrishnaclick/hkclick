@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Translations } from '@/lib/translations';
-import { saveSession, recordMalaTiming } from '@/lib/statsStorage';
+import { saveSession, recordMalaTiming, getDailyPairs } from '@/lib/statsStorage';
 import type { LeaderboardEntry } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 
@@ -141,6 +141,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   const [malaFlash, setMalaFlash] = useState(false);
   const [malaFlashKey, setMalaFlashKey] = useState(0);
   const [sessionEnded, setSessionEnded] = useState(false);
+  const [showStreakBanner, setShowStreakBanner] = useState(() => getDailyPairs() === 0);
   const particleIdRef = useRef(0);
 
   const sessionStartRef = useRef(Date.now());
@@ -303,6 +304,10 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
       if (now - lastClickTime.current < CLICK_COOLDOWN_MS) return;
       lastClickTime.current = now;
 
+      setShowStreakBanner(false);
+
+      try { navigator.vibrate(30); } catch { /* not supported */ }
+
       if (!isMuted) {
         try {
           const audio = buttonType === 'button1' ? audio1 : audio2;
@@ -464,6 +469,29 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
 
       {/* Page content */}
       <div className="relative z-10 flex flex-col items-center justify-start min-h-screen pt-10 pb-6 px-4">
+        {/* Streak reminder banner */}
+        {showStreakBanner && (
+          <div
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md mb-4 flex items-center justify-between gap-3 px-4 py-3 rounded-xl"
+            style={{
+              background: 'rgba(255,100,30,0.12)',
+              border: '1px solid rgba(255,140,50,0.3)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
+            <p className="text-[#ffb347] text-sm font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
+              🔥 You haven't chanted today — keep your streak alive!
+            </p>
+            <button
+              onClick={() => setShowStreakBanner(false)}
+              className="text-[#d0c6ab] hover:text-[#fff6df] transition-colors flex-shrink-0"
+              aria-label="Dismiss"
+            >
+              <span className="material-symbols-outlined text-base">close</span>
+            </button>
+          </div>
+        )}
+
         {/* Deity title */}
         <div className="text-center mb-7 mt-2">
           <p
@@ -672,6 +700,34 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
           >
             <span className="material-symbols-outlined text-base">check_circle</span>
             {sessionEnded ? 'Saving...' : 'End Session & Save Score'}
+          </button>
+        )}
+
+        {/* Share score button */}
+        {score > 0 && (
+          <button
+            onClick={async () => {
+              const malas = malaCount;
+              const text = `I just chanted ${score.toLocaleString()} pairs${malas > 0 ? ` (${malas} mala${malas !== 1 ? 's' : ''})` : ''} of ${localizedTitle} on Cosmic Mantra! 🙏`;
+              try {
+                if (navigator.share) {
+                  await navigator.share({ text });
+                } else {
+                  await navigator.clipboard.writeText(text);
+                  toast({ title: 'Copied to clipboard!', description: 'Share your score with friends 🙏' });
+                }
+              } catch { /* user cancelled or not supported */ }
+            }}
+            className="mb-3 px-4 py-2 rounded-xl text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5"
+            style={{
+              fontFamily: 'Inter, sans-serif',
+              background: 'rgba(220,184,255,0.1)',
+              border: '1px solid rgba(220,184,255,0.25)',
+              color: '#dcb8ff',
+            }}
+          >
+            <span className="material-symbols-outlined text-base">share</span>
+            Share Score
           </button>
         )}
 

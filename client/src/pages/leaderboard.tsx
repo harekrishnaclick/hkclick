@@ -61,6 +61,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
   );
   const [userCountry, setUserCountry] = useState('XX');
   const [autoScore] = useState(() => getAutoScore());
+  const [submittedScore, setSubmittedScore] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'global' | 'country'>('global');
   const [search, setSearch] = useState('');
 
@@ -101,11 +102,12 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
 
   const submitMutation = useMutation({
     mutationFn: (data: UpdateScore) => apiRequest('POST', '/api/leaderboard/score', data),
-    onSuccess: () => {
+    onSuccess: (_res, variables) => {
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/global'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/country'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/total'] });
-      toast({ title: '🙏 Score submitted!', description: `${formatNum(autoScore)} pairs added to the leaderboard.` });
+      setSubmittedScore(variables.score);
+      toast({ title: '🙏 Score submitted!', description: `${formatNum(variables.score)} pairs added to the leaderboard.` });
     },
   });
 
@@ -117,7 +119,9 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
     submitMutation.mutate({ playerName: name, score: freshScore, country: userCountry });
   };
 
-  const canSubmit = autoScore > 0 && (user ? true : playerName.trim().length > 0);
+  const currentScore = getAutoScore();
+  const alreadySubmitted = submittedScore !== null && submittedScore >= currentScore;
+  const canSubmit = currentScore > 0 && !alreadySubmitted && (user ? true : playerName.trim().length > 0);
 
   const activeList = (activeTab === 'global' ? globalLeaderboard : countryLeaderboard) ?? [];
   const loading = activeTab === 'global' ? globalLoading : countryLoading;
@@ -202,9 +206,11 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
             </div>
             <button onClick={handleSubmit}
               disabled={submitMutation.isPending || !canSubmit}
-              className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-              style={{ fontFamily: 'Sora, sans-serif', background: 'linear-gradient(135deg,#e9c400,#ffd700)', color: '#3a3000' }}>
-              {submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-1.5"
+              style={{ fontFamily: 'Sora, sans-serif', background: alreadySubmitted ? 'rgba(47,51,75,0.6)' : 'linear-gradient(135deg,#e9c400,#ffd700)', color: alreadySubmitted ? '#a3e635' : '#3a3000', border: alreadySubmitted ? '1px solid rgba(163,230,53,0.3)' : 'none' }}>
+              {alreadySubmitted
+                ? <><span className="material-symbols-outlined text-base">check_circle</span> Submitted</>
+                : submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
             </button>
           </div>
         ) : (
@@ -216,9 +222,11 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
               style={{ fontFamily: 'Inter, sans-serif', background: 'rgba(47,51,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
             <button onClick={handleSubmit}
               disabled={submitMutation.isPending || !canSubmit}
-              className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-              style={{ fontFamily: 'Sora, sans-serif', background: 'linear-gradient(135deg,#e9c400,#ffd700)', color: '#3a3000' }}>
-              {submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-1.5"
+              style={{ fontFamily: 'Sora, sans-serif', background: alreadySubmitted ? 'rgba(47,51,75,0.6)' : 'linear-gradient(135deg,#e9c400,#ffd700)', color: alreadySubmitted ? '#a3e635' : '#3a3000', border: alreadySubmitted ? '1px solid rgba(163,230,53,0.3)' : 'none' }}>
+              {alreadySubmitted
+                ? <><span className="material-symbols-outlined text-base">check_circle</span> Submitted</>
+                : submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
             </button>
           </div>
         )}
