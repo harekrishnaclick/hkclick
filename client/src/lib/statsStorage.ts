@@ -53,6 +53,15 @@ export function getDailyPairs(): number {
   return daily[getDateStr()] || 0;
 }
 
+export function getDailyGoal(): number {
+  const stored = parseInt(localStorage.getItem(PREFIX + 'dailyGoal') || '', 10);
+  return isNaN(stored) || stored <= 0 ? 108 : stored;
+}
+
+export function setDailyGoal(n: number): void {
+  localStorage.setItem(PREFIX + 'dailyGoal', String(Math.max(1, Math.floor(n))));
+}
+
 export function getStreak(): StreakData {
   try {
     return JSON.parse(localStorage.getItem(PREFIX + 'streak') || 'null') ||

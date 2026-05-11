@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Translations } from '@/lib/translations';
-import { saveSession, recordMalaTiming, getDailyPairs } from '@/lib/statsStorage';
+import { saveSession, recordMalaTiming, getDailyPairs, getDailyGoal } from '@/lib/statsStorage';
 import { loadDeityImage } from '@/lib/deityConfigs';
 import type { LeaderboardEntry } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
@@ -154,6 +154,9 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   const [malaFlashKey, setMalaFlashKey] = useState(0);
   const [sessionEnded, setSessionEnded] = useState(false);
   const [showStreakBanner, setShowStreakBanner] = useState(() => getDailyPairs() === 0);
+  const [goalCelebrated, setGoalCelebrated] = useState(() => getDailyPairs() >= getDailyGoal());
+  const [dailyGoal, setDailyGoalState] = useState(() => getDailyGoal());
+  const [savedDailyPairs, setSavedDailyPairs] = useState(() => getDailyPairs());
   const particleIdRef = useRef(0);
 
   const sessionStartRef = useRef(Date.now());
@@ -227,6 +230,18 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
     saveGameState(deityKey, score, malaCount, expecting);
   }, [deityKey, score, malaCount, expecting]);
 
+  // Re-sync daily baseline and goal when tab regains focus (handles midnight rollover and external goal changes)
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        setSavedDailyPairs(getDailyPairs());
+        setDailyGoalState(getDailyGoal());
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
   const submitScoreToLeaderboard = useCallback(
     async (finalScore: number, silent: boolean): Promise<boolean> => {
       const currentUser = userRef.current;
@@ -267,6 +282,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
       timestamp: sessionStartRef.current,
       duration: Math.floor((Date.now() - sessionStartRef.current) / 1000),
     });
+    setSavedDailyPairs(getDailyPairs());
     const success = await submitScoreToLeaderboard(finalScore, false);
     if (success && userRef.current) {
       toast({
@@ -402,6 +418,20 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
     },
     [],
   );
+
+  const dailyPairsToday = savedDailyPairs + score;
+  const dailyGoalProgress = Math.min(dailyPairsToday / dailyGoal, 1);
+  const dailyGoalMet = dailyPairsToday >= dailyGoal;
+
+  useEffect(() => {
+    if (dailyGoalMet && !goalCelebrated) {
+      setGoalCelebrated(true);
+      toast({
+        title: '🎉 Daily goal reached!',
+        description: `You've chanted ${dailyPairsToday} pairs today — goal complete!`,
+      });
+    }
+  }, [dailyGoalMet, goalCelebrated, dailyPairsToday, toast]);
 
   const malaProgress = (score % 108) / 108;
   const tagline = deityTaglines[deityKey] || '';
@@ -574,6 +604,69 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
           >
             {108 - (score % 108)} pairs to next mala
           </p>
+
+          {/* Daily goal progress */}
+          <div
+            className="mt-5 w-full rounded-xl px-4 py-3"
+            style={{
+              background: dailyGoalMet
+                ? 'rgba(255,215,0,0.08)'
+                : 'rgba(255,255,255,0.04)',
+              border: dailyGoalMet
+                ? '1px solid rgba(255,215,0,0.25)'
+                : '1px solid rgba(255,255,255,0.07)',
+            }}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <p
+                className="text-[11px] tracking-[0.18em] uppercase"
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  color: dailyGoalMet ? '#ffd700' : '#d0c6ab',
+                }}
+              >
+                Daily Goal
+              </p>
+              <p
+                className="text-[11px] font-semibold tabular-nums"
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  color: dailyGoalMet ? '#ffd700' : '#d0c6ab',
+                }}
+              >
+                {dailyPairsToday} / {dailyGoal}
+              </p>
+            </div>
+            <div className="w-full bg-[#2f334b] rounded-full h-2 overflow-hidden">
+              <div
+                className="h-2 rounded-full transition-all duration-500"
+                style={{
+                  width: `${dailyGoalProgress * 100}%`,
+                  background: dailyGoalMet
+                    ? 'linear-gradient(90deg, #ffd700, #ffe566)'
+                    : 'linear-gradient(90deg, #7c3aed, #dcb8ff)',
+                  boxShadow: dailyGoalMet
+                    ? '0 0 8px rgba(255,215,0,0.6)'
+                    : '0 0 6px rgba(220,184,255,0.4)',
+                }}
+              />
+            </div>
+            {dailyGoalMet ? (
+              <p
+                className="text-[#ffd700] text-[11px] font-semibold mt-1.5 text-center"
+                style={{ fontFamily: 'Inter, sans-serif' }}
+              >
+                🎉 Daily goal reached!
+              </p>
+            ) : (
+              <p
+                className="text-[#d0c6ab]/50 text-[11px] mt-1.5"
+                style={{ fontFamily: 'Inter, sans-serif' }}
+              >
+                {dailyGoal - dailyPairsToday} pairs left today
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Chant buttons */}
