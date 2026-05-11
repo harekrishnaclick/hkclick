@@ -1,0 +1,60 @@
+# Project Brief: Cosmic Mantra
+
+## 1. Executive Summary
+**Cosmic Mantra** is a high-fidelity spiritual companion app designed to digitize and enhance the traditional practice of "Mantra Japa" (meditative chanting). The app provides a serene, sacred digital environment where users can perform chanting sessions, track their spiritual discipline (Sadhana), and connect with a global community of practitioners.
+
+---
+
+## 2. Product Objectives
+*   **Engagement:** Create a tactile and visually immersive chanting experience.
+*   **Discipline:** Facilitate consistency through streak tracking, goal setting, and visual progress indicators.
+*   **Connection:** Foster a sense of collective devotion through global leaderboards and shared milestones.
+*   **Accessibility:** Provide a seamless experience across both Mobile and Desktop platforms.
+
+---
+
+## 3. Core Features
+
+### 3.1. Immersive Chanting Dashboard
+*   **Mantra Interaction:** Large, responsive "HARE" and "KRISHNA" buttons (or deity-specific mantras) that act as a digital counter.
+*   **Sacred Visuals:** High-fidelity deity backdrops that change based on user selection.
+*   **Mala Tracking:** A circular progress indicator representing the 108 beads of a traditional Mala.
+*   **Haptic/Audio Feedback:** (Proposed) Subtle vibration or sound cues upon completion of a bead or a full Mala.
+
+### 3.2. Deity Selection (Pathways)
+*   **Visual Catalog:** A gallery of deities (Krishna, Radha, Shiva, etc.) with unique themes and attributes.
+*   **Personalization:** Selecting a deity updates the app's background, accent colors, and active mantra.
+
+### 3.3. Spiritual Analytics (Progress)
+*   **Sacred Milestones:** Tracking total beads chanted, longest streaks, and total Malas completed.
+*   **Weekly Devotion:** A bar chart visualizing chanting activity over the last 7 days.
+*   **Achievements:** Unlockable titles (e.g., Novice, Adept, Sage) based on cumulative practice.
+
+### 3.4. Global Leaderboard (Community)
+*   **Global Ranks:** Real-time ranking of top practitioners worldwide.
+*   **Personal Standing:** Displaying the user's current rank relative to the global community.
+*   **Social Proof:** Highlighting "Top 3 Souls" with distinctive visual treatments.
+
+---
+
+## 4. Design System: "Celestial Devotion"
+*   **Theme:** Dark Mode (Midnight Blue/Indigo base).
+*   **Accents:** Glowing Gold (#FFD700) and Ethereal Violet.
+*   **Typography:** Sora (Sans-serif) for high readability and a modern feel.
+*   **Visual Language:** Glassmorphism, subtle particle effects, and high-quality digital deity illustrations.
+
+---
+
+## 5. User Journey
+1.  **Select Focus:** User opens the "Deities" menu and chooses their spiritual focus.
+2.  **Chant:** User returns to the Dashboard and begins clicking/tapping the mantra buttons.
+3.  **Complete Mala:** Upon reaching 108 chants, the counter increments the "Mala" count and updates stats.
+4.  **Review Progress:** User checks the "Stats" page to view their weekly discipline and historical milestones.
+5.  **Connect:** User views the "Leaderboard" to see the collective resonance of the global community.
+
+---
+
+## 6. Technical Stack (Proposed)
+*   **Frontend:** HTML5, Tailwind CSS (for glassmorphism and layout), JavaScript (for counter logic and state management).
+*   **Deployment:** Optimized for Replit and web-based hosting.
+*   **Assets:** SVG for iconography, high-resolution PNGs for deity backgrounds.
