@@ -3,6 +3,7 @@ import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Translations } from '@/lib/translations';
 import { saveSession, recordMalaTiming, getDailyPairs } from '@/lib/statsStorage';
+import { loadDeityImage } from '@/lib/deityConfigs';
 import type { LeaderboardEntry } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 
@@ -72,7 +73,7 @@ export interface DeityGameConfig {
   buttonLabels: [string, string];
   colors: { primary: string; secondary: string };
   backgroundImage: string;
-  deityImage?: string;
+  deityImageFile?: string;
   sounds: [string, string];
 }
 
@@ -124,7 +125,18 @@ function formatTime(seconds: number): string {
 }
 
 export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps) {
-  const { buttonLabels, colors, backgroundImage, deityImage, sounds } = config;
+  const { buttonLabels, colors, backgroundImage, deityImageFile, sounds } = config;
+  const [deityImage, setDeityImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!deityImageFile) return;
+    let cancelled = false;
+    loadDeityImage(deityImageFile).then((url) => {
+      if (!cancelled) setDeityImage(url || null);
+    });
+    return () => { cancelled = true; };
+  }, [deityImageFile]);
+
   const localizedTitle = t.deityTitles[deityKey] || config.deityName;
   const localizedButtons = t.deityButtons[deityKey] || buttonLabels;
 

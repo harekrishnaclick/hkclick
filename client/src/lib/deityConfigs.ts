@@ -13,16 +13,19 @@ import ganeshSound2 from '@assets/speech_6_1778526855868.mp3';
 import durgaSound1 from '@assets/speech_1_1778526915118.mp3';
 import durgaSound2 from '@assets/speech_9_1778526915117.mp3';
 
-import krishnaImg from '@assets/deities/krishna.webp';
-import radhaImg from '@assets/deities/radha.webp';
-import ramaImg from '@assets/deities/rama.webp';
-import shivjiImg from '@assets/deities/shivji.webp';
-import hanumanImg from '@assets/deities/hanuman.webp';
-import ganeshImg from '@assets/deities/ganesh.webp';
-import durgaImg from '@assets/deities/durga.webp';
-
-
 import type { DeityGameConfig } from '@/components/DeityGame';
+
+const deityImageModules = import.meta.glob<{ default: string }>(
+  '/src/assets/deities/*.webp',
+  { eager: false },
+);
+
+export function loadDeityImage(filename: string): Promise<string> {
+  const key = `/src/assets/deities/${filename}`;
+  const loader = deityImageModules[key];
+  if (!loader) return Promise.resolve('');
+  return loader().then((m) => m.default);
+}
 
 export const deityConfigs: Record<string, DeityGameConfig> = {
   krishna: {
@@ -30,7 +33,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['HARE', 'KRISHNA'],
     colors: { primary: '#9d4edd', secondary: '#60a5fa' },
     backgroundImage: backgroundImage,
-    deityImage: krishnaImg,
+    deityImageFile: 'krishna.webp',
     sounds: [button1Sound, button2Sound],
   },
   radha: {
@@ -38,7 +41,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['RADHE', 'RADHE'],
     colors: { primary: '#ec4899', secondary: '#f472b6' },
     backgroundImage: backgroundImage,
-    deityImage: radhaImg,
+    deityImageFile: 'radha.webp',
     sounds: [radhaSound, radhaSound],
   },
   rama: {
@@ -46,7 +49,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['JAI', 'SHRI RAM'],
     colors: { primary: '#f97316', secondary: '#fbbf24' },
     backgroundImage: backgroundImage,
-    deityImage: ramaImg,
+    deityImageFile: 'rama.webp',
     sounds: [ramaSound1, ramaSound2],
   },
   shivji: {
@@ -54,7 +57,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['HAR HAR', 'MAHADEV'],
     colors: { primary: '#38bdf8', secondary: '#94a3b8' },
     backgroundImage: backgroundImage,
-    deityImage: shivjiImg,
+    deityImageFile: 'shivji.webp',
     sounds: [shivjiSound1, shivjiSound2],
   },
   hanuman: {
@@ -62,7 +65,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['JAI', 'HANUMAN'],
     colors: { primary: '#f97316', secondary: '#ef4444' },
     backgroundImage: backgroundImage,
-    deityImage: hanumanImg,
+    deityImageFile: 'hanuman.webp',
     sounds: [hanumanSound1, hanumanSound2],
   },
   ganesh: {
@@ -70,7 +73,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['JAI', 'GANESH'],
     colors: { primary: '#ef4444', secondary: '#fbbf24' },
     backgroundImage: backgroundImage,
-    deityImage: ganeshImg,
+    deityImageFile: 'ganesh.webp',
     sounds: [ganeshSound1, ganeshSound2],
   },
   durga: {
@@ -78,7 +81,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     buttonLabels: ['JAI', 'MAA DURGA'],
     colors: { primary: '#ef4444', secondary: '#f97316' },
     backgroundImage: backgroundImage,
-    deityImage: durgaImg,
+    deityImageFile: 'durga.webp',
     sounds: [durgaSound1, durgaSound2],
   },
 };
