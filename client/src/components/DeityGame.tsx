@@ -82,6 +82,7 @@ interface DeityGameProps {
   user: AuthUser | null;
   isMuted: boolean;
   t: Translations;
+  language: string;
   deityKey: string;
 }
 
@@ -108,15 +109,6 @@ function clearGameState(key: string) {
   localStorage.removeItem(`cm_game_${key}`);
 }
 
-const deityTaglines: Record<string, string> = {
-  krishna: "The Cosmic Enchanter",
-  radha: "Divine Love Personified",
-  rama: "The Eternal Guardian",
-  shivji: "The Eternal Meditator",
-  hanuman: "The Strength of Devotion",
-  ganesh: "Remover of Obstacles",
-  durga: "The Invincible Mother",
-};
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60).toString().padStart(2, '0');
@@ -124,7 +116,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s}`;
 }
 
-export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps) {
+export function DeityGame({ config, user, isMuted, t, language, deityKey }: DeityGameProps) {
   const { buttonLabels, colors, backgroundImage, deityImageFile, sounds } = config;
   const [deityImage, setDeityImage] = useState<string | null>(null);
 
@@ -427,14 +419,14 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
     if (dailyGoalMet && !goalCelebrated) {
       setGoalCelebrated(true);
       toast({
-        title: '🎉 Daily goal reached!',
-        description: `You've chanted ${dailyPairsToday} pairs today — goal complete!`,
+        title: t.game.dailyGoalToastTitle,
+        description: t.game.dailyGoalToastDesc.replace('{n}', String(dailyPairsToday)),
       });
     }
   }, [dailyGoalMet, goalCelebrated, dailyPairsToday, toast]);
 
   const malaProgress = (score % 108) / 108;
-  const tagline = deityTaglines[deityKey] || '';
+  const tagline = t.deityTaglines[deityKey] || '';
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -481,13 +473,13 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
                 textShadow: '0 0 40px rgba(255,215,0,1), 0 0 80px rgba(255,215,0,0.6)',
               }}
             >
-              🙏 Mala Complete!
+              {t.game.malaCompleteTitle}
             </p>
             <p
               className="text-[#fff6df] text-base mt-2 font-semibold"
               style={{ fontFamily: 'Inter, sans-serif', textShadow: '0 0 20px rgba(255,246,223,0.8)' }}
             >
-              {malaCount} mala{malaCount !== 1 ? 's' : ''} completed
+              {malaCount} {malaCount !== 1 ? t.game.malaCompletedPlural : t.game.malaCompletedSingle}
             </p>
           </div>
         </div>
@@ -522,7 +514,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             }}
           >
             <p className="text-[#ffb347] text-sm font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
-              🔥 You haven't chanted today — keep your streak alive!
+              {t.game.streakBanner}
             </p>
             <button
               onClick={() => setShowStreakBanner(false)}
@@ -562,7 +554,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             className="text-[#d0c6ab] text-[11px] tracking-[0.22em] uppercase mb-3"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            Current Session
+            {t.game.currentSession}
           </p>
 
           <div
@@ -579,7 +571,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             className="text-[#d0c6ab] text-[11px] tracking-[0.22em] uppercase mt-2"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            PAIRS COMPLETED
+            {t.game.pairsCompleted}
           </p>
 
           {malaCount > 0 && (
@@ -587,7 +579,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
               className="text-[#ffd700] text-xs font-semibold mt-1"
               style={{ fontFamily: 'Inter, sans-serif' }}
             >
-              {malaCount} mala{malaCount !== 1 ? 's' : ''} completed
+              {malaCount} {malaCount !== 1 ? t.game.malaCompletedPlural : t.game.malaCompletedSingle}
             </p>
           )}
 
@@ -602,7 +594,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             className="text-[#d0c6ab]/50 text-[11px] mt-1.5"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            {108 - (score % 108)} pairs to next mala
+            {108 - (score % 108)} {t.game.pairsToNextMala}
           </p>
 
           {/* Daily goal progress */}
@@ -625,7 +617,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
                   color: dailyGoalMet ? '#ffd700' : '#d0c6ab',
                 }}
               >
-                Daily Goal
+                {t.game.dailyGoalLabel}
               </p>
               <p
                 className="text-[11px] font-semibold tabular-nums"
@@ -656,14 +648,14 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
                 className="text-[#ffd700] text-[11px] font-semibold mt-1.5 text-center"
                 style={{ fontFamily: 'Inter, sans-serif' }}
               >
-                🎉 Daily goal reached!
+                {t.game.dailyGoalReached}
               </p>
             ) : (
               <p
                 className="text-[#d0c6ab]/50 text-[11px] mt-1.5"
                 style={{ fontFamily: 'Inter, sans-serif' }}
               >
-                {dailyGoal - dailyPairsToday} pairs left today
+                {dailyGoal - dailyPairsToday} {t.game.pairsLeftToday}
               </p>
             )}
           </div>
@@ -752,19 +744,19 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
               icon: 'timer',
               color: '#d0c6ab',
               value: formatTime(sessionSecs),
-              label: 'FOCUS TIME',
+              label: t.game.focusTime,
             },
             {
               icon: 'military_tech',
               color: '#ffd700',
               value: userRank > 0 ? `#${userRank}` : '—',
-              label: 'DAILY RANK',
+              label: t.game.dailyRank,
             },
             {
               icon: 'bolt',
               color: '#dcb8ff',
-              value: malaCount > 0 ? `${malaCount} Mala${malaCount !== 1 ? 's' : ''}` : 'Pure',
-              label: 'ENERGY',
+              value: malaCount > 0 ? `${malaCount} ${malaCount !== 1 ? t.game.malaCompletedPlural : t.game.malaCompletedSingle}` : t.game.pure,
+              label: t.game.energy,
             },
           ].map(({ icon, color, value, label }) => (
             <div key={label} className="glass-card px-2 py-4 text-center">
@@ -804,7 +796,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             }}
           >
             <span className="material-symbols-outlined text-base">check_circle</span>
-            {sessionEnded ? 'Saving...' : 'End Session & Save Score'}
+            {sessionEnded ? t.game.saving : t.game.endSession}
           </button>
         )}
 
@@ -813,13 +805,15 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
           <button
             onClick={async () => {
               const malas = malaCount;
-              const text = `I just chanted ${score.toLocaleString()} pairs${malas > 0 ? ` (${malas} mala${malas !== 1 ? 's' : ''})` : ''} of ${localizedTitle} on Cosmic Mantra! 🙏`;
+              const text = language === 'hi'
+                ? `मैंने ${localizedTitle} का ${score.toLocaleString()} जोड़ी जप किया${malas > 0 ? ` (${malas} ${t.game.malaCompletedPlural})` : ''} Cosmic Mantra पर! 🙏`
+                : `I just chanted ${score.toLocaleString()} pairs${malas > 0 ? ` (${malas} mala${malas !== 1 ? 's' : ''})` : ''} of ${localizedTitle} on Cosmic Mantra! 🙏`;
               try {
                 if (navigator.share) {
                   await navigator.share({ text });
                 } else {
                   await navigator.clipboard.writeText(text);
-                  toast({ title: 'Copied to clipboard!', description: 'Share your score with friends 🙏' });
+                  toast({ title: t.game.copiedToClipboard, description: t.game.shareWithFriends });
                 }
               } catch { /* user cancelled or not supported */ }
             }}
@@ -832,7 +826,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             }}
           >
             <span className="material-symbols-outlined text-base">share</span>
-            Share Score
+            {t.game.shareScore}
           </button>
         )}
 
@@ -843,7 +837,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
           <span className="material-symbols-outlined text-base">leaderboard</span>
-          View Leaderboard &amp; Submit Score
+          {t.game.viewLeaderboard}
         </Link>
       </div>
     </div>

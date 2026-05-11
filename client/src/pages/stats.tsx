@@ -4,14 +4,22 @@ import {
   getDailyMalas, getDailyPairs, getWeeklyData, getTotalMalas,
   getTotalPairs, getStreak, getPersonalRecords, getSessions, getSpiritualLevel,
 } from '@/lib/statsStorage';
+import type { Translations, Language } from '@/lib/translations';
 
 const DAILY_GOAL = 108;
 
-const deityMantraNames: Record<string, string> = {
-  krishna: 'Krishna Mahamantra', radha: 'Radhe Radhe', rama: 'Ram Nam Sankirtan',
-  shivji: 'Om Namah Shivaya', hanuman: 'Hanuman Chalisa', ganesh: 'Om Gan Ganapataye',
-  durga: 'Durga Stuti', saibaba: 'Om Sai Ram', gurunanak: 'Waheguru Simran',
-  buddha: 'Om Mani Padme Hum', mahavir: 'Namo Namah',
+const deityMantraNames: Record<string, { en: string; hi: string }> = {
+  krishna: { en: 'Krishna Mahamantra', hi: 'कृष्ण महामंत्र' },
+  radha: { en: 'Radhe Radhe', hi: 'राधे राधे' },
+  rama: { en: 'Ram Nam Sankirtan', hi: 'राम नाम संकीर्तन' },
+  shivji: { en: 'Om Namah Shivaya', hi: 'ॐ नमः शिवाय' },
+  hanuman: { en: 'Hanuman Chalisa', hi: 'हनुमान चालीसा' },
+  ganesh: { en: 'Om Gan Ganapataye', hi: 'ॐ गं गणपतये' },
+  durga: { en: 'Durga Stuti', hi: 'दुर्गा स्तुति' },
+  saibaba: { en: 'Om Sai Ram', hi: 'ॐ साईं राम' },
+  gurunanak: { en: 'Waheguru Simran', hi: 'वाहेगुरु सिमरन' },
+  buddha: { en: 'Om Mani Padme Hum', hi: 'ॐ मणि पद्मे हुम' },
+  mahavir: { en: 'Namo Namah', hi: 'नमो नमः' },
 };
 
 const deityIcons: Record<string, string> = {
@@ -27,18 +35,23 @@ function formatDuration(secs: number): string {
   return s > 0 ? `${m}m ${s}s` : `${m}m`;
 }
 
-function timeAgo(ts: number): string {
+function timeAgo(ts: number, t: Translations): string {
   const diff = Date.now() - ts;
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
-  if (days > 0) return `${days}d ago`;
-  if (hours > 0) return `${hours}h ago`;
-  if (mins > 0) return `${mins}m ago`;
-  return 'just now';
+  if (days > 0) return `${days}d ${t.stats.agoSuffix}`;
+  if (hours > 0) return `${hours}h ${t.stats.agoSuffix}`;
+  if (mins > 0) return `${mins}m ${t.stats.agoSuffix}`;
+  return t.stats.justNow;
 }
 
-export default function StatsPage() {
+interface StatsPageProps {
+  t: Translations;
+  language: Language;
+}
+
+export default function StatsPage({ t, language }: StatsPageProps) {
   const [, forceUpdate] = useState(0);
   useEffect(() => { forceUpdate((n) => n + 1); }, []);
   const lastDeity = typeof localStorage !== 'undefined' ? localStorage.getItem('cosmicMantra_lastDeity') || '' : '';
@@ -61,9 +74,9 @@ export default function StatsPage() {
     <div className="min-h-screen px-4 pt-10 pb-8">
       <div className="mb-8">
         <p className="text-[#d0c6ab] text-xs tracking-[0.28em] uppercase mb-2"
-          style={{ fontFamily: 'Inter, sans-serif' }}>Your Spiritual Journey</p>
+          style={{ fontFamily: 'Inter, sans-serif' }}>{t.stats.subtitle}</p>
         <h1 className="text-3xl sm:text-4xl font-bold text-[#fff6df]"
-          style={{ fontFamily: 'Sora, sans-serif' }}>Progress &amp; Stats</h1>
+          style={{ fontFamily: 'Sora, sans-serif' }}>{t.stats.title}</h1>
       </div>
 
       {/* 12-col bento grid */}
@@ -72,7 +85,7 @@ export default function StatsPage() {
         {/* Daily Goal — 4/12 cols on md+, full width below */}
         <div className="col-span-12 md:col-span-4 glass-card p-6 flex flex-col items-center">
           <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-4"
-            style={{ fontFamily: 'Inter, sans-serif' }}>Daily Goal</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{t.stats.dailyGoal}</p>
           <div className="relative w-44 h-44">
             <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
               <circle cx="100" cy="100" r="88" fill="none" stroke="#2f334b" strokeWidth="10" />
@@ -90,14 +103,14 @@ export default function StatsPage() {
               <span className="text-3xl font-bold text-[#fff6df]"
                 style={{ fontFamily: 'Sora, sans-serif' }}>{dailyMalas}</span>
               <span className="text-[#d0c6ab] text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
-                / {DAILY_GOAL} Malas
+                / {DAILY_GOAL} {t.stats.malas}
               </span>
             </div>
           </div>
           <p className="text-[#ffd700] font-semibold text-sm mt-4"
-            style={{ fontFamily: 'Sora, sans-serif' }}>{dailyPairs} pairs today</p>
+            style={{ fontFamily: 'Sora, sans-serif' }}>{dailyPairs} {t.stats.pairsToday}</p>
           <p className="text-[#d0c6ab] text-xs mt-0.5"
-            style={{ fontFamily: 'Inter, sans-serif' }}>{streak.currentStreak} day streak 🔥</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{streak.currentStreak} {t.stats.dayStreak}</p>
           {lastDeity && (
             <Link
               href={`/${lastDeity}`}
@@ -111,7 +124,7 @@ export default function StatsPage() {
               }}
             >
               <span className="material-symbols-outlined text-xl">spa</span>
-              Continue Journey
+              {t.stats.continueJourney}
             </Link>
           )}
         </div>
@@ -119,11 +132,12 @@ export default function StatsPage() {
         {/* Weekly Activity — 8/12 cols on md+, full width below */}
         <div className="col-span-12 md:col-span-8 glass-card p-6">
           <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-4"
-            style={{ fontFamily: 'Inter, sans-serif' }}>Weekly Activity</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{t.stats.weeklyActivity}</p>
           <div className="flex items-end justify-between gap-2 h-36">
             {weeklyData.map(({ day, pairs }, i) => {
               const heightPct = (pairs / maxWeeklyPairs) * 100;
               const isToday = i === 6;
+              const dayLabel = t.stats.days[i] ?? day;
               return (
                 <div key={day} className="flex flex-col items-center gap-1.5 flex-1">
                   <div className="w-full flex items-end justify-center" style={{ height: '100px' }}>
@@ -148,7 +162,7 @@ export default function StatsPage() {
                   <span
                     className={`text-[10px] font-medium ${isToday ? 'text-[#ffd700]' : 'text-[#d0c6ab]'}`}
                     style={{ fontFamily: 'Inter, sans-serif' }}
-                  >{day}</span>
+                  >{dayLabel}</span>
                 </div>
               );
             })}
@@ -158,13 +172,13 @@ export default function StatsPage() {
         {/* Sacred Milestones — full 12 cols */}
         <div className="col-span-12">
           <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-3"
-            style={{ fontFamily: 'Inter, sans-serif' }}>Sacred Milestones</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{t.stats.sacredMilestones}</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { icon: 'grain', label: 'Total Beads', value: (getTotalPairs() * 2).toLocaleString(), color: '#ffd700' },
-              { icon: 'trending_up', label: 'Longest Streak', value: `${streak.longestStreak}d`, color: '#dcb8ff' },
-              { icon: 'favorite', label: 'Total Malas', value: totalMalas.toLocaleString(), color: '#00daf3' },
-              { icon: 'auto_awesome', label: 'Spiritual Level', value: `Lv ${spiritualLevel}`, color: '#ffd700' },
+              { icon: 'grain', label: t.stats.totalBeads, value: (getTotalPairs() * 2).toLocaleString(), color: '#ffd700' },
+              { icon: 'trending_up', label: t.stats.longestStreak, value: `${streak.longestStreak}d`, color: '#dcb8ff' },
+              { icon: 'favorite', label: t.stats.totalMalas, value: totalMalas.toLocaleString(), color: '#00daf3' },
+              { icon: 'auto_awesome', label: t.stats.spiritualLevel, value: `Lv ${spiritualLevel}`, color: '#ffd700' },
             ].map(({ icon, label, value, color }) => (
               <div key={label} className="glass-card px-4 py-5 text-center">
                 <span className="material-symbols-outlined text-2xl mb-2 block" style={{ color }}>{icon}</span>
@@ -178,7 +192,7 @@ export default function StatsPage() {
         {/* Chanting History — 7/12 cols on md+ */}
         <div className="col-span-12 md:col-span-7">
           <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-3"
-            style={{ fontFamily: 'Inter, sans-serif' }}>Chanting History</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{t.stats.chantingHistory}</p>
           {sessions.length > 0 ? (
             <div className="glass-card divide-y divide-white/5">
               {sessions.map((session, i) => (
@@ -192,15 +206,15 @@ export default function StatsPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-[#fff6df] text-sm font-semibold truncate"
                       style={{ fontFamily: 'Sora, sans-serif' }}>
-                      {deityMantraNames[session.deity] || session.deity}
+                      {(deityMantraNames[session.deity]?.[language] ?? deityMantraNames[session.deity]?.en) || session.deity}
                     </p>
                     <p className="text-[#d0c6ab] text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      {session.malas} mala{session.malas !== 1 ? 's' : ''} · {session.mantras} pairs · {formatDuration(session.duration)}
+                      {session.malas} {session.malas !== 1 ? t.stats.malas : t.stats.mala} · {session.mantras} {t.stats.pairs} · {formatDuration(session.duration)}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="text-[#d0c6ab]/60 text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      {timeAgo(session.timestamp)}
+                      {timeAgo(session.timestamp, t)}
                     </p>
                   </div>
                 </div>
@@ -210,7 +224,7 @@ export default function StatsPage() {
             <div className="glass-card p-10 text-center">
               <span className="material-symbols-outlined text-5xl text-[#d0c6ab]/40 mb-4 block">spa</span>
               <p className="text-[#d0c6ab] text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
-                Start chanting to see your history here
+                {t.stats.startChanting}
               </p>
             </div>
           )}
@@ -219,22 +233,22 @@ export default function StatsPage() {
         {/* Personal Records — 5/12 cols on md+ */}
         <div className="col-span-12 md:col-span-5 space-y-3">
           <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-3"
-            style={{ fontFamily: 'Inter, sans-serif' }}>Personal Records</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{t.stats.personalRecords}</p>
           {[
             {
-              icon: 'speed', label: 'Fastest Mala', color: '#ffd700',
+              icon: 'speed', label: t.stats.fastestMala, color: '#ffd700',
               value: records.fastestMalaSecs ? formatDuration(records.fastestMalaSecs) : '—',
-              sub: records.fastestMalaDate || 'Not yet set',
+              sub: records.fastestMalaDate || t.stats.notYetSet,
             },
             {
-              icon: 'emoji_events', label: 'Best Session', color: '#dcb8ff',
-              value: records.singleSessionMaxMalas > 0 ? `${records.singleSessionMaxMalas} malas` : '—',
-              sub: records.singleSessionMaxDate || 'Not yet set',
+              icon: 'emoji_events', label: t.stats.bestSession, color: '#dcb8ff',
+              value: records.singleSessionMaxMalas > 0 ? `${records.singleSessionMaxMalas} ${t.stats.malas}` : '—',
+              sub: records.singleSessionMaxDate || t.stats.notYetSet,
             },
             {
-              icon: 'brightness_5', label: 'Early Bird', color: '#00daf3',
+              icon: 'brightness_5', label: t.stats.earlyBird, color: '#00daf3',
               value: records.earlyBirdStreak > 0 ? `${records.earlyBirdStreak}×` : '—',
-              sub: 'Sessions before 5am',
+              sub: t.stats.sessionsBefore5am,
             },
           ].map(({ icon, label, value, color, sub }) => (
             <div key={label} className="glass-card p-4 flex items-center gap-4">
@@ -261,7 +275,9 @@ export default function StatsPage() {
             <span className="material-symbols-outlined text-[#dcb8ff] text-3xl mb-2 block">format_quote</span>
             <p className="text-[#fff6df] text-sm leading-relaxed italic"
               style={{ fontFamily: 'Inter, sans-serif' }}>
-              "The soul that meditates on the Self is content to serve the Self and rests satisfied within the Self."
+              {language === 'hi'
+                ? '"जो आत्मा स्वयं में रहती है, स्वयं में संतुष्ट है, स्वयं की सेवा करती है — वही तृप्त है।"'
+                : '"The soul that meditates on the Self is content to serve the Self and rests satisfied within the Self."'}
             </p>
             <p className="text-[#dcb8ff] text-xs mt-2 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
               — Bhagavad Gita 3.17

@@ -1,7 +1,7 @@
 import { DeityGame } from '@/components/DeityGame';
 import { deityConfigs } from '@/lib/deityConfigs';
 import { Redirect } from 'wouter';
-import type { Translations } from '@/lib/translations';
+import type { Translations, Language } from '@/lib/translations';
 
 interface AuthUser {
   id: string;
@@ -13,9 +13,10 @@ interface DeityPageProps {
   user: AuthUser | null;
   isMuted: boolean;
   t: Translations;
+  language: Language;
 }
 
-export default function DeityPage({ deityKey, user, isMuted, t }: DeityPageProps) {
+export default function DeityPage({ deityKey, user, isMuted, t, language }: DeityPageProps) {
   const config = deityConfigs[deityKey];
 
   if (!config) {
@@ -29,6 +30,7 @@ export default function DeityPage({ deityKey, user, isMuted, t }: DeityPageProps
       user={user}
       isMuted={isMuted}
       t={t}
+      language={language}
       deityKey={deityKey}
     />
   );

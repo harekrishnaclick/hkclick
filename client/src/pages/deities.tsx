@@ -8,15 +8,6 @@ interface DeityGalleryProps {
   t: Translations;
 }
 
-const deityTaglines: Record<string, string> = {
-  krishna: "The Cosmic Enchanter",
-  radha: "Divine Love Personified",
-  rama: "The Eternal Guardian",
-  shivji: "The Eternal Meditator",
-  hanuman: "The Strength of Devotion",
-  ganesh: "Remover of Obstacles",
-  durga: "The Invincible Mother",
-};
 
 const deityIcons: Record<string, string> = {
   krishna: 'spa', radha: 'local_florist', rama: 'architecture',
@@ -69,7 +60,7 @@ function DeityCard({
 
   if (!config) return null;
 
-  const tagline = deityTaglines[deityKey] || '';
+  const tagline = t.deityTaglines[deityKey] || '';
   const icon = deityIcons[deityKey] || 'spa';
   const primaryColor = config.colors.primary;
   const bgUrl = imgUrl || config.backgroundImage;
@@ -119,7 +110,7 @@ function DeityCard({
             backdropFilter: 'blur(8px)',
           }}
         >
-          SELECTED
+          {t.nav.selected}
         </div>
       )}
 
@@ -168,9 +159,9 @@ export default function DeityGallery({ t }: DeityGalleryProps) {
     <div className="min-h-screen px-4 pt-10 pb-8">
       <div className="mb-8">
         <p className="text-[#d0c6ab] text-xs tracking-[0.28em] uppercase mb-2"
-          style={{ fontFamily: 'Inter, sans-serif' }}>Choose Your Path</p>
+          style={{ fontFamily: 'Inter, sans-serif' }}>{t.nav.choosePath}</p>
         <h1 className="text-3xl sm:text-4xl font-bold text-[#fff6df]"
-          style={{ fontFamily: 'Sora, sans-serif' }}>Divine Gallery</h1>
+          style={{ fontFamily: 'Sora, sans-serif' }}>{t.nav.divineGallery}</h1>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -196,7 +187,7 @@ export default function DeityGallery({ t }: DeityGalleryProps) {
           }}
         >
           <span className="material-symbols-outlined text-xl">spa</span>
-          Chant {t.deityNames[selectedKey] || selectedKey}
+          {t.nav.chantWith} {t.deityNames[selectedKey] || selectedKey}
         </Link>
       )}
     </div>

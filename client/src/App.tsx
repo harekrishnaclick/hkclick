@@ -94,14 +94,14 @@ function AppContent() {
           <DeityGallery t={t} />
         </Route>
         <Route path="/stats">
-          <StatsPage />
+          <StatsPage t={t} language={language} />
         </Route>
         <Route path="/leaderboard">
           <LeaderboardPage user={user} t={t} />
         </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>
-            <DeityPage deityKey={key} user={user} isMuted={isMuted} t={t} />
+            <DeityPage deityKey={key} user={user} isMuted={isMuted} t={t} language={language} />
           </Route>
         ))}
         <Route component={NotFound} />

@@ -88,9 +88,9 @@ export function AppShell({
             className="text-[#ffd700] text-xs font-bold tracking-widest uppercase"
             style={{ fontFamily: 'Sora, sans-serif' }}
           >
-            DEITIES
+            {t.nav.deities.toUpperCase()}
           </p>
-          <p className="text-[#d0c6ab] text-[11px]">Select your focus</p>
+          <p className="text-[#d0c6ab] text-[11px]">{t.nav.selectFocus}</p>
         </div>
       </div>
 
@@ -206,10 +206,10 @@ export function AppShell({
         <div className="flex items-center gap-1">
           <nav className="hidden md:flex items-center gap-1 mr-2">
             {[
-              { href: '/krishna', label: 'Chant', active: isDeityRoute },
-              { href: '/stats', label: 'Stats', active: isStatsRoute },
-              { href: '/deities', label: 'Deities', active: isDeityGallery },
-              { href: '/leaderboard', label: 'Ranks', active: isLeaderboard },
+              { href: '/krishna', label: t.nav.chant, active: isDeityRoute },
+              { href: '/stats', label: t.nav.stats, active: isStatsRoute },
+              { href: '/deities', label: t.nav.deities, active: isDeityGallery },
+              { href: '/leaderboard', label: t.nav.ranks, active: isLeaderboard },
             ].map(({ href, label, active }) => (
               <Link
                 key={href}
@@ -256,7 +256,7 @@ export function AppShell({
             className="text-[#ffd700] text-xs font-bold tracking-widest uppercase"
             style={{ fontFamily: 'Sora, sans-serif' }}
           >
-            NAVIGATION
+            {t.nav.navigation}
           </span>
           <button
             onClick={() => setSidebarOpen(false)}
@@ -284,10 +284,10 @@ export function AppShell({
         }}
       >
         {[
-          { href: '/krishna', icon: 'auto_awesome', label: 'Chant', active: isDeityRoute },
-          { href: '/stats', icon: 'insert_chart', label: 'Stats', active: isStatsRoute },
-          { href: '/deities', icon: 'groups', label: 'Deities', active: isDeityGallery },
-          { href: '/leaderboard', icon: 'leaderboard', label: 'Ranks', active: isLeaderboard },
+          { href: '/krishna', icon: 'auto_awesome', label: t.nav.chant, active: isDeityRoute },
+          { href: '/stats', icon: 'insert_chart', label: t.nav.stats, active: isStatsRoute },
+          { href: '/deities', icon: 'groups', label: t.nav.deities, active: isDeityGallery },
+          { href: '/leaderboard', icon: 'leaderboard', label: t.nav.ranks, active: isLeaderboard },
         ].map(({ href, icon, label, active }) => (
           <Link
             key={href}
