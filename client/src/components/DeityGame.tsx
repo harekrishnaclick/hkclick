@@ -17,6 +17,7 @@ export interface DeityGameConfig {
   buttonLabels: [string, string];
   colors: { primary: string; secondary: string };
   backgroundImage: string;
+  deityImage?: string;
   sounds: [string, string];
 }
 
@@ -51,7 +52,7 @@ function formatTime(seconds: number): string {
 }
 
 export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps) {
-  const { buttonLabels, colors, backgroundImage, sounds } = config;
+  const { buttonLabels, colors, backgroundImage, deityImage, sounds } = config;
   const localizedTitle = t.deityTitles[deityKey] || config.deityName;
   const localizedButtons = t.deityButtons[deityKey] || buttonLabels;
 
@@ -177,18 +178,18 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Faded background image */}
+      {/* Deity portrait background */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.15,
+          backgroundImage: `url(${deityImage || backgroundImage})`,
+          backgroundSize: deityImage ? 'cover' : 'cover',
+          backgroundPosition: deityImage ? 'center top' : 'center',
+          opacity: deityImage ? 0.22 : 0.15,
           WebkitMaskImage:
-            'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 55%, transparent 100%)',
+            'linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.1) 75%, transparent 100%)',
           maskImage:
-            'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 55%, transparent 100%)',
+            'linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.45) 45%, rgba(0,0,0,0.1) 75%, transparent 100%)',
         }}
       />
       <div className="stars" />

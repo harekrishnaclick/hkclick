@@ -80,10 +80,10 @@ export default function DeityGallery({ t }: DeityGalleryProps) {
               <div
                 className="absolute inset-0"
                 style={{
-                  backgroundImage: `url(${config.backgroundImage})`,
+                  backgroundImage: `url(${config.deityImage || config.backgroundImage})`,
                   backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  opacity: isSelected ? 0.65 : 0.38,
+                  backgroundPosition: 'center top',
+                  opacity: isSelected ? 0.82 : 0.62,
                   transition: 'opacity 0.3s ease',
                 }}
               />
