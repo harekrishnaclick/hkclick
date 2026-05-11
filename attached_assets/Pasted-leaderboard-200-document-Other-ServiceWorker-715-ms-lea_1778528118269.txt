@@ -1,0 +1,28 @@
+leaderboard	200	document	Other	(ServiceWorker)	715 ms
+⚙ leaderboard	200	fetch	sw.js:34	44.1 kB	710 ms
+client	200	script	leaderboard:36	(ServiceWorker)	946 ms
+css2?family=Sora:wght@300;400;500;600;700;800&fami…0&family=Space+Grotesk:wght@300..700&display=swap	200	stylesheet	leaderboard:54	(ServiceWorker)	12 ms
+css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200	200	stylesheet	leaderboard:55	(ServiceWorker)	12 ms
+⚙ client	200	fetch	sw.js:34	138 kB	938 ms
+@react-refresh	200	script	leaderboard:29	(ServiceWorker)	267 ms
+⚙ css2?family=Sora:wght@300;400;500;600;700;800&fami…0&family=Space+Grotesk:wght@300..700&display=swap	200	fetch	sw.js:34	(disk cache)	2 ms
+⚙ css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200	200	fetch	sw.js:34	(disk cache)	2 ms
+manifest.json	200	manifest	leaderboard:126	(ServiceWorker)	1.02 s
+⚙ @react-refresh	304	fetch	sw.js:34	0.3 kB	263 ms
+⚙ manifest.json	304	fetch	sw.js:34	0.3 kB	1.01 s
+main.tsx?v=SVonqmcGNrnytNykFG98m	200	script	leaderboard:150	(ServiceWorker)	239 ms
+replit-dev-banner.js	200	script	leaderboard:151	(ServiceWorker)	3 ms
+⚙ main.tsx?v=SVonqmcGNrnytNykFG98m	200	fetch	sw.js:34	3.2 kB	237 ms
+⚙ replit-dev-banner.js	200	fetch	sw.js:34	(disk cache)	1 ms
+react_jsx-dev-runtime.js?v=57f795df	200	script	main.tsx:17	(ServiceWorker)	4 ms
+react-dom_client.js?v=57f795df	200	script	main.tsx:1	(ServiceWorker)	5 ms
+App.tsx?t=1778528003919&v=SVonqmcGNrnytNykFG98m	200	script	main.tsx:2	(ServiceWorker)	239 ms
+index.css?t=1778528003919&v=SVonqmcGNrnytNykFG98m	200	script	main.tsx:3	(ServiceWorker)	986 ms
+⚙ react_jsx-dev-runtime.js?v=57f795df	200	fetch	sw.js:34	(disk cache)	2 ms
+⚙ react-dom_client.js?v=57f795df	200	fetch	sw.js:34	(disk cache)	2 ms
+⚙ App.tsx?t=1778528003919&v=SVonqmcGNrnytNykFG98m	200	fetch	sw.js:34	20.6 kB	237 ms
+⚙ index.css?t=1778528003919&v=SVonqmcGNrnytNykFG98m	200	fetch	sw.js:34	98.6 kB	983 ms
+chunk-3TFVT2CW.js?v=57f795df	200	script	react_jsx-dev-runtime.js?v=57f795df:3	(ServiceWorker)	7 ms
+chunk-4MBMRILA.js?v=57f795df	200	script	react_jsx-dev-runtime.js?v=57f795df:6	(ServiceWorker)	7 ms
+chunk-WERSD76P.js?v=57f795df	200	script	react-dom_client.js?v=57f795df:3	(ServiceWorker)	19 ms
+⚙ chunk-3TFVT2CW.js?v=57f795df	200	fetch	sw.js:34	(disk cache)	2 ms
