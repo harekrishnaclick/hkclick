@@ -28,6 +28,10 @@ const deityIcons: Record<string, string> = {
   saibaba: 'self_improvement', gurunanak: 'flare', buddha: 'trip_origin', mahavir: 'filter_vintage',
 };
 
+const EN_DAY_TO_INDEX: Record<string, number> = {
+  Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6,
+};
+
 function formatDuration(secs: number): string {
   if (secs < 60) return `${secs}s`;
   const m = Math.floor(secs / 60);
@@ -137,7 +141,9 @@ export default function StatsPage({ t, language }: StatsPageProps) {
             {weeklyData.map(({ day, pairs }, i) => {
               const heightPct = (pairs / maxWeeklyPairs) * 100;
               const isToday = i === 6;
-              const dayLabel = t.stats.days[i] ?? day;
+              const dayLabel = language === 'hi'
+                ? (t.stats.days[EN_DAY_TO_INDEX[day] ?? i] ?? day)
+                : day;
               return (
                 <div key={day} className="flex flex-col items-center gap-1.5 flex-1">
                   <div className="w-full flex items-end justify-center" style={{ height: '100px' }}>
@@ -178,7 +184,7 @@ export default function StatsPage({ t, language }: StatsPageProps) {
               { icon: 'grain', label: t.stats.totalBeads, value: (getTotalPairs() * 2).toLocaleString(), color: '#ffd700' },
               { icon: 'trending_up', label: t.stats.longestStreak, value: `${streak.longestStreak}d`, color: '#dcb8ff' },
               { icon: 'favorite', label: t.stats.totalMalas, value: totalMalas.toLocaleString(), color: '#00daf3' },
-              { icon: 'auto_awesome', label: t.stats.spiritualLevel, value: `Lv ${spiritualLevel}`, color: '#ffd700' },
+              { icon: 'auto_awesome', label: t.stats.spiritualLevel, value: `${t.stats.level} ${spiritualLevel}`, color: '#ffd700' },
             ].map(({ icon, label, value, color }) => (
               <div key={label} className="glass-card px-4 py-5 text-center">
                 <span className="material-symbols-outlined text-2xl mb-2 block" style={{ color }}>{icon}</span>

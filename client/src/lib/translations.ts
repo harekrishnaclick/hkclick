@@ -117,6 +117,7 @@ export interface Translations {
     goalReached: string;
     pairsLeftToday: string;
     days: string[];
+    level: string;
   };
   deityNames: Record<string, string>;
   deityTitles: Record<string, string>;
@@ -241,6 +242,7 @@ const en: Translations = {
     goalReached: '🎉 Daily goal reached!',
     pairsLeftToday: 'pairs left today',
     days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    level: 'Lv',
   },
   deityNames: {
     krishna: 'Krishna',
@@ -397,6 +399,7 @@ const hi: Translations = {
     goalReached: '🎉 दैनिक लक्ष्य पूरा!',
     pairsLeftToday: 'जोड़ी बाकी आज',
     days: ['सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि', 'रवि'],
+    level: 'स्तर',
   },
   deityNames: {
     krishna: 'कृष्ण',
