@@ -276,9 +276,10 @@
   }
 
   @keyframes scoreIncrease {
-    0% { transform: scale(1) }
-    50% { transform: scale(1.12) }
-    100% { transform: scale(1) }
+    0%   { transform: scale(1);    text-shadow: 0 0 20px rgba(255,246,223,0.35); }
+    30%  { transform: scale(1.18); text-shadow: 0 0 40px rgba(255,215,0,0.9), 0 0 80px rgba(255,215,0,0.5); }
+    60%  { transform: scale(1.08); text-shadow: 0 0 30px rgba(255,215,0,0.7); }
+    100% { transform: scale(1);    text-shadow: 0 0 20px rgba(255,246,223,0.35); }
   }
 
   @keyframes indicatorBlink {
@@ -289,6 +290,40 @@
   @keyframes shimmer {
     0% { background-position: -200% center }
     100% { background-position: 200% center }
+  }
+
+  @keyframes pageEnter {
+    0%   { opacity: 0; transform: translateY(14px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pageExit {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-12px); }
+  }
+
+  @keyframes digitRollUp {
+    0%   { transform: translateY(110%); opacity: 0; }
+    100% { transform: translateY(0);    opacity: 1; }
+  }
+
+  @keyframes particleFly {
+    0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
+  }
+
+  @keyframes malaFlash {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    60%  { opacity: 0.6; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes malaTextPop {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+    20%  { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
+    70%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
   }
 
   .animate-float {
@@ -308,11 +343,36 @@
   }
 
   .animate-score-increase {
-    animation: scoreIncrease 0.3s ease-in-out;
+    animation: scoreIncrease 0.38s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .animate-indicator-blink {
     animation: indicatorBlink 2.5s ease-in-out infinite;
+  }
+
+  .animate-page-enter {
+    animation: pageEnter 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-page-exit {
+    animation: pageExit 0.2s ease-in forwards;
+    pointer-events: none;
+  }
+
+  .animate-digit-roll {
+    animation: digitRollUp 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-particle {
+    animation: particleFly 0.65s ease-out forwards;
+  }
+
+  .animate-mala-flash {
+    animation: malaFlash 1.4s ease-out forwards;
+  }
+
+  .animate-mala-text {
+    animation: malaTextPop 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
 
   .scrollbar-thin::-webkit-scrollbar {

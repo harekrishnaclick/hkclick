@@ -5,6 +5,60 @@ import type { Translations } from '@/lib/translations';
 import { saveSession, recordMalaTiming } from '@/lib/statsStorage';
 import type { LeaderboardEntry } from '@shared/schema';
 
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  px: number;
+  py: number;
+  color: string;
+  size: number;
+  delay: number;
+}
+
+function RollingDigit({ value, animKey }: { value: string; animKey: number }) {
+  return (
+    <span
+      className="inline-block overflow-hidden"
+      style={{ verticalAlign: 'top', lineHeight: 'inherit' }}
+    >
+      <span key={animKey} className="inline-block animate-digit-roll">
+        {value}
+      </span>
+    </span>
+  );
+}
+
+function RollingScore({ score }: { score: number }) {
+  const digitKeys = useRef<Record<number, number>>({});
+  const prevDigitsRef = useRef<string[]>([]);
+
+  const digits = score.toString().split('');
+  const maxLen = Math.max(digits.length, prevDigitsRef.current.length);
+  const padded = digits.join('').padStart(maxLen, ' ').split('');
+  const prevPadded = prevDigitsRef.current.join('').padStart(maxLen, ' ').split('');
+
+  const result = padded.map((d, i) => {
+    const posFromRight = padded.length - 1 - i;
+    if (d !== prevPadded[i]) {
+      digitKeys.current[posFromRight] = (digitKeys.current[posFromRight] ?? 0) + 1;
+    }
+    return { d, key: posFromRight, animKey: digitKeys.current[posFromRight] ?? 0 };
+  });
+
+  prevDigitsRef.current = digits;
+
+  return (
+    <>
+      {result.map(({ d, key, animKey }) =>
+        d === ' ' ? null : (
+          <RollingDigit key={key} value={d} animKey={animKey} />
+        ),
+      )}
+    </>
+  );
+}
+
 interface AuthUser {
   id: string;
   username: string;
@@ -59,6 +113,10 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
   const [scoreAnimation, setScoreAnimation] = useState(false);
   const [sessionSecs, setSessionSecs] = useState(0);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [malaFlash, setMalaFlash] = useState(false);
+  const [malaFlashKey, setMalaFlashKey] = useState(0);
+  const particleIdRef = useRef(0);
 
   const sessionStartRef = useRef(Date.now());
   const lastClickTime = useRef(0);
@@ -169,11 +227,104 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
     [audio1, audio2, isMuted],
   );
 
+  useEffect(() => {
+    if (malaCount > 0) {
+      setMalaFlashKey((k) => k + 1);
+      setMalaFlash(true);
+      const t = setTimeout(() => setMalaFlash(false), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [malaCount]);
+
+  const spawnParticles = useCallback(
+    (clientX: number, clientY: number, color: string) => {
+      const count = 14;
+      const newParticles: Particle[] = Array.from({ length: count }, (_, i) => {
+        const angle = (i / count) * Math.PI * 2 + Math.random() * 0.5;
+        const dist = 55 + Math.random() * 65;
+        const px = Math.cos(angle) * dist;
+        const py = Math.sin(angle) * dist;
+        const colors = [color, '#ffd700', '#fff6df', '#dcb8ff'];
+        return {
+          id: ++particleIdRef.current,
+          x: clientX,
+          y: clientY,
+          px,
+          py,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: 5 + Math.random() * 6,
+          delay: Math.random() * 0.08,
+        };
+      });
+      setParticles((prev) => [...prev, ...newParticles]);
+      setTimeout(() => {
+        const ids = new Set(newParticles.map((p) => p.id));
+        setParticles((prev) => prev.filter((p) => !ids.has(p.id)));
+      }, 800);
+    },
+    [],
+  );
+
   const malaProgress = (score % 108) / 108;
   const tagline = deityTaglines[deityKey] || '';
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {/* Particle overlay */}
+      {particles.length > 0 && (
+        <div className="fixed inset-0 pointer-events-none z-[200]">
+          {particles.map((p) => (
+            <div
+              key={p.id}
+              className="absolute rounded-full animate-particle"
+              style={{
+                left: p.x - p.size / 2,
+                top: p.y - p.size / 2,
+                width: p.size,
+                height: p.size,
+                background: `radial-gradient(circle, ${p.color} 0%, transparent 70%)`,
+                animationDelay: `${p.delay}s`,
+                ['--px' as string]: `${p.px}px`,
+                ['--py' as string]: `${p.py}px`,
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Mala completion flash */}
+      {malaFlash && (
+        <div
+          key={malaFlashKey}
+          className="fixed inset-0 pointer-events-none z-[190] animate-mala-flash"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, rgba(255,215,0,0.35) 0%, rgba(255,215,0,0.15) 40%, transparent 70%)',
+          }}
+        >
+          <div
+            className="absolute animate-mala-text text-center px-8"
+            style={{ left: '50%', top: '42%' }}
+          >
+            <p
+              className="text-[#ffd700] font-bold text-3xl sm:text-4xl"
+              style={{
+                fontFamily: 'Sora, sans-serif',
+                textShadow: '0 0 40px rgba(255,215,0,1), 0 0 80px rgba(255,215,0,0.6)',
+              }}
+            >
+              🙏 Mala Complete!
+            </p>
+            <p
+              className="text-[#fff6df] text-base mt-2 font-semibold"
+              style={{ fontFamily: 'Inter, sans-serif', textShadow: '0 0 20px rgba(255,246,223,0.8)' }}
+            >
+              {malaCount} mala{malaCount !== 1 ? 's' : ''} completed
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Deity portrait background */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -230,7 +381,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
               textShadow: '0 0 20px rgba(255,246,223,0.35)',
             }}
           >
-            {score}
+            <RollingScore score={score} />
           </div>
 
           <p
@@ -285,7 +436,10 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             return (
               <button
                 key={type}
-                onClick={() => handleButtonClick(type)}
+                onClick={(e) => {
+                  spawnParticles(e.clientX, e.clientY, color);
+                  handleButtonClick(type);
+                }}
                 className="chant-btn flex items-center justify-center text-center"
                 style={{
                   width: 'clamp(118px, 26vw, 172px)',
