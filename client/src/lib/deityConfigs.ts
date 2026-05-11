@@ -10,6 +10,8 @@ import hanumanSound1 from '@assets/speech_1_1778526783052.mp3';
 import hanumanSound2 from '@assets/speech_5_1778526783051.mp3';
 import ganeshSound1 from '@assets/speech_1_1778526855868.mp3';
 import ganeshSound2 from '@assets/speech_6_1778526855868.mp3';
+import durgaSound1 from '@assets/speech_1_1778526915118.mp3';
+import durgaSound2 from '@assets/speech_9_1778526915117.mp3';
 
 import krishnaImg from '@assets/deities/krishna.webp';
 import radhaImg from '@assets/deities/radha.webp';
@@ -77,6 +79,6 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     colors: { primary: '#ef4444', secondary: '#f97316' },
     backgroundImage: backgroundImage,
     deityImage: durgaImg,
-    sounds: [button1Sound, button2Sound],
+    sounds: [durgaSound1, durgaSound2],
   },
 };
