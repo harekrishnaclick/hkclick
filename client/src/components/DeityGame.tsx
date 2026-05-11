@@ -86,6 +86,27 @@ interface DeityGameProps {
 
 const CLICK_COOLDOWN_MS = 100;
 
+// Module-level country cache — fetched once for the whole session
+let _cachedCountry: string | null = null;
+let _countryFetchPromise: Promise<string> | null = null;
+
+// Persist/restore game state per deity across navigation
+function loadGameState(key: string) {
+  try {
+    const raw = localStorage.getItem(`cm_game_${key}`);
+    if (!raw) return null;
+    return JSON.parse(raw) as { score: number; malaCount: number; expecting: ButtonType };
+  } catch { return null; }
+}
+function saveGameState(key: string, score: number, malaCount: number, expecting: ButtonType) {
+  try {
+    localStorage.setItem(`cm_game_${key}`, JSON.stringify({ score, malaCount, expecting }));
+  } catch { /* ignore */ }
+}
+function clearGameState(key: string) {
+  localStorage.removeItem(`cm_game_${key}`);
+}
+
 const deityTaglines: Record<string, string> = {
   krishna: "The Cosmic Enchanter",
   radha: "Divine Love Personified",
@@ -109,9 +130,9 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
 
   const { toast } = useToast();
 
-  const [score, setScore] = useState(0);
-  const [malaCount, setMalaCount] = useState(0);
-  const [expecting, setExpecting] = useState<ButtonType>('button1');
+  const [score, setScore] = useState(() => loadGameState(deityKey)?.score ?? 0);
+  const [malaCount, setMalaCount] = useState(() => loadGameState(deityKey)?.malaCount ?? 0);
+  const [expecting, setExpecting] = useState<ButtonType>(() => loadGameState(deityKey)?.expecting ?? 'button1');
   const [lastClicked, setLastClicked] = useState<ButtonType | null>(null);
   const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
   const [scoreAnimation, setScoreAnimation] = useState(false);
@@ -133,10 +154,16 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   useEffect(() => { userRef.current = user; }, [user]);
 
   useEffect(() => {
-    fetch('/api/country')
+    if (_cachedCountry) { countryRef.current = _cachedCountry; return; }
+    if (_countryFetchPromise) {
+      _countryFetchPromise.then((c) => { countryRef.current = c; });
+      return;
+    }
+    _countryFetchPromise = fetch('/api/country')
       .then((r) => r.json())
-      .then((d) => { if (d.country && d.country.length === 2) countryRef.current = d.country; })
-      .catch(() => {});
+      .then((d) => { _cachedCountry = (d.country?.length === 2 ? d.country : 'XX'); return _cachedCountry; })
+      .catch(() => { _cachedCountry = 'XX'; return 'XX'; });
+    _countryFetchPromise.then((c) => { countryRef.current = c; });
   }, []);
 
   const [audio1] = useState(() => new Audio(sounds[0]));
@@ -174,6 +201,18 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   useEffect(() => {
     currentMalaRef.current = malaCount;
   }, [malaCount]);
+
+  // Sync refs from restored state on first mount
+  useEffect(() => {
+    currentScoreRef.current = score;
+    currentMalaRef.current = malaCount;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist game state to localStorage on every change
+  useEffect(() => {
+    saveGameState(deityKey, score, malaCount, expecting);
+  }, [deityKey, score, malaCount, expecting]);
 
   const submitScoreToLeaderboard = useCallback(
     async (finalScore: number, silent: boolean): Promise<boolean> => {
@@ -228,6 +267,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
         variant: 'destructive',
       });
     }
+    clearGameState(deityKey);
     setScore(0);
     setMalaCount(0);
     setExpecting('button1');

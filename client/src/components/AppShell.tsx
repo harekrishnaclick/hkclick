@@ -1,49 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import type { Language, Translations } from '@/lib/translations';
 
 function PageTransition({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const [phase, setPhase] = useState<'enter' | 'exit' | null>(null);
-  const [displayed, setDisplayed] = useState<React.ReactNode>(children);
-
-  const pendingRef = useRef<React.ReactNode>(children);
-  const prevLocationRef = useRef(location);
-  const inTransitionRef = useRef(false);
-
-  pendingRef.current = children;
+  const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
-    if (location === prevLocationRef.current) return;
-    prevLocationRef.current = location;
-    if (inTransitionRef.current) return;
-    inTransitionRef.current = true;
-
-    setPhase('exit');
-    const exitTimer = setTimeout(() => {
-      setDisplayed(pendingRef.current);
-      setPhase('enter');
-      const enterTimer = setTimeout(() => {
-        setPhase(null);
-        inTransitionRef.current = false;
-      }, 340);
-      return () => clearTimeout(enterTimer);
-    }, 210);
-    return () => {
-      clearTimeout(exitTimer);
-      inTransitionRef.current = false;
-    };
+    setAnimKey((k) => k + 1);
   }, [location]);
 
-  useEffect(() => {
-    if (!inTransitionRef.current) {
-      setDisplayed(children);
-    }
-  }, [children]);
-
   return (
-    <div className={phase === 'exit' ? 'animate-page-exit' : phase === 'enter' ? 'animate-page-enter' : ''}>
-      {displayed}
+    <div key={animKey} className="animate-page-enter">
+      {children}
     </div>
   );
 }
