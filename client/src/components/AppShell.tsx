@@ -58,6 +58,11 @@ export function AppShell({
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const lastDeity = typeof localStorage !== 'undefined'
+    ? (localStorage.getItem('cosmicMantra_lastDeity') || 'krishna')
+    : 'krishna';
+  const chantHref = `/${lastDeity}`;
+
   const isDeityRoute =
     deityNav.some((d) => location === d.path) || location === '/';
   const isStatsRoute = location === '/stats';
@@ -193,7 +198,7 @@ export function AppShell({
         }}
       >
         <Link
-          href="/krishna"
+          href={chantHref}
           className="text-xl font-bold text-[#ffd700] cursor-pointer"
           style={{
             fontFamily: 'Sora, sans-serif',
@@ -206,7 +211,7 @@ export function AppShell({
         <div className="flex items-center gap-1">
           <nav className="hidden md:flex items-center gap-1 mr-2">
             {[
-              { href: '/krishna', label: t.nav.chant, active: isDeityRoute },
+              { href: chantHref, label: t.nav.chant, active: isDeityRoute },
               { href: '/stats', label: t.nav.stats, active: isStatsRoute },
               { href: '/deities', label: t.nav.deities, active: isDeityGallery },
               { href: '/leaderboard', label: t.nav.ranks, active: isLeaderboard },
@@ -284,7 +289,7 @@ export function AppShell({
         }}
       >
         {[
-          { href: '/krishna', icon: 'auto_awesome', label: t.nav.chant, active: isDeityRoute },
+          { href: chantHref, icon: 'auto_awesome', label: t.nav.chant, active: isDeityRoute },
           { href: '/stats', icon: 'insert_chart', label: t.nav.stats, active: isStatsRoute },
           { href: '/deities', icon: 'groups', label: t.nav.deities, active: isDeityGallery },
           { href: '/leaderboard', icon: 'leaderboard', label: t.nav.ranks, active: isLeaderboard },

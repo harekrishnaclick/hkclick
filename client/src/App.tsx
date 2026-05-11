@@ -88,7 +88,7 @@ function AppContent() {
 
       <Switch>
         <Route path="/">
-          <Redirect to="/krishna" />
+          <Redirect to={`/${typeof localStorage !== 'undefined' ? (localStorage.getItem('cosmicMantra_lastDeity') || 'krishna') : 'krishna'}`} />
         </Route>
         <Route path="/deities">
           <DeityGallery t={t} />
