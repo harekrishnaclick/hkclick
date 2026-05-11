@@ -60,7 +60,6 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
     () => localStorage.getItem('hareKrishnaPlayerName') || '',
   );
   const [userCountry, setUserCountry] = useState('XX');
-  const [autoScore] = useState(() => getAutoScore());
   const [submittedScore, setSubmittedScore] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'global' | 'country'>('global');
   const [search, setSearch] = useState('');
@@ -186,7 +185,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
           <span className="text-[#fff6df] text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
             Your score:&nbsp;
             <span className="font-bold text-[#ffd700]" style={{ fontFamily: 'Sora, sans-serif' }}>
-              {autoScore > 0 ? `${formatNum(autoScore)} pairs` : 'No score yet — go chant first!'}
+              {currentScore > 0 ? `${formatNum(currentScore)} pairs` : 'No score yet — go chant first!'}
             </span>
           </span>
         </div>
