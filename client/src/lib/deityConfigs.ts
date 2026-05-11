@@ -70,32 +70,4 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     deityImage: durgaImg,
     sounds: [button1Sound, button2Sound],
   },
-  saibaba: {
-    deityName: 'OM SAI RAM',
-    buttonLabels: ['OM', 'SAI RAM'],
-    colors: { primary: '#f8fafc', secondary: '#f97316' },
-    backgroundImage: backgroundImage,
-    sounds: [button1Sound, button2Sound],
-  },
-  gurunanak: {
-    deityName: 'WAHEGURU',
-    buttonLabels: ['WAHE', 'GURU'],
-    colors: { primary: '#f97316', secondary: '#38bdf8' },
-    backgroundImage: backgroundImage,
-    sounds: [button1Sound, button2Sound],
-  },
-  buddha: {
-    deityName: 'OM MANI PADME HUM',
-    buttonLabels: ['OM', 'MANI PADME HUM'],
-    colors: { primary: '#fbbf24', secondary: '#f8fafc' },
-    backgroundImage: backgroundImage,
-    sounds: [button1Sound, button2Sound],
-  },
-  mahavir: {
-    deityName: 'NAMO ARIHANTANAM',
-    buttonLabels: ['NAMO', 'ARIHANTANAM'],
-    colors: { primary: '#f8fafc', secondary: '#fbbf24' },
-    backgroundImage: backgroundImage,
-    sounds: [button1Sound, button2Sound],
-  },
 };

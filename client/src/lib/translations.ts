@@ -123,10 +123,6 @@ const en: Translations = {
     hanuman: 'Hanuman',
     ganesh: 'Ganesh',
     durga: 'Durga',
-    saibaba: 'Sai Baba',
-    gurunanak: 'Guru Nanak',
-    buddha: 'Buddha',
-    mahavir: 'Mahavir',
   },
   deityTitles: {
     krishna: 'HARE KRISHNA',
@@ -136,10 +132,6 @@ const en: Translations = {
     hanuman: 'JAI HANUMAN',
     ganesh: 'JAI GANESH',
     durga: 'JAI MAA DURGA',
-    saibaba: 'OM SAI RAM',
-    gurunanak: 'WAHEGURU',
-    buddha: 'OM MANI PADME HUM',
-    mahavir: 'NAMO ARIHANTANAM',
   },
   deityButtons: {
     krishna: ['HARE', 'KRISHNA'],
@@ -149,10 +141,6 @@ const en: Translations = {
     hanuman: ['JAI', 'HANUMAN'],
     ganesh: ['JAI', 'GANESH'],
     durga: ['JAI', 'MAA DURGA'],
-    saibaba: ['OM', 'SAI RAM'],
-    gurunanak: ['WAHE', 'GURU'],
-    buddha: ['OM', 'MANI PADME HUM'],
-    mahavir: ['NAMO', 'ARIHANTANAM'],
   },
 };
 
@@ -219,10 +207,6 @@ const hi: Translations = {
     hanuman: 'हनुमान',
     ganesh: 'गणेश',
     durga: 'दुर्गा',
-    saibaba: 'साई बाबा',
-    gurunanak: 'गुरु नानक',
-    buddha: 'बुद्ध',
-    mahavir: 'महावीर',
   },
   deityTitles: {
     krishna: 'हरे कृष्ण',
@@ -232,10 +216,6 @@ const hi: Translations = {
     hanuman: 'जय हनुमान',
     ganesh: 'जय गणेश',
     durga: 'जय माँ दुर्गा',
-    saibaba: 'ॐ साई राम',
-    gurunanak: 'वाहेगुरु',
-    buddha: 'ॐ मणि पद्मे हूँ',
-    mahavir: 'नमो अरिहंतानम',
   },
   deityButtons: {
     krishna: ['हरे', 'कृष्ण'],
@@ -245,10 +225,6 @@ const hi: Translations = {
     hanuman: ['जय', 'हनुमान'],
     ganesh: ['जय', 'गणेश'],
     durga: ['जय', 'माँ दुर्गा'],
-    saibaba: ['ॐ', 'साई राम'],
-    gurunanak: ['वाहे', 'गुरु'],
-    buddha: ['ॐ', 'मणि पद्मे हूँ'],
-    mahavir: ['नमो', 'अरिहंतानम'],
   },
 };
 

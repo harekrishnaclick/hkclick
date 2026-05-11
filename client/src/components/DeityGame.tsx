@@ -39,10 +39,6 @@ const deityTaglines: Record<string, string> = {
   hanuman: "The Strength of Devotion",
   ganesh: "Remover of Obstacles",
   durga: "The Invincible Mother",
-  saibaba: "Patron of All Faiths",
-  gurunanak: "The First Sikh Guru",
-  buddha: "The Awakened One",
-  mahavir: "The Last Tirthankara",
 };
 
 function formatTime(seconds: number): string {

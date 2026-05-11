@@ -15,22 +15,17 @@ const deityTaglines: Record<string, string> = {
   hanuman: "The Strength of Devotion",
   ganesh: "Remover of Obstacles",
   durga: "The Invincible Mother",
-  saibaba: "Patron of All Faiths",
-  gurunanak: "The First Sikh Guru",
-  buddha: "The Awakened One",
-  mahavir: "The Last Tirthankara",
 };
 
 const deityIcons: Record<string, string> = {
   krishna: 'spa', radha: 'local_florist', rama: 'architecture',
   shivji: 'temple_hindu', hanuman: 'pets', ganesh: 'emoji_nature',
-  durga: 'brightness_high', saibaba: 'self_improvement', gurunanak: 'flare',
-  buddha: 'trip_origin', mahavir: 'filter_vintage',
+  durga: 'brightness_high',
 };
 
 const deityOrder = [
   'krishna','radha','rama','shivji','hanuman','ganesh',
-  'durga','saibaba','gurunanak','buddha','mahavir',
+  'durga',
 ];
 
 export default function DeityGallery({ t }: DeityGalleryProps) {

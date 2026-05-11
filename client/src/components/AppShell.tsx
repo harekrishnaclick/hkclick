@@ -27,10 +27,6 @@ const deityNav = [
   { key: 'hanuman', path: '/hanuman', icon: 'pets' },
   { key: 'ganesh', path: '/ganesh', icon: 'emoji_nature' },
   { key: 'durga', path: '/durga', icon: 'brightness_high' },
-  { key: 'saibaba', path: '/saibaba', icon: 'self_improvement' },
-  { key: 'gurunanak', path: '/gurunanak', icon: 'flare' },
-  { key: 'buddha', path: '/buddha', icon: 'trip_origin' },
-  { key: 'mahavir', path: '/mahavir', icon: 'filter_vintage' },
 ];
 
 export function AppShell({

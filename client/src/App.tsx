@@ -19,8 +19,7 @@ interface AuthUser {
 }
 
 const deityKeys = [
-  'krishna', 'radha', 'rama', 'shivji', 'hanuman',
-  'ganesh', 'durga', 'saibaba', 'gurunanak', 'buddha', 'mahavir'
+  'krishna', 'radha', 'rama', 'shivji', 'hanuman', 'ganesh', 'durga'
 ];
 
 function AppContent() {
