@@ -4,6 +4,7 @@ import { apiRequest } from '@/lib/queryClient';
 import type { LeaderboardEntry, UpdateScore } from '@shared/schema';
 import type { Translations } from '@/lib/translations';
 import { getTotalPairs } from '@/lib/statsStorage';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthUser { id: string; username: string; }
 interface LeaderboardPageProps { user: AuthUser | null; t: Translations; }
@@ -14,6 +15,8 @@ const getUserCountry = async (): Promise<string> => {
 };
 
 function getSessionScore(): string {
+  const lastSession = localStorage.getItem('cosmicMantra_lastSessionScore');
+  if (lastSession && parseInt(lastSession, 10) > 0) return lastSession;
   const total = getTotalPairs();
   return total > 0 ? String(total) : '';
 }
@@ -46,10 +49,26 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
   const [search, setSearch] = useState('');
 
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   useEffect(() => {
     getUserCountry().then(setUserCountry);
   }, []);
+
+  useEffect(() => {
+    const notifyUser = localStorage.getItem('cosmicMantra_autoSubmitNotify');
+    if (notifyUser) {
+      localStorage.removeItem('cosmicMantra_autoSubmitNotify');
+      const score = localStorage.getItem('cosmicMantra_lastSessionScore');
+      toast({
+        title: '🙏 Score auto-saved!',
+        description: `${score ? `${score} pairs` : 'Your score'} was automatically submitted to the leaderboard for ${notifyUser}.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/global'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/country'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/total'] });
+    }
+  }, [toast, queryClient]);
 
   const { data: globalLeaderboard, isLoading: globalLoading } = useQuery<LeaderboardEntry[]>({
     queryKey: ['/api/leaderboard/global'],

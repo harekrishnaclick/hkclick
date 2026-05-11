@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Translations } from '@/lib/translations';
 import { saveSession, recordMalaTiming } from '@/lib/statsStorage';
 import type { LeaderboardEntry } from '@shared/schema';
+import { useToast } from '@/hooks/use-toast';
 
 interface Particle {
   id: number;
@@ -106,6 +107,8 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   const localizedTitle = t.deityTitles[deityKey] || config.deityName;
   const localizedButtons = t.deityButtons[deityKey] || buttonLabels;
 
+  const { toast } = useToast();
+
   const [score, setScore] = useState(0);
   const [malaCount, setMalaCount] = useState(0);
   const [expecting, setExpecting] = useState<ButtonType>('button1');
@@ -116,6 +119,7 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   const [particles, setParticles] = useState<Particle[]>([]);
   const [malaFlash, setMalaFlash] = useState(false);
   const [malaFlashKey, setMalaFlashKey] = useState(0);
+  const [sessionEnded, setSessionEnded] = useState(false);
   const particleIdRef = useRef(0);
 
   const sessionStartRef = useRef(Date.now());
@@ -123,6 +127,17 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
   const malaStartTimeRef = useRef(Date.now());
   const currentScoreRef = useRef(0);
   const currentMalaRef = useRef(0);
+  const userRef = useRef(user);
+  const countryRef = useRef('XX');
+
+  useEffect(() => { userRef.current = user; }, [user]);
+
+  useEffect(() => {
+    fetch('https://ipapi.co/country/')
+      .then((r) => r.text())
+      .then((c) => { if (c && c.length === 2) countryRef.current = c; })
+      .catch(() => {});
+  }, []);
 
   const [audio1] = useState(() => new Audio(sounds[0]));
   const [audio2] = useState(() => new Audio(sounds[1]));
@@ -160,6 +175,71 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
     currentMalaRef.current = malaCount;
   }, [malaCount]);
 
+  const submitScoreToLeaderboard = useCallback(
+    async (finalScore: number, silent: boolean): Promise<boolean> => {
+      const currentUser = userRef.current;
+      if (!currentUser || finalScore <= 0) return false;
+      localStorage.setItem('cosmicMantra_lastSessionScore', String(finalScore));
+      try {
+        const res = await fetch('/api/leaderboard/score', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            playerName: currentUser.username,
+            score: finalScore,
+            country: countryRef.current,
+          }),
+        });
+        if (!res.ok) return false;
+        if (silent) {
+          localStorage.setItem('cosmicMantra_autoSubmitNotify', currentUser.username);
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    [],
+  );
+
+  const handleEndSession = useCallback(async () => {
+    const finalScore = currentScoreRef.current;
+    const finalMalas = currentMalaRef.current;
+    if (finalScore === 0) return;
+    setSessionEnded(true);
+    saveSession({
+      deity: deityKey,
+      mantras: finalScore,
+      malas: finalMalas,
+      timestamp: sessionStartRef.current,
+      duration: Math.floor((Date.now() - sessionStartRef.current) / 1000),
+    });
+    const success = await submitScoreToLeaderboard(finalScore, false);
+    if (success && userRef.current) {
+      toast({
+        title: '🙏 Score saved!',
+        description: `${finalScore} pairs submitted to the leaderboard for ${userRef.current.username}.`,
+      });
+    } else if (!success) {
+      toast({
+        title: 'Could not save score',
+        description: 'Your session was saved locally. Try submitting again from the leaderboard.',
+        variant: 'destructive',
+      });
+    }
+    setScore(0);
+    setMalaCount(0);
+    setExpecting('button1');
+    setLastClicked(null);
+    setSessionSecs(0);
+    currentScoreRef.current = 0;
+    currentMalaRef.current = 0;
+    sessionStartRef.current = Date.now();
+    malaStartTimeRef.current = Date.now();
+    setSessionEnded(false);
+  }, [deityKey, submitScoreToLeaderboard, toast]);
+
   useEffect(() => {
     return () => {
       const finalScore = currentScoreRef.current;
@@ -172,9 +252,10 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
           timestamp: sessionStartRef.current,
           duration: Math.floor((Date.now() - sessionStartRef.current) / 1000),
         });
+        submitScoreToLeaderboard(finalScore, true);
       }
     };
-  }, [deityKey]);
+  }, [deityKey, submitScoreToLeaderboard]);
 
   const handleButtonClick = useCallback(
     (buttonType: ButtonType) => {
@@ -535,6 +616,24 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
             </div>
           ))}
         </div>
+
+        {/* End Session button (logged in users only) */}
+        {user && score > 0 && (
+          <button
+            onClick={handleEndSession}
+            disabled={sessionEnded}
+            className="mb-3 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-2"
+            style={{
+              fontFamily: 'Sora, sans-serif',
+              background: 'linear-gradient(135deg,#e9c400,#ffd700)',
+              color: '#3a3000',
+              boxShadow: '0 4px 20px rgba(255,215,0,0.3)',
+            }}
+          >
+            <span className="material-symbols-outlined text-base">check_circle</span>
+            {sessionEnded ? 'Saving...' : 'End Session & Save Score'}
+          </button>
+        )}
 
         {/* Leaderboard link */}
         <Link
