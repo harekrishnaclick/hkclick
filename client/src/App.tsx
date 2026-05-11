@@ -4,9 +4,12 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { HamburgerMenu } from "@/components/HamburgerMenu";
+import { AppShell } from "@/components/AppShell";
 import { AuthModal } from "@/components/AuthModal";
 import DeityPage from "@/pages/deity";
+import DeityGallery from "@/pages/deities";
+import StatsPage from "@/pages/stats";
+import LeaderboardPage from "@/pages/leaderboard";
 import NotFound from "@/pages/not-found";
 import { getTranslations, type Language } from "@/lib/translations";
 
@@ -65,20 +68,16 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="relative">
-      <div className="fixed top-2 right-2 md:top-4 md:right-4 z-50">
-        <HamburgerMenu
-          user={user}
-          onLoginClick={() => setAuthModalOpen(true)}
-          onLogout={handleLogout}
-          isMuted={isMuted}
-          onToggleMute={handleToggleMute}
-          language={language}
-          onToggleLanguage={handleToggleLanguage}
-          t={t}
-        />
-      </div>
-
+    <AppShell
+      user={user}
+      isMuted={isMuted}
+      language={language}
+      onLoginClick={() => setAuthModalOpen(true)}
+      onLogout={handleLogout}
+      onToggleMute={handleToggleMute}
+      onToggleLanguage={handleToggleLanguage}
+      t={t}
+    >
       <AuthModal
         user={user}
         onLogin={handleLogin}
@@ -92,6 +91,15 @@ function AppContent() {
         <Route path="/">
           <Redirect to="/krishna" />
         </Route>
+        <Route path="/deities">
+          <DeityGallery t={t} />
+        </Route>
+        <Route path="/stats">
+          <StatsPage />
+        </Route>
+        <Route path="/leaderboard">
+          <LeaderboardPage user={user} t={t} />
+        </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>
             <DeityPage deityKey={key} user={user} isMuted={isMuted} t={t} />
@@ -99,7 +107,7 @@ function AppContent() {
         ))}
         <Route component={NotFound} />
       </Switch>
-    </div>
+    </AppShell>
   );
 }
 

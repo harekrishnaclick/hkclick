@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Leaderboard } from '@/components/Leaderboard';
+import { Link } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import type { Translations } from '@/lib/translations';
+import { saveSession, recordMalaTiming } from '@/lib/statsStorage';
+import type { LeaderboardEntry } from '@shared/schema';
 
 interface AuthUser {
   id: string;
@@ -8,12 +11,6 @@ interface AuthUser {
 }
 
 type ButtonType = 'button1' | 'button2';
-type GameState = {
-  score: number;
-  lastClicked: ButtonType | null;
-  expecting: ButtonType;
-  malaCount: number;
-};
 
 export interface DeityGameConfig {
   deityName: string;
@@ -33,126 +30,56 @@ interface DeityGameProps {
 
 const CLICK_COOLDOWN_MS = 100;
 
-const MalaIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="flex-shrink-0">
-    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" fill="none" />
-    <circle cx="12" cy="3.5" r="1.5" fill="currentColor" />
-    <circle cx="17.5" cy="5.5" r="1.2" fill="currentColor" opacity="0.8" />
-    <circle cx="20" cy="10.5" r="1.2" fill="currentColor" opacity="0.8" />
-    <circle cx="18.5" cy="16" r="1.2" fill="currentColor" opacity="0.8" />
-    <circle cx="12" cy="20.5" r="1.5" fill="currentColor" />
-    <circle cx="5.5" cy="16" r="1.2" fill="currentColor" opacity="0.8" />
-    <circle cx="4" cy="10.5" r="1.2" fill="currentColor" opacity="0.8" />
-    <circle cx="6.5" cy="5.5" r="1.2" fill="currentColor" opacity="0.8" />
-  </svg>
-);
-
-const FloatingParticle = ({ id }: { id: string }) => {
-  const [style] = useState({
-    left: Math.random() * 100 + 'vw',
-    top: Math.random() * 100 + 'vh',
-    width: Math.random() * 4 + 2 + 'px',
-    animationDuration: Math.random() * 3 + 2 + 's',
-    opacity: Math.random() * 0.5 + 0.3,
-  });
-
-  return (
-    <div
-      key={id}
-      className="particle animate-twinkle"
-      style={{
-        left: style.left,
-        top: style.top,
-        width: style.width,
-        height: style.width,
-        animationDuration: style.animationDuration,
-        opacity: style.opacity,
-      }}
-    />
-  );
+const deityTaglines: Record<string, string> = {
+  krishna: 'The Cosmic Enchanter',
+  radha: 'Divine Love Personified',
+  rama: 'The Eternal Guardian',
+  shivji: 'The Eternal Meditator',
+  hanuman: 'The Strength of Devotion',
+  ganesh: 'Remover of Obstacles',
+  durga: 'The Invincible Mother',
+  saibaba: 'The Divine Compassion',
+  gurunanak: 'The Enlightened Guide',
+  buddha: 'The Awakened One',
+  mahavir: 'The Great Victor',
 };
 
-const GameButton = ({
-  label,
-  onClick,
-  isExpected,
-  isPressed,
-  gradientClass,
-  textSizeClass,
-}: {
-  label: string;
-  onClick: () => void;
-  isExpected: boolean;
-  isPressed: boolean;
-  gradientClass: string;
-  textSizeClass: string;
-}) => {
-  const baseClasses = `
-    w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-full text-white/90 font-bold 
-    border-2 md:border-4 flex items-center justify-center orbitron tracking-wider select-none
-    shadow-2xl touch-manipulation ${textSizeClass}
-  `;
-
-  const borderClasses = isExpected
-    ? 'border-golden/80 shadow-[0_0_30px_rgba(255,215,0,0.5)]'
-    : 'border-white/30';
-
-  const scaleStyle = {
-    transform: isPressed ? 'scale(0.92)' : 'scale(1)',
-    transition: 'transform 0.08s ease-out',
-  };
-
-  return (
-    <button
-      className={`${baseClasses} ${gradientClass} ${borderClasses}`}
-      style={scaleStyle}
-      onClick={onClick}
-    >
-      {label}
-    </button>
-  );
-};
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const s = (seconds % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
 
 export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps) {
   const { buttonLabels, colors, backgroundImage, sounds } = config;
-
   const localizedTitle = t.deityTitles[deityKey] || config.deityName;
   const localizedButtons = t.deityButtons[deityKey] || buttonLabels;
 
-  const [gameState, setGameState] = useState<GameState>({
-    score: 0,
-    lastClicked: null,
-    expecting: 'button1',
-    malaCount: 0,
-  });
-
-  const [particles, setParticles] = useState<string[]>([]);
+  const [score, setScore] = useState(0);
+  const [malaCount, setMalaCount] = useState(0);
+  const [expecting, setExpecting] = useState<ButtonType>('button1');
+  const [lastClicked, setLastClicked] = useState<ButtonType | null>(null);
   const [pressedButton, setPressedButton] = useState<ButtonType | null>(null);
   const [scoreAnimation, setScoreAnimation] = useState(false);
-  const [malaExpanded, setMalaExpanded] = useState(() => {
-    return window.innerWidth >= 768;
+  const [sessionSecs, setSessionSecs] = useState(0);
+
+  const sessionStartRef = useRef(Date.now());
+  const lastClickTime = useRef(0);
+  const malaStartTimeRef = useRef(Date.now());
+  const currentScoreRef = useRef(0);
+  const currentMalaRef = useRef(0);
+
+  const [audio1] = useState(() => new Audio(sounds[0]));
+  const [audio2] = useState(() => new Audio(sounds[1]));
+
+  const { data: globalLeaderboard } = useQuery<LeaderboardEntry[]>({
+    queryKey: ['/api/leaderboard/global'],
   });
 
-  const [audio1] = useState(new Audio(sounds[0]));
-  const [audio2] = useState(new Audio(sounds[1]));
-  const lastClickTime = useRef<number>(0);
-
-  const createParticle = useCallback(() => {
-    const id = Math.random().toString(36).substr(2, 9);
-    setParticles(prev => [...prev, id]);
-
-    setTimeout(() => {
-      setParticles(prev => prev.filter(p => p !== id));
-    }, 5000);
-  }, []);
-
-  useEffect(() => {
-    for (let i = 0; i < 10; i++) {
-      setTimeout(createParticle, i * 100);
-    }
-    const interval = setInterval(createParticle, 500);
-    return () => clearInterval(interval);
-  }, [createParticle]);
+  const userRank =
+    globalLeaderboard && user
+      ? globalLeaderboard.findIndex((e) => e.playerName === user.username) + 1
+      : 0;
 
   useEffect(() => {
     audio1.preload = 'auto';
@@ -161,233 +88,308 @@ export function DeityGame({ config, user, isMuted, t, deityKey }: DeityGameProps
     audio2.volume = 0.7;
   }, [audio1, audio2]);
 
+  useEffect(() => {
+    const timer = setInterval(() => setSessionSecs((s) => s + 1), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    currentScoreRef.current = score;
+  }, [score]);
+
+  useEffect(() => {
+    currentMalaRef.current = malaCount;
+  }, [malaCount]);
+
+  useEffect(() => {
+    return () => {
+      const finalScore = currentScoreRef.current;
+      const finalMalas = currentMalaRef.current;
+      if (finalScore > 0) {
+        saveSession({
+          deity: deityKey,
+          mantras: finalScore,
+          malas: finalMalas,
+          timestamp: sessionStartRef.current,
+          duration: Math.floor((Date.now() - sessionStartRef.current) / 1000),
+        });
+      }
+    };
+  }, [deityKey]);
+
   const handleButtonClick = useCallback(
     (buttonType: ButtonType) => {
       const now = Date.now();
-      if (now - lastClickTime.current < CLICK_COOLDOWN_MS) {
-        return;
-      }
+      if (now - lastClickTime.current < CLICK_COOLDOWN_MS) return;
       lastClickTime.current = now;
 
       if (!isMuted) {
         try {
-          if (buttonType === 'button1') {
-            audio1.currentTime = 0;
-            audio1.play().catch(console.warn);
-          } else {
-            audio2.currentTime = 0;
-            audio2.play().catch(console.warn);
-          }
-        } catch (error) {
-          console.warn('Audio playback failed:', error);
+          const audio = buttonType === 'button1' ? audio1 : audio2;
+          audio.currentTime = 0;
+          audio.play().catch(console.warn);
+        } catch (e) {
+          console.warn('Audio failed:', e);
         }
       }
 
       setPressedButton(buttonType);
       setTimeout(() => setPressedButton(null), 100);
 
-      setGameState(prev => {
-        const newState = { ...prev };
+      setExpecting((prevExpecting) => {
+        setLastClicked((prevLastClicked) => {
+          setScore((prevScore) => {
+            let newScore = prevScore;
+            let newMalas = currentMalaRef.current;
 
-        if (buttonType === prev.expecting) {
-          if (buttonType === 'button2' && prev.lastClicked === 'button1') {
-            newState.score = prev.score + 1;
-
-            if (newState.score > 0 && newState.score % 108 === 0) {
-              newState.malaCount = prev.malaCount + 1;
+            if (buttonType === prevExpecting) {
+              if (buttonType === 'button2' && prevLastClicked === 'button1') {
+                newScore = prevScore + 1;
+                if (newScore > 0 && newScore % 108 === 0) {
+                  const malaSecs = Math.floor(
+                    (Date.now() - malaStartTimeRef.current) / 1000,
+                  );
+                  recordMalaTiming(malaSecs);
+                  malaStartTimeRef.current = Date.now();
+                  newMalas += 1;
+                  setMalaCount(newMalas);
+                }
+                setScoreAnimation(true);
+                setTimeout(() => setScoreAnimation(false), 300);
+              }
             }
-
-            setScoreAnimation(true);
-            setTimeout(() => setScoreAnimation(false), 300);
-          }
-
-          newState.lastClicked = buttonType;
-          newState.expecting = buttonType === 'button1' ? 'button2' : 'button1';
-        } else {
-          newState.lastClicked = buttonType;
-          newState.expecting = buttonType === 'button1' ? 'button2' : 'button1';
-        }
-
-        return newState;
+            return newScore;
+          });
+          return buttonType;
+        });
+        return buttonType === 'button1' ? 'button2' : 'button1';
       });
     },
     [audio1, audio2, isMuted],
   );
 
-  const getStatusText = () => {
-    if (gameState.expecting === 'button1') {
-      return (
-        <span style={{ color: colors.primary }}>{t.game.click} {localizedButtons[0]}</span>
-      );
-    } else {
-      return (
-        <span style={{ color: colors.secondary }}>
-          {t.game.click} {localizedButtons[1]}
-        </span>
-      );
-    }
-  };
+  const malaProgress = (score % 108) / 108;
+  const tagline = deityTaglines[deityKey] || '';
 
   return (
-    <div
-      className="min-h-screen overflow-hidden relative"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-      }}
-    >
-      <div className="absolute inset-0 bg-black/40" />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Faded background image */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.15,
+          WebkitMaskImage:
+            'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 55%, transparent 100%)',
+          maskImage:
+            'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 55%, transparent 100%)',
+        }}
+      />
       <div className="stars" />
 
-      <div className="absolute inset-0 pointer-events-none">
-        {particles.map(id => (
-          <FloatingParticle key={id} id={id} />
-        ))}
-      </div>
-
-      <div className="absolute top-2 left-2 md:top-4 md:left-4 z-20">
-        <div className="bg-gradient-to-br from-black/30 to-blue-900/40 backdrop-blur-md rounded-xl md:rounded-2xl border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-          <button
-            onClick={() => setMalaExpanded(prev => !prev)}
-            className="w-full flex items-center justify-between px-3 py-2 md:px-4 md:py-3 text-golden text-xs md:text-sm font-bold orbitron tracking-wider touch-manipulation"
+      {/* Page content */}
+      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen pt-10 pb-6 px-4">
+        {/* Deity title */}
+        <div className="text-center mb-7 mt-2">
+          <p
+            className="text-[#d0c6ab] text-[11px] tracking-[0.28em] uppercase mb-2"
+            style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            <span className="flex items-center gap-2">
-              <MalaIcon />
-              <span>{gameState.malaCount}</span>
-            </span>
-            <svg
-              className={`w-3 h-3 ml-2 transition-transform duration-200 ${malaExpanded ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {malaExpanded && (
-            <div className="px-3 pb-3 md:px-4 md:pb-4 border-t border-white/10">
-              <div className="flex items-center justify-center gap-3 pt-2 mb-1">
-                <div
-                  className="text-2xl md:text-4xl font-black orbitron text-golden"
-                  style={{
-                    textShadow:
-                      '0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.4)',
-                  }}
-                >
-                  {gameState.malaCount}
-                </div>
-                <span className="text-golden/60 text-xs orbitron">{t.game.malas}</span>
-              </div>
-
-              <div className="text-blue-300/80 text-center text-xs">
-                {108 - (gameState.score % 108)} {t.game.toNextMala}
-              </div>
-
-              <div className="mt-2 w-full bg-white/10 rounded-full h-1">
-                <div
-                  className="bg-golden/70 h-1 rounded-full transition-all duration-300"
-                  style={{ width: `${((gameState.score % 108) / 108) * 100}%` }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4">
-        <div className="text-center mb-6 md:mb-8 mt-16 md:mt-0">
-          <h1 className="orbitron text-3xl sm:text-4xl md:text-6xl font-bold text-golden score-glow animate-pulse-slow">
+            {tagline}
+          </p>
+          <h1
+            className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#fff6df]"
+            style={{
+              fontFamily: 'Sora, sans-serif',
+              textShadow: '0 0 24px rgba(255,246,223,0.35)',
+            }}
+          >
             {localizedTitle}
           </h1>
         </div>
 
-        <div className="text-center mb-8 md:mb-12">
-          <div
-            className={`orbitron text-4xl sm:text-6xl md:text-8xl font-black text-golden score-glow ${
-              scoreAnimation ? 'animate-score-increase' : ''
-            }`}
+        {/* Score glass panel */}
+        <div
+          className="glass-card w-full max-w-xs sm:max-w-sm md:max-w-md px-8 py-7 mb-7 text-center"
+          style={{ boxShadow: '0 4px 40px rgba(0,0,0,0.45)' }}
+        >
+          <p
+            className="text-[#d0c6ab] text-[11px] tracking-[0.22em] uppercase mb-3"
+            style={{ fontFamily: 'Inter, sans-serif' }}
           >
-            {gameState.score}
+            Current Session
+          </p>
+
+          <div
+            className={`text-[4rem] sm:text-[5rem] font-bold text-[#fff6df] leading-none ${scoreAnimation ? 'animate-score-increase' : ''}`}
+            style={{
+              fontFamily: 'Sora, sans-serif',
+              textShadow: '0 0 20px rgba(255,246,223,0.35)',
+            }}
+          >
+            {score}
           </div>
-          <p className="text-white/60 text-xs sm:text-sm md:text-base mt-2">
-            {t.game.pairsCompleted}
+
+          <p
+            className="text-[#d0c6ab] text-[11px] tracking-[0.22em] uppercase mt-2"
+            style={{ fontFamily: 'Inter, sans-serif' }}
+          >
+            PAIRS COMPLETED
+          </p>
+
+          {malaCount > 0 && (
+            <p
+              className="text-[#ffd700] text-xs font-semibold mt-1"
+              style={{ fontFamily: 'Inter, sans-serif' }}
+            >
+              {malaCount} mala{malaCount !== 1 ? 's' : ''} completed
+            </p>
+          )}
+
+          {/* Mala progress bar */}
+          <div className="mt-4 w-full bg-[#2f334b] rounded-full h-1.5 overflow-hidden">
+            <div
+              className="progress-bar-gold h-1.5 rounded-full transition-all duration-300"
+              style={{ width: `${malaProgress * 100}%` }}
+            />
+          </div>
+          <p
+            className="text-[#d0c6ab]/50 text-[11px] mt-1.5"
+            style={{ fontFamily: 'Inter, sans-serif' }}
+          >
+            {108 - (score % 108)} pairs to next mala
           </p>
         </div>
 
-        <div className="flex flex-row gap-2 sm:gap-4 md:gap-12 items-center justify-center px-2">
-          <GameButton
-            label={localizedButtons[0]}
-            onClick={() => handleButtonClick('button1')}
-            isExpected={gameState.expecting === 'button1'}
-            isPressed={pressedButton === 'button1'}
-            gradientClass="bg-gradient-to-br from-black/20 to-purple-900/30 backdrop-blur-sm"
-            textSizeClass={
-              localizedButtons[0].length <= 4
-                ? 'text-lg sm:text-xl md:text-3xl'
-                : localizedButtons[0].length <= 8
-                  ? 'text-base sm:text-lg md:text-2xl'
-                  : 'text-xs sm:text-sm md:text-xl'
-            }
-          />
+        {/* Chant buttons */}
+        <div className="flex items-center gap-5 sm:gap-8 mb-7">
+          {(
+            [
+              { type: 'button1' as ButtonType, label: localizedButtons[0], color: colors.primary },
+              { type: 'button2' as ButtonType, label: localizedButtons[1], color: colors.secondary },
+            ] as const
+          ).map(({ type, label, color }) => {
+            const isExpected = expecting === type;
+            const isPressed = pressedButton === type;
+            const len = label.length;
+            const fontSize =
+              len <= 4
+                ? 'clamp(1rem, 3.5vw, 1.5rem)'
+                : len <= 8
+                  ? 'clamp(0.85rem, 3vw, 1.2rem)'
+                  : 'clamp(0.65rem, 2.2vw, 0.95rem)';
 
-          <GameButton
-            label={localizedButtons[1]}
-            onClick={() => handleButtonClick('button2')}
-            isExpected={gameState.expecting === 'button2'}
-            isPressed={pressedButton === 'button2'}
-            gradientClass="bg-gradient-to-br from-black/20 to-blue-900/30 backdrop-blur-sm"
-            textSizeClass={
-              localizedButtons[1].length <= 6
-                ? 'text-lg sm:text-xl md:text-3xl'
-                : localizedButtons[1].length <= 10
-                  ? 'text-base sm:text-lg md:text-2xl'
-                  : 'text-xs sm:text-sm md:text-xl'
-            }
-          />
+            return (
+              <button
+                key={type}
+                onClick={() => handleButtonClick(type)}
+                className="chant-btn flex items-center justify-center text-center"
+                style={{
+                  width: 'clamp(118px, 26vw, 172px)',
+                  height: 'clamp(118px, 26vw, 172px)',
+                  fontSize,
+                  background: isExpected
+                    ? `radial-gradient(circle at 35% 35%, ${color}50 0%, ${color}20 60%, rgba(13,18,40,0.65) 100%)`
+                    : 'rgba(25,30,53,0.55)',
+                  border: isExpected
+                    ? `2px solid ${color}80`
+                    : '1px solid rgba(255,255,255,0.09)',
+                  transform: isPressed ? 'scale(0.91)' : 'scale(1)',
+                  transition:
+                    'transform 0.08s ease-out, box-shadow 0.15s ease, border 0.15s ease',
+                  boxShadow: isExpected
+                    ? `0 0 30px ${color}50, 0 6px 24px rgba(0,0,0,0.4)`
+                    : '0 4px 20px rgba(0,0,0,0.3)',
+                  backdropFilter: 'blur(14px)',
+                  letterSpacing: '0.06em',
+                  lineHeight: 1.2,
+                  padding: '10px',
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
 
-        <div className="mt-8 text-center">
-          <div className="text-white/80 text-lg md:text-xl">
-            {getStatusText()}
-          </div>
-          <div className="mt-2 flex justify-center space-x-2">
+        {/* Indicator dots */}
+        <div className="flex items-center gap-2.5 mb-7">
+          {(['button1', 'button2'] as ButtonType[]).map((b) => (
             <div
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                gameState.expecting === 'button1'
-                  ? 'animate-indicator-blink'
-                  : 'bg-golden/30'
-              }`}
+              key={b}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${expecting === b ? 'animate-indicator-blink' : ''}`}
               style={{
-                backgroundColor: gameState.expecting === 'button1' ? colors.primary : undefined,
+                backgroundColor:
+                  expecting === b
+                    ? b === 'button1'
+                      ? colors.primary
+                      : colors.secondary
+                    : 'rgba(255,255,255,0.12)',
+                boxShadow:
+                  expecting === b
+                    ? `0 0 8px ${b === 'button1' ? colors.primary : colors.secondary}`
+                    : 'none',
               }}
             />
-            <div
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                gameState.expecting === 'button2'
-                  ? 'animate-indicator-blink'
-                  : 'bg-golden/30'
-              }`}
-              style={{
-                backgroundColor: gameState.expecting === 'button2' ? colors.secondary : undefined,
-              }}
-            />
-          </div>
+          ))}
         </div>
 
-        <div className="mt-8 flex justify-center">
-          <Leaderboard
-            currentScore={gameState.score}
-            loggedInUsername={user?.username}
-            t={t}
-            onScoreSubmitted={() => {
-              console.log('Score submitted successfully!');
-            }}
-          />
+        {/* Bento stats */}
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md grid grid-cols-3 gap-2.5 mb-5">
+          {[
+            {
+              icon: 'timer',
+              color: '#d0c6ab',
+              value: formatTime(sessionSecs),
+              label: 'FOCUS TIME',
+            },
+            {
+              icon: 'military_tech',
+              color: '#ffd700',
+              value: userRank > 0 ? `#${userRank}` : '#—',
+              label: 'GLOBAL RANK',
+            },
+            {
+              icon: 'favorite',
+              color: '#dcb8ff',
+              value: String(malaCount),
+              label: 'MALAS',
+            },
+          ].map(({ icon, color, value, label }) => (
+            <div key={label} className="glass-card px-2 py-4 text-center">
+              <span
+                className="material-symbols-outlined text-xl mb-1 block"
+                style={{ color }}
+              >
+                {icon}
+              </span>
+              <p
+                className="font-bold text-sm"
+                style={{ fontFamily: 'Sora, sans-serif', color }}
+              >
+                {value}
+              </p>
+              <p
+                className="text-[#d0c6ab] text-[10px] mt-0.5 tracking-wider"
+                style={{ fontFamily: 'Inter, sans-serif' }}
+              >
+                {label}
+              </p>
+            </div>
+          ))}
         </div>
+
+        {/* Leaderboard link */}
+        <Link
+          href="/leaderboard"
+          className="text-[#d0c6ab] hover:text-[#ffd700] text-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+          style={{ fontFamily: 'Inter, sans-serif' }}
+        >
+          <span className="material-symbols-outlined text-base">leaderboard</span>
+          View Leaderboard &amp; Submit Score
+        </Link>
       </div>
     </div>
   );

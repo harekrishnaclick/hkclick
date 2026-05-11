@@ -65,31 +65,51 @@ export default {
         'cosmic-blue': 'var(--cosmic-blue)',
         'mystic-purple': 'var(--mystic-purple)',
         'golden': 'var(--golden)',
-        'deep-space': 'var(--deep-space)'
+        'deep-space': 'var(--deep-space)',
+        'surface': '#0d1228',
+        'surface-bright': '#333850',
+        'surface-container': '#191e35',
+        'surface-container-high': '#242940',
+        'surface-container-highest': '#2f334b',
+        'surface-container-low': '#151a31',
+        'surface-container-lowest': '#080d22',
+        'surface-variant': '#2f334b',
+        'surface-dim': '#0d1228',
+        'on-surface': '#dde1ff',
+        'on-surface-variant': '#d0c6ab',
+        'primary-container': '#ffd700',
+        'on-primary': '#3a3000',
+        'on-primary-container': '#705e00',
+        'primary-fixed': '#ffe16d',
+        'primary-fixed-dim': '#e9c400',
+        'secondary-container': '#7701d0',
+        'on-secondary': '#480081',
+        'on-secondary-container': '#dcb7ff',
+        'inverse-surface': '#dde1ff',
+        'outline': '#999077',
+        'outline-variant': '#4d4732',
+        'tertiary': '#e5faff',
+        'tertiary-container': '#72ebff',
+        'tertiary-fixed-dim': '#00daf3',
+        'secondary-fixed-dim': '#dcb8ff',
       },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
-        mono: ["var(--font-mono)"],
-        orbitron: ["'Orbitron'", "monospace"],
-        'space-grotesk': ["'Space Grotesk'", "sans-serif"]
+        sans: ["'Inter'", "sans-serif"],
+        serif: ["Georgia", "serif"],
+        mono: ["'Space Grotesk'", "sans-serif"],
+        sora: ["'Sora'", "sans-serif"],
+        inter: ["'Inter'", "sans-serif"],
+        orbitron: ["'Space Grotesk'", "sans-serif"],
+        'space-grotesk': ["'Space Grotesk'", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
@@ -108,7 +128,15 @@ export default {
           '0%': { transform: 'scale(1)' },
           '50%': { transform: 'scale(1.1)' },
           '100%': { transform: 'scale(1)' }
-        }
+        },
+        'glow-pulse': {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(255,215,0,0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(255,215,0,0.7)' },
+        },
+        indicatorBlink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.3' },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -117,7 +145,9 @@ export default {
         twinkle: "twinkle 2s ease-in-out infinite alternate",
         'pulse-slow': "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         'button-press': "button-press 0.1s ease-in-out",
-        'score-increase': "score-increase 0.3s ease-in-out"
+        'score-increase': "score-increase 0.3s ease-in-out",
+        'glow-pulse': "glow-pulse 2s ease-in-out infinite",
+        'indicator-blink': "indicatorBlink 2.5s ease-in-out infinite",
       },
     },
   },
