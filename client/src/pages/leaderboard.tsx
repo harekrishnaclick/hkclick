@@ -111,9 +111,10 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
 
   const handleSubmit = () => {
     const name = user ? user.username : playerName.trim();
-    if (!name || autoScore <= 0) return;
+    const freshScore = getAutoScore();
+    if (!name || freshScore <= 0) return;
     if (!user) localStorage.setItem('hareKrishnaPlayerName', name);
-    submitMutation.mutate({ playerName: name, score: autoScore, country: userCountry });
+    submitMutation.mutate({ playerName: name, score: freshScore, country: userCountry });
   };
 
   const canSubmit = autoScore > 0 && (user ? true : playerName.trim().length > 0);
