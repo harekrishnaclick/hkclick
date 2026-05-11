@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 interface AuthUser { id: string; username: string; }
 interface LeaderboardPageProps { user: AuthUser | null; t: Translations; }
 
+const DEITY_KEYS = ['krishna', 'radha', 'rama', 'shivji', 'hanuman', 'ganesh', 'durga'];
+
 const getUserCountry = async (): Promise<string> => {
   try {
     const data = await (await fetch('/api/country')).json();
@@ -16,11 +18,23 @@ const getUserCountry = async (): Promise<string> => {
   } catch { return 'XX'; }
 };
 
-function getSessionScore(): string {
-  const lastSession = localStorage.getItem('cosmicMantra_lastSessionScore');
-  if (lastSession && parseInt(lastSession, 10) > 0) return lastSession;
-  const total = getTotalPairs();
-  return total > 0 ? String(total) : '';
+function getAutoScore(): number {
+  let best = 0;
+  for (const key of DEITY_KEYS) {
+    try {
+      const raw = localStorage.getItem(`cm_game_${key}`);
+      if (raw) {
+        const state = JSON.parse(raw);
+        if ((state.score || 0) > best) best = state.score;
+      }
+    } catch { /* ignore */ }
+  }
+  if (best === 0) {
+    const last = localStorage.getItem('cosmicMantra_lastSessionScore');
+    best = last ? (parseInt(last, 10) || 0) : 0;
+  }
+  if (best === 0) best = getTotalPairs();
+  return best;
 }
 
 const getFlagEmoji = (code: string) => {
@@ -43,10 +57,10 @@ function getAvatarColor(name: string): string {
 
 export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
   const [playerName, setPlayerName] = useState(
-    () => localStorage.getItem('hareKrishnaPlayerName') || (user?.username ?? ''),
+    () => localStorage.getItem('hareKrishnaPlayerName') || '',
   );
   const [userCountry, setUserCountry] = useState('XX');
-  const [scoreInput, setScoreInput] = useState(() => getSessionScore());
+  const [autoScore] = useState(() => getAutoScore());
   const [activeTab, setActiveTab] = useState<'global' | 'country'>('global');
   const [search, setSearch] = useState('');
 
@@ -91,16 +105,18 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/global'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/country'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/total'] });
+      toast({ title: '🙏 Score submitted!', description: `${formatNum(autoScore)} pairs added to the leaderboard.` });
     },
   });
 
   const handleSubmit = () => {
-    const name = playerName.trim();
-    const score = parseInt(scoreInput, 10);
-    if (!name || !score || score <= 0) return;
-    localStorage.setItem('hareKrishnaPlayerName', name);
-    submitMutation.mutate({ playerName: name, score, country: userCountry });
+    const name = user ? user.username : playerName.trim();
+    if (!name || autoScore <= 0) return;
+    if (!user) localStorage.setItem('hareKrishnaPlayerName', name);
+    submitMutation.mutate({ playerName: name, score: autoScore, country: userCountry });
   };
+
+  const canSubmit = autoScore > 0 && (user ? true : playerName.trim().length > 0);
 
   const activeList = (activeTab === 'global' ? globalLeaderboard : countryLeaderboard) ?? [];
   const loading = activeTab === 'global' ? globalLoading : countryLoading;
@@ -115,7 +131,6 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
   const myEntry = user ? activeList.find((e) => e.playerName === user.username) : null;
   const myRank = myEntry ? activeList.indexOf(myEntry) + 1 : 0;
 
-  // "X more to #N!" message
   const nextEntry = myRank > 1 ? activeList[myRank - 2] : null;
   const toNextRank = nextEntry && myEntry ? nextEntry.score - myEntry.score + 1 : 0;
 
@@ -155,26 +170,57 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
         <span className="material-symbols-outlined text-[#ffd700] text-4xl">groups</span>
       </div>
 
-      {/* Submit score */}
+      {/* Submit score card */}
       <div className="glass-card p-5 mb-6">
         <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-3"
           style={{ fontFamily: 'Inter, sans-serif' }}>Submit Your Score</p>
-        <div className="flex gap-2 flex-wrap">
-          <input type="text" placeholder="Your name..."
-            value={playerName} onChange={(e) => setPlayerName(e.target.value)} maxLength={50}
-            className="flex-1 min-w-0 px-4 py-2.5 rounded-xl text-sm text-[#fff6df] outline-none"
-            style={{ fontFamily: 'Inter, sans-serif', background: 'rgba(47,51,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
-          <input type="number" placeholder="Score (pairs)..."
-            value={scoreInput} onChange={(e) => setScoreInput(e.target.value)}
-            className="w-36 px-4 py-2.5 rounded-xl text-sm text-[#fff6df] outline-none"
-            style={{ fontFamily: 'Inter, sans-serif', background: 'rgba(47,51,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
-          <button onClick={handleSubmit}
-            disabled={submitMutation.isPending || !playerName.trim() || !scoreInput}
-            className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-            style={{ fontFamily: 'Sora, sans-serif', background: 'linear-gradient(135deg,#e9c400,#ffd700)', color: '#3a3000' }}>
-            {submitMutation.isPending ? 'Submitting...' : t.leaderboard.submit}
-          </button>
+
+        {/* Score badge — always auto, never editable */}
+        <div className="flex items-center gap-2 mb-3">
+          <span className="material-symbols-outlined text-[#ffd700] text-base">auto_awesome</span>
+          <span className="text-[#fff6df] text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
+            Your score:&nbsp;
+            <span className="font-bold text-[#ffd700]" style={{ fontFamily: 'Sora, sans-serif' }}>
+              {autoScore > 0 ? `${formatNum(autoScore)} pairs` : 'No score yet — go chant first!'}
+            </span>
+          </span>
         </div>
+
+        {user ? (
+          /* Logged-in: show username pill + submit */
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-xl"
+              style={{ background: 'rgba(255,215,0,0.08)', border: '1px solid rgba(255,215,0,0.2)' }}>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                style={{ background: 'rgba(255,215,0,0.2)', color: '#ffd700', fontFamily: 'Sora, sans-serif' }}>
+                {user.username.charAt(0).toUpperCase()}
+              </div>
+              <span className="text-[#ffd700] text-sm font-semibold" style={{ fontFamily: 'Sora, sans-serif' }}>
+                {user.username}
+              </span>
+            </div>
+            <button onClick={handleSubmit}
+              disabled={submitMutation.isPending || !canSubmit}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+              style={{ fontFamily: 'Sora, sans-serif', background: 'linear-gradient(135deg,#e9c400,#ffd700)', color: '#3a3000' }}>
+              {submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
+            </button>
+          </div>
+        ) : (
+          /* Guest: name input + submit */
+          <div className="flex gap-2 flex-wrap">
+            <input type="text" placeholder="Enter your name…"
+              value={playerName} onChange={(e) => setPlayerName(e.target.value)} maxLength={50}
+              className="flex-1 min-w-0 px-4 py-2.5 rounded-xl text-sm text-[#fff6df] outline-none"
+              style={{ fontFamily: 'Inter, sans-serif', background: 'rgba(47,51,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
+            <button onClick={handleSubmit}
+              disabled={submitMutation.isPending || !canSubmit}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+              style={{ fontFamily: 'Sora, sans-serif', background: 'linear-gradient(135deg,#e9c400,#ffd700)', color: '#3a3000' }}>
+              {submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Tabs */}

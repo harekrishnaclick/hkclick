@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'wouter';
 import {
   getDailyMalas, getDailyPairs, getWeeklyData, getTotalMalas,
   getTotalPairs, getStreak, getPersonalRecords, getSessions, getSpiritualLevel,
@@ -98,7 +99,7 @@ export default function StatsPage() {
           <p className="text-[#d0c6ab] text-xs mt-0.5"
             style={{ fontFamily: 'Inter, sans-serif' }}>{streak.currentStreak} day streak 🔥</p>
           {lastDeity && (
-            <a
+            <Link
               href={`/${lastDeity}`}
               className="mt-4 flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{
@@ -111,7 +112,7 @@ export default function StatsPage() {
             >
               <span className="material-symbols-outlined text-xl">spa</span>
               Continue Journey
-            </a>
+            </Link>
           )}
         </div>
 
