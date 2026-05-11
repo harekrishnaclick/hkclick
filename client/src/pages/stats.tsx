@@ -46,9 +46,9 @@ function timeAgo(ts: number, t: Translations): string {
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
-  if (days > 0) return `${days}d ${t.stats.agoSuffix}`;
-  if (hours > 0) return `${hours}h ${t.stats.agoSuffix}`;
-  if (mins > 0) return `${mins}m ${t.stats.agoSuffix}`;
+  if (days > 0) return `${days}${t.stats.dayAbbr} ${t.stats.agoSuffix}`;
+  if (hours > 0) return `${hours}${t.stats.hourAbbr} ${t.stats.agoSuffix}`;
+  if (mins > 0) return `${mins}${t.stats.minAbbr} ${t.stats.agoSuffix}`;
   return t.stats.justNow;
 }
 
@@ -184,7 +184,7 @@ export default function StatsPage({ t, language }: StatsPageProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { icon: 'grain', label: t.stats.totalBeads, value: (getTotalPairs() * 2).toLocaleString(), color: '#ffd700' },
-              { icon: 'trending_up', label: t.stats.longestStreak, value: `${streak.longestStreak}d`, color: '#dcb8ff' },
+              { icon: 'trending_up', label: t.stats.longestStreak, value: `${streak.longestStreak}${t.stats.dayAbbr}`, color: '#dcb8ff' },
               { icon: 'favorite', label: t.stats.totalMalas, value: totalMalas.toLocaleString(), color: '#00daf3' },
               { icon: 'auto_awesome', label: t.stats.spiritualLevel, value: `${t.stats.level} ${spiritualLevel}`, color: '#ffd700' },
             ].map(({ icon, label, value, color }) => (
@@ -283,12 +283,10 @@ export default function StatsPage({ t, language }: StatsPageProps) {
             <span className="material-symbols-outlined text-[#dcb8ff] text-3xl mb-2 block">format_quote</span>
             <p className="text-[#fff6df] text-sm leading-relaxed italic"
               style={{ fontFamily: 'Inter, sans-serif' }}>
-              {language === 'hi'
-                ? '"जो आत्मा स्वयं में रहती है, स्वयं में संतुष्ट है, स्वयं की सेवा करती है — वही तृप्त है।"'
-                : '"The soul that meditates on the Self is content to serve the Self and rests satisfied within the Self."'}
+              {t.stats.inspirationalQuote}
             </p>
             <p className="text-[#dcb8ff] text-xs mt-2 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
-              — Bhagavad Gita 3.17
+              {t.stats.inspirationalSource}
             </p>
           </div>
         </div>

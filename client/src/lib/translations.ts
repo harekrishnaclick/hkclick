@@ -139,6 +139,11 @@ export interface Translations {
     level: string;
     secsSuffix: string;
     minsSuffix: string;
+    dayAbbr: string;
+    hourAbbr: string;
+    minAbbr: string;
+    inspirationalQuote: string;
+    inspirationalSource: string;
   };
   deityNames: Record<string, string>;
   deityTitles: Record<string, string>;
@@ -285,6 +290,11 @@ const en: Translations = {
     level: 'Lv',
     secsSuffix: 's',
     minsSuffix: 'm',
+    dayAbbr: 'd',
+    hourAbbr: 'h',
+    minAbbr: 'm',
+    inspirationalQuote: '"The soul that meditates on the Self is content to serve the Self and rests satisfied within the Self."',
+    inspirationalSource: '— Bhagavad Gita 3.17',
   },
   deityNames: {
     krishna: 'Krishna',
@@ -463,6 +473,11 @@ const hi: Translations = {
     level: 'स्तर',
     secsSuffix: 'से.',
     minsSuffix: 'मि.',
+    dayAbbr: 'दि.',
+    hourAbbr: 'घं.',
+    minAbbr: 'मि.',
+    inspirationalQuote: '"जो आत्मा स्वयं में रहती है, स्वयं में संतुष्ट है, स्वयं की सेवा करती है — वही तृप्त है।"',
+    inspirationalSource: '— भगवद् गीता ३.१७',
   },
   deityNames: {
     krishna: 'कृष्ण',
