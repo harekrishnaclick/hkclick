@@ -60,7 +60,10 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
     () => localStorage.getItem('hareKrishnaPlayerName') || '',
   );
   const [userCountry, setUserCountry] = useState('XX');
-  const [submittedScore, setSubmittedScore] = useState<number | null>(null);
+  const [submittedScore, setSubmittedScore] = useState<number | null>(() => {
+    const stored = localStorage.getItem('cm_lastSubmitted_score');
+    return stored ? (parseInt(stored, 10) || null) : null;
+  });
   const [activeTab, setActiveTab] = useState<'global' | 'country'>('global');
   const [search, setSearch] = useState('');
 
@@ -69,6 +72,15 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
 
   useEffect(() => {
     getUserCountry().then(setUserCountry);
+  }, []);
+
+  useEffect(() => {
+    const freshScore = getAutoScore();
+    const stored = parseInt(localStorage.getItem('cm_lastSubmitted_score') || '0', 10);
+    if (stored > 0 && freshScore > stored) {
+      localStorage.removeItem('cm_lastSubmitted_score');
+      setSubmittedScore(null);
+    }
   }, []);
 
   useEffect(() => {
@@ -106,6 +118,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/country'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/total'] });
       setSubmittedScore(variables.score);
+      localStorage.setItem('cm_lastSubmitted_score', String(variables.score));
       toast({ title: '🙏 Score submitted!', description: `${formatNum(variables.score)} pairs added to the leaderboard.` });
     },
   });
