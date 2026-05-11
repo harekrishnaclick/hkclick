@@ -396,7 +396,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       </div>
 
       {/* Sticky My Rank footer (mobile) */}
-      {myEntry && myRank > 3 && (
+      {myEntry && myRank > 3 && user && (
         <div
           className="md:hidden fixed bottom-16 left-0 w-full z-40 px-4 py-3"
           style={{
