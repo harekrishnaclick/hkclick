@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+        }
+        body {
+            background-color: #0d1228;
+            overflow: hidden;
+        }
+        .cosmic-gradient {
+            background: radial-gradient(circle at center, #191e35 0%, #080d22 100%);
+        }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .chant-button-glow {
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .chant-button-glow:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+        .deity-bg {
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "primary": "#fff6df",
+                        "outline": "#999077",
+                        "surface": "#0d1228",
+                        "surface-bright": "#333850",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "on-surface-variant": "#d0c6ab",
+                        "surface-tint": "#e9c400",
+                        "surface-container-highest": "#2f334b",
+                        "inverse-primary": "#705d00",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#080d22",
+                        "secondary": "#dcb8ff",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-secondary": "#480081",
+                        "on-secondary-container": "#dcb7ff",
+                        "on-secondary-fixed": "#2c0051",
+                        "inverse-surface": "#dde1ff",
+                        "on-primary-container": "#705e00",
+                        "secondary-fixed-dim": "#dcb8ff",
+                        "tertiary-container": "#72ebff",
+                        "on-primary-fixed-variant": "#544600",
+                        "surface-container-low": "#151a31",
+                        "surface-dim": "#0d1228",
+                        "on-secondary-fixed-variant": "#6700b5",
+                        "secondary-container": "#7701d0",
+                        "on-tertiary": "#00363d",
+                        "on-tertiary-container": "#006976",
+                        "tertiary": "#e5faff",
+                        "surface-variant": "#2f334b",
+                        "on-surface": "#dde1ff",
+                        "background": "#0d1228",
+                        "on-tertiary-fixed": "#001f24",
+                        "surface-container": "#191e35",
+                        "secondary-fixed": "#efdbff",
+                        "on-background": "#dde1ff",
+                        "on-primary-fixed": "#221b00",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2a2f47",
+                        "primary-fixed": "#ffe16d",
+                        "primary-container": "#ffd700",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-container-high": "#242940",
+                        "outline-variant": "#4d4732",
+                        "on-primary": "#3a3000",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#e9c400"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "container-padding-desktop": "64px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "container-padding-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Sora"],
+                        "body-md": ["Inter"],
+                        "display-xl": ["Sora"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Sora"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md overflow-hidden min-h-screen cosmic-gradient">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-mobile md:px-container-desktop py-4 bg-transparent backdrop-blur-md">
+<div class="text-headline-md font-headline-md font-bold text-primary-container drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]">
+            Cosmic Mantra
+        </div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-8">
+<a class="text-label-md font-label-md text-primary-container transition-all hover:bg-surface-bright/20 p-2 rounded" href="#">Chant</a>
+<a class="text-label-md font-label-md text-on-surface-variant transition-all hover:bg-surface-bright/20 p-2 rounded" href="#">Stats</a>
+<a class="text-label-md font-label-md text-on-surface-variant transition-all hover:bg-surface-bright/20 p-2 rounded" href="#">Community</a>
+</nav>
+<button class="material-symbols-outlined text-primary hover:bg-surface-bright/20 p-2 rounded transition-all" data-icon="menu">menu</button>
+</div>
+</header>
+<!-- Background Deity Illustration -->
+<div class="fixed inset-0 pointer-events-none flex items-center justify-center z-0 opacity-30">
+<img alt="Krishna" class="h-[1228px] w-auto object-contain deity-bg" data-alt="A serene and ethereal digital illustration of Lord Krishna playing a golden flute, set against a vast cosmic starfield with swirling nebulas of deep violet and midnight blue. The lighting is soft and otherworldly, highlighting the spiritual and transcendental mood of the scene. The style is atmospheric surrealism with intricate gold details on the attire, maintaining a consistent deep space aesthetic with high-fidelity textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1Tpr0Nh9TL-n2XiO6IajakasYRA-Ahnk4CDOURRDxLVugdqr5eI9jkZDMiVekUsENrj1SEHHqxAZd-o7FvnZsBF_jri0Lp1UI8Vq6tjVNT4Si06F5R4F7bCuftayBcqrWxsBHIXrCIJHo0kkIs8J65O-b8CZk8BAtEkZwVWSUoQtYfSdtIOoZ_zd6XeI8wFoelS4EsP9oPFvBliskdAo5rWPnap52Ak_b_Ds0GXPs3VOUL_z0Xm9Owm8abeCmL0YH-6AE4Go_KsZM"/>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 flex flex-col items-center justify-center min-h-screen pt-20 px-container-mobile md:px-container-desktop">
+<!-- Pairs Counter -->
+<div class="glass-panel rounded-xl px-12 py-8 mb-16 text-center shadow-2xl">
+<span class="text-label-sm font-label-sm text-secondary tracking-widest uppercase block mb-2">Current Session</span>
+<h1 class="text-display-xl font-display-xl text-primary drop-shadow-[0_0_15px_rgba(255,246,223,0.4)]">108</h1>
+<p class="text-label-md font-label-md text-on-surface-variant mt-2 uppercase tracking-[0.2em]">PAIRS COMPLETED</p>
+<!-- Progress Ring Visualization Hint -->
+<div class="mt-6 flex justify-center">
+<div class="w-48 h-1 bg-surface-container-highest rounded-full relative overflow-hidden">
+<div class="absolute inset-0 bg-primary-container shadow-[0_0_8px_gold]" style="width: 75%"></div>
+</div>
+</div>
+</div>
+<!-- Chanting Buttons -->
+<div class="flex flex-col md:flex-row gap-16 items-center">
+<button class="chant-button-glow w-48 h-48 md:w-64 md:h-64 rounded-full glass-panel flex items-center justify-center border-2 border-primary-container/30 group">
+<span class="text-headline-lg font-headline-lg text-primary tracking-widest group-hover:scale-110 transition-transform">HARE</span>
+</button>
+<div class="hidden md:block w-px h-32 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+<button class="chant-button-glow w-48 h-48 md:w-64 md:h-64 rounded-full glass-panel flex items-center justify-center border-2 border-primary-container/30 group">
+<span class="text-headline-lg font-headline-lg text-primary tracking-widest group-hover:scale-110 transition-transform">KRISHNA</span>
+</button>
+</div>
+<!-- Secondary Stats Grid (Bento Style) -->
+<div class="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+<div class="glass-panel p-6 rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-primary-container text-3xl" data-icon="timer">timer</span>
+<div>
+<p class="text-label-sm text-on-surface-variant">Focus Time</p>
+<p class="text-body-lg font-bold text-primary">24m 12s</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary text-3xl" data-icon="trending_up">trending_up</span>
+<div>
+<p class="text-label-sm text-on-surface-variant">Daily Rank</p>
+<p class="text-body-lg font-bold text-primary">#142</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex items-center gap-4">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-3xl" data-icon="auto_awesome">auto_awesome</span>
+<div>
+<p class="text-label-sm text-on-surface-variant">Energy</p>
+<p class="text-body-lg font-bold text-primary">Pure</p>
+</div>
+</div>
+</div>
+</main>
+<!-- SideNavBar -->
+<aside class="fixed right-0 top-0 h-full z-50 flex flex-col p-gutter bg-surface/80 backdrop-blur-xl border-l border-white/10 shadow-2xl w-80 translate-x-full md:translate-x-0 transition-transform duration-500">
+<div class="mb-8">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border border-primary-container/50">
+<img alt="Selected Deity Avatar" data-alt="A circular close-up portrait of a spiritual figure, rendered in a high-fidelity digital art style with soft, glowing backlighting. The subject has a serene expression, with subtle golden highlights and cosmic particle effects floating around. The color palette consists of deep indigos, glowing golds, and soft violets, maintaining a consistent transcendental aesthetic with the rest of the spiritual dashboard UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCl72gTi4W0cVxSAc9OJ9g8Y93UJwy6LI1kxb6ac_Fb6G5yYlGUASFjo17KRFdkmKRAkX5amRgG1yAaof-3dS04Z3jPC7RIomjoMcmQu12m5i3Xo9uKtdXu01oUPf7gOkGOcy2PShlstwBkZ1P6okSRrJth5o6hmLS8kQAYEGd0yAPtlsjKRjXb1FzJtvFfBGv2Aux-54VfSiBvrSqEK67GWJFTCQi5z2ccTyhdolu6dioZNYia65uOF8EffjjFRWvwLIL_4Bsms_2Q"/>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-md text-primary-container">DEITIES</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Select your focus</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-2 flex-grow">
+<a class="text-primary-container font-bold flex items-center gap-3 py-3 border-r-2 border-primary-container hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="spa">spa</span>
+<span class="text-label-md font-label-md">Krishna</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="local_florist">local_florist</span>
+<span class="text-label-md font-label-md">Radha</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+<span class="text-label-md font-label-md">Rama</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="temple_hindu">temple_hindu</span>
+<span class="text-label-md font-label-md">Shivji</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+<span class="text-label-md font-label-md">Hanuman</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="emoji_nature">emoji_nature</span>
+<span class="text-label-md font-label-md">Ganesh</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="brightness_high">brightness_high</span>
+<span class="text-label-md font-label-md">Durga</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-white/10 pt-6 flex flex-col gap-4">
+<div class="flex justify-between items-center px-2">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+<span class="text-label-sm">Hindi</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="volume_off">volume_off</span>
+<span class="text-label-sm">Mute Sound</span>
+</div>
+</div>
+<button class="bg-primary-container text-on-primary font-bold py-3 rounded-lg hover:scale-[1.02] active:scale-[0.98] transition-all">
+                Login / Register
+            </button>
+</div>
+</aside>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface-container/40 backdrop-blur-lg border-t border-white/5 rounded-t-xl shadow-lg">
+<button class="flex flex-col items-center justify-center text-primary-container drop-shadow-[0_0_4px_rgba(255,215,0,0.5)]">
+<span class="material-symbols-outlined" data-icon="auto_awesome" data-weight="fill" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="text-label-sm font-label-sm">Chant</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="insert_chart">insert_chart</span>
+<span class="text-label-sm font-label-sm">Stats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-label-sm font-label-sm">Deities</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="text-label-sm font-label-sm">Ranks</span>
+</button>
+</nav>
+</body></html>

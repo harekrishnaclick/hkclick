@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cosmic Mantra - Deity Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "primary": "#fff6df",
+                        "outline": "#999077",
+                        "surface": "#0d1228",
+                        "surface-bright": "#333850",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "on-surface-variant": "#d0c6ab",
+                        "surface-tint": "#e9c400",
+                        "surface-container-highest": "#2f334b",
+                        "inverse-primary": "#705d00",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#080d22",
+                        "secondary": "#dcb8ff",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-secondary": "#480081",
+                        "on-secondary-container": "#dcb7ff",
+                        "on-secondary-fixed": "#2c0051",
+                        "inverse-surface": "#dde1ff",
+                        "on-primary-container": "#705e00",
+                        "secondary-fixed-dim": "#dcb8ff",
+                        "tertiary-container": "#72ebff",
+                        "on-primary-fixed-variant": "#544600",
+                        "surface-container-low": "#151a31",
+                        "surface-dim": "#0d1228",
+                        "on-secondary-fixed-variant": "#6700b5",
+                        "secondary-container": "#7701d0",
+                        "on-tertiary": "#00363d",
+                        "on-tertiary-container": "#006976",
+                        "tertiary": "#e5faff",
+                        "surface-variant": "#2f334b",
+                        "on-surface": "#dde1ff",
+                        "background": "#0d1228",
+                        "on-tertiary-fixed": "#001f24",
+                        "surface-container": "#191e35",
+                        "secondary-fixed": "#efdbff",
+                        "on-background": "#dde1ff",
+                        "on-primary-fixed": "#221b00",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2a2f47",
+                        "primary-fixed": "#ffe16d",
+                        "primary-container": "#ffd700",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-container-high": "#242940",
+                        "outline-variant": "#4d4732",
+                        "on-primary": "#3a3000",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#e9c400"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "container-padding-desktop": "64px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "container-padding-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Sora"],
+                        "body-md": ["Inter"],
+                        "display-xl": ["Sora"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Sora"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at center, #191e35 0%, #0d1228 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .ethereal-glow {
+            box-shadow: 0 0 40px rgba(119, 1, 208, 0.3);
+        }
+        .gold-border {
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .active-glow {
+            box-shadow: 0 0 60px rgba(220, 184, 255, 0.4), inset 0 0 20px rgba(220, 184, 255, 0.2);
+            border: 2px solid #ffd700;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background selection:bg-secondary/30">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 left-0 w-full z-40 bg-transparent backdrop-blur-md px-container-mobile md:px-container-desktop py-4 flex justify-between items-center">
+<div class="text-headline-md font-headline-md font-bold text-primary-container drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]">
+            Cosmic Mantra
+        </div>
+<div class="flex items-center gap-stack-md">
+<button class="text-on-surface-variant hover:bg-surface-bright/20 transition-all p-2 rounded-full scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar Shell (Desktop Only) -->
+<aside class="fixed right-0 top-0 h-full w-80 z-50 flex flex-col p-gutter bg-surface/80 backdrop-blur-xl border-l border-white/10 shadow-2xl hidden md:flex">
+<div class="mb-stack-lg">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-12 h-12 rounded-full border-2 border-primary-container overflow-hidden">
+<img alt="Deity Avatar" data-alt="A serene close-up portrait of a divine figure with luminous skin and wise eyes, set against a backdrop of swirling cosmic nebulae and soft golden light. The style is transcendental and highly detailed, with a focus on spiritual tranquility and divine grace. The color palette features deep blues, violets, and warm gold accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBik5xmuQRruqXcp9mkE5dsvKnQlsIpvsu6dAuUVV08zrFHxOj-FU-jlEx_v3xiFI-k8vpMP0fKZkEQWlfWFao2tMbgEySVeyJpH33pqlqY-UvPQxjBzslpFbeQqFXssrVhNTAJj7bDAd_RQniybi7jHcz-rYH_69w781hdA42LE1IgqhdBYYA9jy_5LpyIaP-OwQhnf7O2HQQxJWwgvsX0QS-wkgfj1jD5p1elDreekUuK-HjDd4Pm4oR8DK5oJuURUXaX9jUStgbS"/>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-md text-primary-container">DEITIES</h3>
+<p class="text-label-md font-label-md text-on-surface-variant">Select your focus</p>
+</div>
+</div>
+</div>
+<nav class="flex-grow space-y-2">
+<a class="text-primary-container font-bold flex items-center gap-3 py-3 border-r-2 border-primary-container hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="spa">spa</span>
+<span class="text-label-md font-label-md">Krishna</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="local_florist">local_florist</span>
+<span class="text-label-md font-label-md">Radha</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="architecture">architecture</span>
+<span class="text-label-md font-label-md">Rama</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="temple_hindu">temple_hindu</span>
+<span class="text-label-md font-label-md">Shivji</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="pets">pets</span>
+<span class="text-label-md font-label-md">Hanuman</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="emoji_nature">emoji_nature</span>
+<span class="text-label-md font-label-md">Ganesh</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 py-3 hover:text-primary hover:bg-surface-bright/30 transition-colors duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="brightness_high">brightness_high</span>
+<span class="text-label-md font-label-md">Durga</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-white/10 pt-gutter space-y-4">
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container rounded-xl font-bold transition-all hover:scale-105 active:scale-95">
+                Login / Register
+            </button>
+<div class="flex justify-between px-2 text-on-surface-variant">
+<button class="flex items-center gap-2 text-label-sm font-label-sm hover:text-primary">
+<span class="material-symbols-outlined" data-icon="language">language</span> Hindi
+                </button>
+<button class="flex items-center gap-2 text-label-sm font-label-sm hover:text-primary">
+<span class="material-symbols-outlined" data-icon="volume_off">volume_off</span> Mute Sound
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-24 pb-32 px-container-mobile md:px-container-desktop md:mr-80">
+<header class="max-w-4xl mx-auto text-center mb-stack-lg">
+<h1 class="text-display-xl font-display-xl text-primary drop-shadow-md mb-4">Choose Your Path</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant opacity-80">Select a deity to focus your spiritual practice and begin your chanting journey through the cosmos.</p>
+</header>
+<!-- Deity Bento Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+<!-- Krishna (Active) -->
+<div class="group relative glass-card rounded-2xl overflow-hidden active-glow transition-all duration-500 cursor-pointer">
+<div class="aspect-[4/5] relative">
+<img alt="Krishna" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A celestial digital painting of Krishna playing the flute, surrounded by radiant peacocks and glowing lotus flowers. The style is atmospheric surrealism with a deep cosmic background of starry nebulae in shades of indigo and violet. Soft golden light emanates from the figure, creating a divine halo effect that emphasizes peace and transcendental beauty." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4Y-PNIfYyEDi7rBFeqItXAgXn7bLv7DxGjemQmW4RbTAXG5l6HwSwzqzY8-ulCXYPCe4vAACq9_JuSuE1C3gZS6Ij6t1d3XVWEmhN6kpcVBihm42PvOnH9VdCvCP_iFnrnBza_JaVwla0MO-UAIKStusIL3HtryRSqqVUpfW5kEhBUhYHebfVFuAWIPNuBoRDA0F0WTgLxywGBfPZrcVwK5nE7d2jpkN3VtLbrGnVgyaNqieHGeLLuF1T43hTCT0vVk-1fbOXDfQo"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-80"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-gutter">
+<span class="px-3 py-1 text-label-sm font-label-sm bg-secondary-container text-on-secondary-container rounded-full mb-2 inline-block">SELECTED</span>
+<h2 class="text-headline-md font-headline-md text-primary-container">Krishna</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">The Cosmic Enchanter</p>
+</div>
+</div>
+<!-- Radha -->
+<div class="group relative glass-card gold-border rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,215,0,0.2)] transition-all duration-500 cursor-pointer">
+<div class="aspect-[4/5] relative">
+<img alt="Radha" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" data-alt="An ethereal illustration of Radha amidst a mystical forest of glowing flora and ethereal light. The visual style uses soft focus and glassmorphism elements, with a palette of soft pinks, violets, and luminous whites. The atmosphere is one of profound devotion and serene beauty, perfectly integrated into the cosmic sanctuary theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaD6Ur-GOYPMfZJNRDx3lgqbU6DygeTP-HIjvHLzOlpJIlLutxHMSIY1OTDRuu4xcxD__nd8VinUrUkkjV-TTOaOh74OMG1Sg89ywmDpMCdlyGIWYx8PwvX7YzOT4RlaW6pYwuVywNmsg4G-iRRdK2njSPXnZKcCp_ePrPaKSz6T_ajdrKWZAi-LHqUJ_fBMFg3gimQ2tR_V6H6_xEquQVTE7VEeXNu1OsHl5GuxjWRE1sTyvNF4R3yk4Om5R9_nDmHyHmVx6yE6xG"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-gutter">
+<h2 class="text-headline-md font-headline-md text-primary">Radha</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">Divine Love Personified</p>
+</div>
+</div>
+<!-- Shivji -->
+<div class="group relative glass-card gold-border rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,215,0,0.2)] transition-all duration-500 cursor-pointer">
+<div class="aspect-[4/5] relative">
+<img alt="Shivji" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" data-alt="A powerful digital art piece of Lord Shiva in meditation atop a snowy Himalayan peak under a starry, cosmic sky. The moon glows intensely behind him, creating a high-contrast silhouette. The color palette is dominated by deep blues, whites, and icy cyans, evoking a sense of silent power and infinite stillness in a sacred digital space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCId996I4RybRpTotktJUiaAgctH_FA9PebOSDHuWImaSEPLewBISFSb8-RxO3AZmlnZP_uM8dX2XjEWTCxeYlk5MPlJ4Za4YYDpMiQeG5P3IsJw9XlE-nXgfiU-N36qtXc91rOQCGTP8HTyaqDwxGZl7v_2TtJG00o_30haoVZYgZHjajvPJPsAq7Tp5ET7s4IGVo-sGMqRzLCN5PLaDi21nqzorNbEf6QuYvbVhDfJwiIxKgCWT1ZOghp-uSY6fiXs6Fu-bXHkw2"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-gutter">
+<h2 class="text-headline-md font-headline-md text-primary">Shivji</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">The Eternal Meditator</p>
+</div>
+</div>
+<!-- Hanuman -->
+<div class="group relative glass-card gold-border rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,215,0,0.2)] transition-all duration-500 cursor-pointer">
+<div class="aspect-[4/5] relative">
+<img alt="Hanuman" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" data-alt="A striking image of Lord Hanuman with a glowing golden aura, representing strength and unwavering devotion. He is set against a cosmic backdrop of burning oranges and deep reds. The style is bold and heroic, with intricate golden details on his form that sparkle like distant stars in the midnight blue universe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDuzHd9FYZQD7BmaXgIf8BUjoNE00mx-hFtrT6K9hlrYt-E96ORDyD_yIx-71X7w3RQdlFt7lVrakpuOsSK6AbzwK6j90YjfW-7lUaiAdjoLP7EuQ1lCycOv-ZRO3adAp75JIZieZhVzS33jjZZkMp27yPWgC-KvVA6BuWWCyw5B6o4socsb5pnYZxZohhTHFQtlnbTcoJ3XD7VWTDFkS8cUuYXWk3rjlDUm7QIMr7518xqp-kaaOWwJXQjv1DsCPqe3tB1O_3pYtM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-gutter">
+<h2 class="text-headline-md font-headline-md text-primary">Hanuman</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">The Strength of Devotion</p>
+</div>
+</div>
+<!-- Ganesh -->
+<div class="group relative glass-card gold-border rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,215,0,0.2)] transition-all duration-500 cursor-pointer">
+<div class="aspect-[4/5] relative">
+<img alt="Ganesh" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" data-alt="A gentle and artistic representation of Lord Ganesh, adorned with glowing crystalline jewels. The background is a soft, lavender-hued nebula with floating geometric mandalas. The mood is welcoming and wise, using light as a tool to focus on his benevolent expression. The colors are soft violets, golds, and deep cosmic indigos." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5KtsZBVYHJxBR6U1KWMYSL2Dh4oUVGBGD21u4X6J9iQ-zraFul531ipVo98FoTVnaRAFwNEH3T3-oGx0HBRbEJFOk0ob35n8U0kMAqJPiOU-bxvKKeB6KrfnfCWou2qVkSceAsdbCcyKvPWJZAkFgdwB4vRj5vuR3jq7frtZNKrfTgNsh29S7hoipmTTNR-27L6egxvTRsTYnavlf3NmpaTVN_UVXLGVp8YKOqvoCmA6R-Xtlyc4HElPGiE2XoFh1aBQnk2dPJAf4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-gutter">
+<h2 class="text-headline-md font-headline-md text-primary">Ganesh</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">Remover of Obstacles</p>
+</div>
+</div>
+<!-- Durga -->
+<div class="group relative glass-card gold-border rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,215,0,0.2)] transition-all duration-500 cursor-pointer">
+<div class="aspect-[4/5] relative">
+<img alt="Durga" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" data-alt="A fierce and radiant depiction of Goddess Durga, surrounded by an intense halo of solar light. She is positioned against a vibrant cosmic scene with swirling red and gold energy. The style is majestic and powerful, featuring sharp details and a sense of divine protection. The color palette is rich with primary-fixed gold and deep crimson accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAIhg4Xozasl2FVopvcnfI1AYGMf_5LPu61b0ko71e3fpDYqSpfaJxyf5Y1wp2fc7PsVGiMpC6FTVS6be-rAyDYwJF1bJM2ZvZPyrmEbh2b1hdI5VdcKg5ri4vvaWRL9Q7_h0FdfhEuRt2a7jqvVDEeVIP0VE9rLIIif9SYK9bceUWOdkUNn2KGlLAckKX9WuYG1D5NIMarJuMI5hE-Ph-BUshKh5d9OysVDbbCRfnrsGlQvkEMeBd8bHO_RbZhPts0lk0abnB5SV0m"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-gutter">
+<h2 class="text-headline-md font-headline-md text-primary">Durga</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">The Invincible Mother</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface-container/40 backdrop-blur-lg border-t border-white/5 rounded-t-xl md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-label-sm font-label-sm">Chant</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="insert_chart">insert_chart</span>
+<span class="text-label-sm font-label-sm">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary-container drop-shadow-[0_0_4px_rgba(255,215,0,0.5)] scale-110 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-label-sm font-label-sm">Deities</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="text-label-sm font-label-sm">Ranks</span>
+</a>
+</nav>
+<!-- Spiritual Floating Element (Pulse Halo Effect) -->
+<div class="fixed bottom-10 right-10 z-30 hidden md:block">
+<button class="w-16 h-16 rounded-full bg-primary-container text-on-primary shadow-[0_0_30px_rgba(255,215,0,0.4)] flex items-center justify-center group relative">
+<div class="absolute inset-0 rounded-full border-2 border-primary-container animate-ping opacity-20"></div>
+<span class="material-symbols-outlined text-3xl" data-icon="auto_awesome" data-weight="fill">auto_awesome</span>
+</button>
+</div>
+</body></html>

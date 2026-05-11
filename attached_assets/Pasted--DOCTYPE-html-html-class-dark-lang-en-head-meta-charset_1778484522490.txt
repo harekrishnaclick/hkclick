@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cosmic Mantra - Leaderboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "primary": "#fff6df",
+                        "outline": "#999077",
+                        "surface": "#0d1228",
+                        "surface-bright": "#333850",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "on-surface-variant": "#d0c6ab",
+                        "surface-tint": "#e9c400",
+                        "surface-container-highest": "#2f334b",
+                        "inverse-primary": "#705d00",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#080d22",
+                        "secondary": "#dcb8ff",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-secondary": "#480081",
+                        "on-secondary-container": "#dcb7ff",
+                        "on-secondary-fixed": "#2c0051",
+                        "inverse-surface": "#dde1ff",
+                        "on-primary-container": "#705e00",
+                        "secondary-fixed-dim": "#dcb8ff",
+                        "tertiary-container": "#72ebff",
+                        "on-primary-fixed-variant": "#544600",
+                        "surface-container-low": "#151a31",
+                        "surface-dim": "#0d1228",
+                        "on-secondary-fixed-variant": "#6700b5",
+                        "secondary-fixed": "#efdbff",
+                        "on-tertiary": "#00363d",
+                        "on-tertiary-container": "#006976",
+                        "tertiary": "#e5faff",
+                        "surface-variant": "#2f334b",
+                        "on-surface": "#dde1ff",
+                        "background": "#0d1228",
+                        "on-tertiary-fixed": "#001f24",
+                        "surface-container": "#191e35",
+                        "on-background": "#dde1ff",
+                        "on-primary-fixed": "#221b00",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#2a2f47",
+                        "primary-fixed": "#ffe16d",
+                        "primary-container": "#ffd700",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-container-high": "#242940",
+                        "outline-variant": "#4d4732",
+                        "on-primary": "#3a3000",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#e9c400"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "container-padding-desktop": "64px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "container-padding-mobile": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Sora"],
+                        "body-md": ["Inter"],
+                        "display-xl": ["Sora"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["Sora"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background: radial-gradient(circle at center, #191e35 0%, #0d1228 100%);
+            background-attachment: fixed;
+        }
+        .glass-card {
+            backdrop-filter: blur(20px);
+            background: rgba(25, 30, 53, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .pedestal-gold {
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 215, 0, 0) 100%);
+            border-top: 2px solid #ffd700;
+        }
+        .pedestal-silver {
+            background: linear-gradient(180deg, rgba(192, 192, 192, 0.2) 0%, rgba(192, 192, 192, 0) 100%);
+            border-top: 2px solid #c0c0c0;
+        }
+        .pedestal-bronze {
+            background: linear-gradient(180deg, rgba(205, 127, 50, 0.2) 0%, rgba(205, 127, 50, 0) 100%);
+            border-top: 2px solid #cd7f32;
+        }
+        .halo-gold {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-background min-h-screen overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 bg-transparent flex justify-between items-center px-container-mobile md:px-container-desktop py-4">
+<div class="text-headline-md font-headline-md font-bold text-primary-container drop-shadow-[0_0_8px_rgba(255,215,0,0.6)]">Cosmic Mantra</div>
+<nav class="hidden md:flex gap-stack-lg">
+<a class="text-primary-container font-label-md text-label-md hover:bg-surface-bright/20 transition-all px-4 py-2 rounded-full" href="#">Chant</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:bg-surface-bright/20 transition-all px-4 py-2 rounded-full" href="#">Stats</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:bg-surface-bright/20 transition-all px-4 py-2 rounded-full" href="#">Deities</a>
+<a class="text-primary-container font-label-md text-label-md hover:bg-surface-bright/20 transition-all px-4 py-2 rounded-full" href="#">Ranks</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary p-2 hover:bg-surface-bright/20 rounded-full transition-all" data-icon="menu">menu</button>
+</div>
+</header>
+<!-- Background Nebula -->
+<div class="fixed inset-0 -z-10 opacity-30">
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&amp;fit=crop&amp;q=80&amp;w=2048')] bg-cover bg-center" data-alt="A vast and ethereal cosmic nebula filled with swirling clouds of deep violet, midnight blue, and soft magenta gas. Tiny, brilliant white stars are scattered throughout the celestial expanse, creating a sense of infinite depth and serenity. The overall atmosphere is dreamlike and transcendental, echoing a sacred digital space for spiritual practice."></div>
+</div>
+<!-- Main Canvas -->
+<main class="relative pt-24 pb-32 px-container-mobile md:px-container-desktop max-w-[1200px] mx-auto">
+<!-- Header Section -->
+<div class="text-center mb-stack-lg">
+<h1 class="text-display-xl font-display-xl text-primary drop-shadow-lg mb-2">Global Ranks</h1>
+<p class="text-on-surface-variant text-body-lg">The collective resonance of the world's devotion.</p>
+</div>
+<!-- Search Bar -->
+<div class="max-w-xl mx-auto mb-16">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/50">search</span>
+<input class="w-full bg-surface-container-low/60 border-none border-b-2 border-outline-variant focus:border-primary-container focus:ring-0 rounded-t-xl py-4 pl-12 pr-4 text-primary placeholder-on-surface-variant/50 backdrop-blur-md transition-all" placeholder="Search practitioners..." type="text"/>
+</div>
+</div>
+<!-- Podium Section -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-end mb-20 px-4">
+<!-- Rank 2: Silver -->
+<div class="order-2 md:order-1 flex flex-col items-center">
+<div class="relative mb-6">
+<div class="w-24 h-24 rounded-full border-4 border-outline-variant overflow-hidden halo-gold">
+<img alt="Arjun" data-alt="A portrait of a serene young man with a peaceful expression, set against a blurred background of cosmic lights. He has dark hair and gentle features, illuminated by a soft, ethereal glow that suggests a deep state of meditation. The visual style is polished and high-end, consistent with a modern spiritual application's aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChxmrALvpoqtvTDFkbONKQoJvZ2oamUajD3VDnAkoxAykSxrMvhlWx3gmyPExVF17A203ObQFd2g4ny9DKueR_BoD5Hriwi3ikOBEq7AUzigYVZW7AIHDVQ3nKS4Ir-XqyVdl6f3Ip65WwDo6HiMhb1SNXIItTAJGCaFNmvHzzA2HBcKy1J9NvWg36g8KEwbvPfRlGt1jR9EQTyqf73RrjheKz1KmMFou8Q2Xwi_ucW33chJhN5OKgHH4GDCv7Y9YWHDUvU_p2-HqN"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-surface-bright text-on-surface px-3 py-1 rounded-full text-label-sm border border-white/10">#2</div>
+</div>
+<div class="glass-card pedestal-silver w-full pt-8 pb-10 rounded-xl text-center">
+<h3 class="text-headline-md font-headline-md text-primary mb-1">Arjun V.</h3>
+<p class="text-label-md text-on-surface-variant uppercase tracking-widest">1,204 Malas</p>
+</div>
+</div>
+<!-- Rank 1: Gold -->
+<div class="order-1 md:order-2 flex flex-col items-center -translate-y-8">
+<div class="relative mb-6 scale-110">
+<div class="w-32 h-32 rounded-full border-4 border-primary-container overflow-hidden shadow-[0_0_40px_rgba(255,215,0,0.4)]">
+<img alt="Meera" data-alt="A close-up portrait of a woman with a radiant, joyful expression, her eyes closed in peaceful devotion. She is surrounded by a soft golden aura that blends into a cosmic starfield background. The lighting is warm and transcendental, highlighting her features with a divine, shimmering quality suitable for a top-ranked spiritual practitioner." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAji3-LhZZcyjMPmq5Lq7yXgcOZ6QAFLA36KpvcdkFeR8IZmMNJGRsxDHPqL3VsYcXvNM2TmTAAQwGV_JItQiDDQoBbJAL1xiB76MhsbFtC6zt30X2G8Pyoze82tcGczABV7SKZansaYugTFcfr5leusL4cX-eX4BsbhBfa_tA3cpEP4lkwZ5wgjlBHpuX-uD1Ti1qWig_SIZWrLBTY-JuVy0xQUkyGaSZ39OhMLnTdTBIYhi-6YOccmAQgh4rWX5YVgqmYmGNPyRZV"/>
+</div>
+<div class="absolute -bottom-3 -right-3 bg-primary-container text-on-primary-container font-bold px-4 py-1.5 rounded-full text-label-md border-2 border-surface shadow-lg">#1</div>
+</div>
+<div class="glass-card pedestal-gold w-full pt-10 pb-12 rounded-xl text-center scale-105 shadow-2xl">
+<span class="material-symbols-outlined text-primary-container mb-2 text-4xl" data-weight="fill">auto_awesome</span>
+<h3 class="text-headline-lg font-headline-lg text-primary mb-1">Meera K.</h3>
+<p class="text-label-md text-primary-container font-bold uppercase tracking-widest">2,480 Malas</p>
+</div>
+</div>
+<!-- Rank 3: Bronze -->
+<div class="order-3 md:order-3 flex flex-col items-center">
+<div class="relative mb-6">
+<div class="w-24 h-24 rounded-full border-4 border-[#cd7f32]/40 overflow-hidden">
+<img alt="Siddharth" data-alt="A contemplative man in his late thirties with a short beard and a look of focused concentration. He is depicted in a digital painting style with subtle light leaks and cosmic particle effects floating around him. The color palette features deep blues and warm bronze tones, maintaining the mystical and sacred atmosphere of the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCW1cuTzQGUsjKzQVq60ypaSZMEN86pYuG-4WKp875MaIwTmf9VKCVX2NHUK-Cc-kcky-5B_LbLj8SZzoU8gm18QDgk_o4bsIbajna0PENIIFmVxuWeh-MOhxiMRcCz8q-B1UsCzsNbTnawjWPPwZa-p_xbUP4Pt_2nF1OIoH4Ro-05t5QI11rjgjQLj0Y-HlVNAv1EM0Rv_Lru5cGaXnfIi17Yuqd5tQ4WHwmGHmEfjYxFPikC0m_a3TQieGEcPWyp3jftoi27Uw1-"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-surface-bright text-on-surface px-3 py-1 rounded-full text-label-sm border border-white/10">#3</div>
+</div>
+<div class="glass-card pedestal-bronze w-full pt-8 pb-10 rounded-xl text-center">
+<h3 class="text-headline-md font-headline-md text-primary mb-1">Siddharth</h3>
+<p class="text-label-md text-on-surface-variant uppercase tracking-widest">982 Malas</p>
+</div>
+</div>
+</div>
+<!-- Ranked List -->
+<div class="space-y-4">
+<!-- Rank 4 -->
+<div class="glass-card flex items-center justify-between p-gutter rounded-xl hover:bg-surface-bright/20 transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<span class="w-8 text-center text-label-md text-on-surface-variant font-bold">4</span>
+<img alt="User" class="w-12 h-12 rounded-full object-cover border border-white/10" data-alt="A portrait of a woman with a calm and centered presence, wearing simple, elegant clothing. The background consists of a soft-focus spiritual temple interior with golden light filtering through. The style is modern and ethereal, using high-transparency layers and a serene, midnight blue and violet color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6GhcjmugplhKXkpW-OtcuJII-MCAr9-0cc5_nsI0tPf2gcS8KCdMdUIVhyPm5mzWMIaiJG4qawYbDQq4rrVxvNHnjZ2wUQfBGD1OS0FJRQkns_pdxzh0U6NJwVeMXOFRmxAfw03CYN7qwrK-dnRGQ8ogAZK_uI8pVIEhBECno6AZFq76C8D-IIKuOI2RnnarSUjhbnRkKSEVC1c4HIOtfy8VrAelNbExEckx8D1RiL5chO8ebk_tkV_4a2xo9xR0X8YfpfBjOtaOg"/>
+<span class="font-headline-md text-primary">Ananya R.</span>
+</div>
+<div class="text-right">
+<div class="text-label-md text-primary-container font-bold">845</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-tighter">Malas</div>
+</div>
+</div>
+<!-- Rank 5 -->
+<div class="glass-card flex items-center justify-between p-gutter rounded-xl hover:bg-surface-bright/20 transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<span class="w-8 text-center text-label-md text-on-surface-variant font-bold">5</span>
+<img alt="User" class="w-12 h-12 rounded-full object-cover border border-white/10" data-alt="A high-quality digital portrait of a young woman with a focused and serene expression. Soft bokeh lights resembling distant stars create a mystical atmosphere behind her. The image uses a palette of muted golds and deep cosmic blues, perfectly integrating with the sacred and transcendental visual identity of the application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkp4-jU9komb7IksDWy875_SOFN4wFjjUBe3-o6TFYJqXNDKvRuXTGaaZgoTJhUXINlb-Y02z07jIe0aqkptBqo1rmWsge7o0CBOSoEdTvNqajvZwCbOzy79d1A1hW2LGCneapy4LzgoC3uOAmhSyyUkQicvKrhpL8TU2LZqwSM8tQHhArkJYeSi7uuk9MWEA-SoWQk9d3ToVduKozZn3g0oXGixKraSjRnRaBFHmvjyeKFr_VgL_16bMSFmbkjLGp9gRP9A_10atx"/>
+<span class="font-headline-md text-primary">Isha Sharma</span>
+</div>
+<div class="text-right">
+<div class="text-label-md text-primary-container font-bold">790</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-tighter">Malas</div>
+</div>
+</div>
+<!-- Rank 6 -->
+<div class="glass-card flex items-center justify-between p-gutter rounded-xl hover:bg-surface-bright/20 transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<span class="w-8 text-center text-label-md text-on-surface-variant font-bold">6</span>
+<img alt="User" class="w-12 h-12 rounded-full object-cover border border-white/10" data-alt="An elderly man with a wise and peaceful face, his skin glowing slightly as if under a divine light. He is set against a dark, star-filled cosmic background with subtle violet nebulae. The image evokes a sense of deep wisdom and long-term spiritual practice, maintaining the application's core theme of 'sacred digital space'." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7qdNSZcm82YbIjw7fAjbpliZ8I4x5JHsI3-NEUaqNgmnD3VFc92n7bSUix_wshcY4nTjjXIIXTnGxO2Wq052zaKccpaVtIsNaRoZDjE_bkKIoQJcNpnnEi9cKzC3GBtAr2EII4M1SKPm0MPPenfBwYbYbZaSJqIzii1Vdm1Yp3eW8dUy3IbOU1n9VeizwIbEw-STEAvIcTZd-tb1VqL-m0DroT4zYaHAlnREAf6xi8799FLOl-Bcv43wdE-tUIt_sHmno_0YjHRD3"/>
+<span class="font-headline-md text-primary">Vikram Jeet</span>
+</div>
+<div class="text-right">
+<div class="text-label-md text-primary-container font-bold">712</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-tighter">Malas</div>
+</div>
+</div>
+<!-- Rank 7 -->
+<div class="glass-card flex items-center justify-between p-gutter rounded-xl hover:bg-surface-bright/20 transition-all cursor-pointer">
+<div class="flex items-center gap-6">
+<span class="w-8 text-center text-label-md text-on-surface-variant font-bold">7</span>
+<img alt="User" class="w-12 h-12 rounded-full object-cover border border-white/10" data-alt="A portrait of a woman looking upwards with a look of awe and quietude. The lighting is dramatic yet soft, highlighting the contours of her face against a backdrop of a slowly panning starfield. The aesthetic is clean, professional, and deeply immersive, using light as a functional tool to guide focus towards the subject." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwS0HBtQKDCRAMMwfW_apquHRqdWAMldgmseQYbS_hHHQB6gSfg_ZVFTHRTx3lBQN1iKax_7VI8v986PGkQN8mpKLOTOT7U1o2poxtvkgZVna-Jebt5-pj7LbjpaH05fPaa22TdQ8jxP0CBUj66nGtXa7wpKfe7HDVJakORQ9QRJK0igOkz8z-G7iSHI8epZfD_uHr0g9_2yRUD0ljgUrs_p2m4I8SJEeFZal8eJDj0Iu9zIxSn1r-L_oUpoD9Ddn2570EDG-Pv6W0"/>
+<span class="font-headline-md text-primary">Priya Das</span>
+</div>
+<div class="text-right">
+<div class="text-label-md text-primary-container font-bold">650</div>
+<div class="text-label-sm text-on-surface-variant uppercase tracking-tighter">Malas</div>
+</div>
+</div>
+</div>
+</main>
+<!-- My Rank Sticky Footer -->
+<div class="fixed bottom-16 left-0 w-full z-40 bg-surface-container/80 backdrop-blur-2xl border-t border-white/10 py-4 px-container-mobile md:px-container-desktop">
+<div class="max-w-[1200px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex flex-col items-center">
+<span class="text-label-sm text-on-surface-variant uppercase">Your Rank</span>
+<span class="text-headline-md font-bold text-primary-container">#1,402</span>
+</div>
+<div class="h-10 w-px bg-white/10 mx-2"></div>
+<div class="flex items-center gap-4">
+<img alt="You" class="w-10 h-10 rounded-full border border-primary-container" data-alt="A placeholder portrait of a generic user, presented with high-end digital art stylings. The user has a neutral, calm expression and is backlit by a subtle violet and gold glow. The background is a dark, atmospheric cosmic field that reinforces the application's visual language of serenity and intentional practice." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh66TZYkvS0IT-Z7JtHrkoIchzYRzMnZoaAVVN1UWazGYqvdRTNxrQB6LOo2n7317GVu6B4Bz-k5OEP1Qn0A2pI3c9iJX1VhtcLp4BuAMco8llX9HfEj_OuK7wzBTNm2bTqf76C7S0tJDSUv8LcOjyyidLWH-jCaNy3xRSy1ETxzlIbP05L2Xg_HUBPRNJ8oYLbquHbNjIrUP9jA1WExwbtHoNLZGyA6WMff5U-qYj2QtPE0SwjnyfXPqnL9jHnMauQu_rxRx4HbcJ"/>
+<div>
+<div class="font-headline-md text-primary text-base">Rahul S.</div>
+<div class="text-label-sm text-on-surface-variant">Keep going, 20 more to #1,400!</div>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-headline-md text-primary-container">42</div>
+<div class="text-label-sm text-on-surface-variant uppercase">Malas Completed</div>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 bg-surface-container/40 backdrop-blur-lg border-t border-white/5 rounded-t-xl">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-label-sm font-label-sm">Chant</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="insert_chart">insert_chart</span>
+<span class="text-label-sm font-label-sm">Stats</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-label-sm font-label-sm">Deities</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary-container drop-shadow-[0_0_4px_rgba(255,215,0,0.5)] scale-110">
+<span class="material-symbols-outlined" data-icon="leaderboard" data-weight="fill">leaderboard</span>
+<span class="text-label-sm font-label-sm">Ranks</span>
+</button>
+</nav>
+</body></html>
