@@ -6,6 +6,8 @@ import ramaSound1 from '@assets/speech_1_1778526563771.mp3';
 import ramaSound2 from '@assets/speech_2_1778526560238.mp3';
 import shivjiSound1 from '@assets/speech_3_1778526676768.mp3';
 import shivjiSound2 from '@assets/speech_4_1778526676767.mp3';
+import hanumanSound1 from '@assets/speech_1_1778526783052.mp3';
+import hanumanSound2 from '@assets/speech_5_1778526783051.mp3';
 
 import krishnaImg from '@assets/deities/krishna.webp';
 import radhaImg from '@assets/deities/radha.webp';
@@ -57,7 +59,7 @@ export const deityConfigs: Record<string, DeityGameConfig> = {
     colors: { primary: '#f97316', secondary: '#ef4444' },
     backgroundImage: backgroundImage,
     deityImage: hanumanImg,
-    sounds: [button1Sound, button2Sound],
+    sounds: [hanumanSound1, hanumanSound2],
   },
   ganesh: {
     deityName: 'JAI GANESH',
