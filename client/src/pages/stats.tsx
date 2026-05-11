@@ -32,11 +32,13 @@ const EN_DAY_TO_INDEX: Record<string, number> = {
   Mon: 0, Tue: 1, Wed: 2, Thu: 3, Fri: 4, Sat: 5, Sun: 6,
 };
 
-function formatDuration(secs: number): string {
-  if (secs < 60) return `${secs}s`;
+function formatDuration(secs: number, t: Translations): string {
+  const ss = t.stats.secsSuffix;
+  const ms = t.stats.minsSuffix;
+  if (secs < 60) return `${secs}${ss}`;
   const m = Math.floor(secs / 60);
   const s = secs % 60;
-  return s > 0 ? `${m}m ${s}s` : `${m}m`;
+  return s > 0 ? `${m}${ms} ${s}${ss}` : `${m}${ms}`;
 }
 
 function timeAgo(ts: number, t: Translations): string {
@@ -215,7 +217,7 @@ export default function StatsPage({ t, language }: StatsPageProps) {
                       {(deityMantraNames[session.deity]?.[language] ?? deityMantraNames[session.deity]?.en) || session.deity}
                     </p>
                     <p className="text-[#d0c6ab] text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      {session.malas} {session.malas !== 1 ? t.stats.malas : t.stats.mala} · {session.mantras} {t.stats.pairs} · {formatDuration(session.duration)}
+                      {session.malas} {session.malas !== 1 ? t.stats.malas : t.stats.mala} · {session.mantras} {t.stats.pairs} · {formatDuration(session.duration, t)}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
@@ -243,7 +245,7 @@ export default function StatsPage({ t, language }: StatsPageProps) {
           {[
             {
               icon: 'speed', label: t.stats.fastestMala, color: '#ffd700',
-              value: records.fastestMalaSecs ? formatDuration(records.fastestMalaSecs) : '—',
+              value: records.fastestMalaSecs ? formatDuration(records.fastestMalaSecs, t) : '—',
               sub: records.fastestMalaDate || t.stats.notYetSet,
             },
             {

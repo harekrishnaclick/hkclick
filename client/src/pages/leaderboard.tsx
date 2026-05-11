@@ -89,14 +89,16 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       localStorage.removeItem('cosmicMantra_autoSubmitNotify');
       const score = localStorage.getItem('cosmicMantra_lastSessionScore');
       toast({
-        title: '🙏 Score auto-saved!',
-        description: `${score ? `${score} pairs` : 'Your score'} was automatically submitted to the leaderboard for ${notifyUser}.`,
+        title: t.leaderboard.autoSaved,
+        description: t.leaderboard.autoSavedDesc
+          .replace('{score}', score ? `${score} ${t.leaderboard.pairs}` : t.leaderboard.yourScore)
+          .replace('{username}', notifyUser),
       });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/global'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/country'] });
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/total'] });
     }
-  }, [toast, queryClient]);
+  }, [toast, queryClient, t]);
 
   const { data: globalLeaderboard, isLoading: globalLoading } = useQuery<LeaderboardEntry[]>({
     queryKey: ['/api/leaderboard/global'],
@@ -119,7 +121,10 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       queryClient.invalidateQueries({ queryKey: ['/api/leaderboard/total'] });
       setSubmittedScore(variables.score);
       localStorage.setItem('cm_lastSubmitted_score', String(variables.score));
-      toast({ title: '🙏 Score submitted!', description: `${formatNum(variables.score)} pairs added to the leaderboard.` });
+      toast({
+        title: t.leaderboard.scoreSubmitted,
+        description: t.leaderboard.scoreSubmittedDesc.replace('{n}', formatNum(variables.score)),
+      });
     },
   });
 
@@ -168,9 +173,9 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       {/* Header */}
       <div className="mb-6">
         <p className="text-[#d0c6ab] text-xs tracking-[0.28em] uppercase mb-2"
-          style={{ fontFamily: 'Inter, sans-serif' }}>Hall of Champions</p>
+          style={{ fontFamily: 'Inter, sans-serif' }}>{t.leaderboard.hallOfChampions}</p>
         <h1 className="text-3xl sm:text-4xl font-bold text-[#fff6df]"
-          style={{ fontFamily: 'Sora, sans-serif' }}>Global Leaderboard</h1>
+          style={{ fontFamily: 'Sora, sans-serif' }}>{t.leaderboard.globalLeaderboard}</h1>
       </div>
 
       {/* Total banner */}
@@ -178,7 +183,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
         style={{ borderColor: 'rgba(255,215,0,0.15)' }}>
         <div>
           <p className="text-[#d0c6ab] text-xs tracking-wider uppercase"
-            style={{ fontFamily: 'Inter, sans-serif' }}>Total Global Mantras</p>
+            style={{ fontFamily: 'Inter, sans-serif' }}>{t.leaderboard.totalGlobalMantras}</p>
           <p className="text-2xl font-bold text-[#ffd700]"
             style={{ fontFamily: 'Sora, sans-serif', textShadow: '0 0 16px rgba(255,215,0,0.6)' }}>
             {formatNum(totalData?.totalScore ?? 0)}
@@ -190,21 +195,20 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       {/* Submit score card */}
       <div className="glass-card p-5 mb-6">
         <p className="text-[#d0c6ab] text-xs tracking-[0.2em] uppercase mb-3"
-          style={{ fontFamily: 'Inter, sans-serif' }}>Submit Your Score</p>
+          style={{ fontFamily: 'Inter, sans-serif' }}>{t.leaderboard.submitYourScore}</p>
 
-        {/* Score badge — always auto, never editable */}
+        {/* Score badge */}
         <div className="flex items-center gap-2 mb-3">
           <span className="material-symbols-outlined text-[#ffd700] text-base">auto_awesome</span>
           <span className="text-[#fff6df] text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
-            Your score:&nbsp;
+            {t.leaderboard.yourScore}&nbsp;
             <span className="font-bold text-[#ffd700]" style={{ fontFamily: 'Sora, sans-serif' }}>
-              {currentScore > 0 ? `${formatNum(currentScore)} pairs` : 'No score yet — go chant first!'}
+              {currentScore > 0 ? `${formatNum(currentScore)} ${t.leaderboard.pairs}` : t.leaderboard.noScoreYet}
             </span>
           </span>
         </div>
 
         {user ? (
-          /* Logged-in: show username pill + submit */
           <div className="flex items-center gap-3 flex-wrap">
             <div className="flex items-center gap-2 px-4 py-2 rounded-xl"
               style={{ background: 'rgba(255,215,0,0.08)', border: '1px solid rgba(255,215,0,0.2)' }}>
@@ -221,14 +225,13 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
               className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-1.5"
               style={{ fontFamily: 'Sora, sans-serif', background: alreadySubmitted ? 'rgba(47,51,75,0.6)' : 'linear-gradient(135deg,#e9c400,#ffd700)', color: alreadySubmitted ? '#a3e635' : '#3a3000', border: alreadySubmitted ? '1px solid rgba(163,230,53,0.3)' : 'none' }}>
               {alreadySubmitted
-                ? <><span className="material-symbols-outlined text-base">check_circle</span> Submitted</>
-                : submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
+                ? <><span className="material-symbols-outlined text-base">check_circle</span> {t.leaderboard.submittedLabel}</>
+                : submitMutation.isPending ? t.leaderboard.submitting : t.leaderboard.submit}
             </button>
           </div>
         ) : (
-          /* Guest: name input + submit */
           <div className="flex gap-2 flex-wrap">
-            <input type="text" placeholder="Enter your name…"
+            <input type="text" placeholder={t.leaderboard.enterName}
               value={playerName} onChange={(e) => setPlayerName(e.target.value)} maxLength={50}
               className="flex-1 min-w-0 px-4 py-2.5 rounded-xl text-sm text-[#fff6df] outline-none"
               style={{ fontFamily: 'Inter, sans-serif', background: 'rgba(47,51,75,0.6)', border: '1px solid rgba(255,255,255,0.1)' }} />
@@ -237,8 +240,8 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
               className="px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-1.5"
               style={{ fontFamily: 'Sora, sans-serif', background: alreadySubmitted ? 'rgba(47,51,75,0.6)' : 'linear-gradient(135deg,#e9c400,#ffd700)', color: alreadySubmitted ? '#a3e635' : '#3a3000', border: alreadySubmitted ? '1px solid rgba(163,230,53,0.3)' : 'none' }}>
               {alreadySubmitted
-                ? <><span className="material-symbols-outlined text-base">check_circle</span> Submitted</>
-                : submitMutation.isPending ? 'Submitting…' : t.leaderboard.submit}
+                ? <><span className="material-symbols-outlined text-base">check_circle</span> {t.leaderboard.submittedLabel}</>
+                : submitMutation.isPending ? t.leaderboard.submitting : t.leaderboard.submit}
             </button>
           </div>
         )}
@@ -247,7 +250,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
         {[
-          { id: 'global' as const, label: 'Global', icon: 'public' },
+          { id: 'global' as const, label: t.leaderboard.global, icon: 'public' },
           { id: 'country' as const, label: `${getFlagEmoji(userCountry)} ${userCountry}`, icon: 'flag' },
         ].map(({ id, label, icon }) => (
           <button key={id} onClick={() => setActiveTab(id)}
@@ -267,7 +270,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
       {/* Search */}
       <div className="relative mb-5">
         <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#d0c6ab] text-xl">search</span>
-        <input type="text" placeholder="Search players..."
+        <input type="text" placeholder={t.leaderboard.searchPlayers}
           value={search} onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-[#fff6df] outline-none"
           style={{ fontFamily: 'Inter, sans-serif', background: 'rgba(25,30,53,0.6)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)' }} />
@@ -281,7 +284,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
         <div className="glass-card p-10 text-center">
           <span className="material-symbols-outlined text-5xl text-[#d0c6ab]/40 mb-3 block">leaderboard</span>
           <p className="text-[#d0c6ab] text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
-            {search ? 'No matching players found' : t.leaderboard.noEntries}
+            {search ? t.leaderboard.noMatchingPlayers : t.leaderboard.noEntries}
           </p>
         </div>
       ) : (
@@ -336,19 +339,19 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
                       {entry.playerName}
                       {isMe && (
                         <span className="text-[10px] bg-[#ffd700]/15 text-[#ffd700] px-1.5 py-0.5 rounded-full border border-[#ffd700]/30">
-                          You
+                          {t.leaderboard.youLabel}
                         </span>
                       )}
                     </p>
                     <p className="text-[#d0c6ab] text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
-                      {getFlagEmoji(entry.country || 'XX')} {Math.floor(entry.score / 108)} malas
+                      {getFlagEmoji(entry.country || 'XX')} {Math.floor(entry.score / 108)} {t.leaderboard.malas}
                     </p>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="text-[#ffd700] font-bold text-sm" style={{ fontFamily: 'Sora, sans-serif' }}>
                       {formatNum(entry.score)}
                     </p>
-                    <p className="text-[#d0c6ab] text-[11px]" style={{ fontFamily: 'Inter, sans-serif' }}>pairs</p>
+                    <p className="text-[#d0c6ab] text-[11px]" style={{ fontFamily: 'Inter, sans-serif' }}>{t.leaderboard.pairs}</p>
                   </div>
                 </div>
               );
@@ -373,16 +376,16 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
                 {user.username}
               </p>
               <p className="text-[#d0c6ab] text-xs" style={{ fontFamily: 'Inter, sans-serif' }}>
-                {formatNum(myEntry.score)} pairs
+                {formatNum(myEntry.score)} {t.leaderboard.pairs}
               </p>
             </div>
             {toNextRank > 0 && (
               <div className="text-right flex-shrink-0">
                 <p className="text-[#dcb8ff] text-xs font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  {formatNum(toNextRank)} more
+                  {formatNum(toNextRank)} {t.leaderboard.moreSuffix}
                 </p>
                 <p className="text-[#d0c6ab] text-[11px]" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  to #{myRank - 1}!
+                  {t.leaderboard.toRankPrefix}{myRank - 1}!
                 </p>
               </div>
             )}

@@ -72,21 +72,40 @@ export interface Translations {
     pairsLeftToday: string;
     dailyGoalToastTitle: string;
     dailyGoalToastDesc: string;
+    scoreSaved: string;
+    scoreSavedDesc: string;
+    couldNotSave: string;
+    couldNotSaveDesc: string;
   };
   leaderboard: {
     leaderboard: string;
+    hallOfChampions: string;
     globalLeaderboard: string;
     totalGlobalScore: string;
+    totalGlobalMantras: string;
     pairsWorldwide: string;
     yourScore: string;
+    noScoreYet: string;
+    submitYourScore: string;
     enterName: string;
     submitting: string;
     submit: string;
+    submittedLabel: string;
     global: string;
     topWorldwide: string;
     topInCountry: string;
     noEntries: string;
+    noMatchingPlayers: string;
     pairs: string;
+    malas: string;
+    searchPlayers: string;
+    youLabel: string;
+    moreSuffix: string;
+    toRankPrefix: string;
+    autoSaved: string;
+    autoSavedDesc: string;
+    scoreSubmitted: string;
+    scoreSubmittedDesc: string;
   };
   stats: {
     title: string;
@@ -118,6 +137,8 @@ export interface Translations {
     pairsLeftToday: string;
     days: string[];
     level: string;
+    secsSuffix: string;
+    minsSuffix: string;
   };
   deityNames: Record<string, string>;
   deityTitles: Record<string, string>;
@@ -197,21 +218,40 @@ const en: Translations = {
     pairsLeftToday: 'pairs left today',
     dailyGoalToastTitle: '🎉 Daily goal reached!',
     dailyGoalToastDesc: "You've chanted {n} pairs today — goal complete!",
+    scoreSaved: '🙏 Score saved!',
+    scoreSavedDesc: '{n} pairs submitted to the leaderboard for {username}.',
+    couldNotSave: 'Could not save score',
+    couldNotSaveDesc: 'Your session was saved locally. Try submitting again from the leaderboard.',
   },
   leaderboard: {
     leaderboard: 'Leaderboard',
-    globalLeaderboard: 'GLOBAL LEADERBOARD',
+    hallOfChampions: 'Hall of Champions',
+    globalLeaderboard: 'Global Leaderboard',
     totalGlobalScore: 'Total Global Score',
+    totalGlobalMantras: 'Total Global Mantras',
     pairsWorldwide: 'pairs completed worldwide',
-    yourScore: 'Your Score:',
-    enterName: 'Enter your name...',
-    submitting: 'Submitting...',
+    yourScore: 'Your score:',
+    noScoreYet: 'No score yet — go chant first!',
+    submitYourScore: 'Submit Your Score',
+    enterName: 'Enter your name…',
+    submitting: 'Submitting…',
     submit: 'Submit',
+    submittedLabel: 'Submitted',
     global: 'Global',
     topWorldwide: 'Top Players Worldwide',
     topInCountry: 'Top Players in',
     noEntries: 'No entries yet. Be the first to submit your score!',
+    noMatchingPlayers: 'No matching players found',
     pairs: 'pairs',
+    malas: 'malas',
+    searchPlayers: 'Search players…',
+    youLabel: 'You',
+    moreSuffix: 'more',
+    toRankPrefix: 'to #',
+    autoSaved: '🙏 Score auto-saved!',
+    autoSavedDesc: '{score} pairs submitted to the leaderboard for {username}.',
+    scoreSubmitted: '🙏 Score submitted!',
+    scoreSubmittedDesc: '{n} pairs added to the leaderboard.',
   },
   stats: {
     title: 'Progress & Stats',
@@ -243,6 +283,8 @@ const en: Translations = {
     pairsLeftToday: 'pairs left today',
     days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     level: 'Lv',
+    secsSuffix: 's',
+    minsSuffix: 'm',
   },
   deityNames: {
     krishna: 'Krishna',
@@ -354,21 +396,40 @@ const hi: Translations = {
     pairsLeftToday: 'जोड़ी बाकी आज',
     dailyGoalToastTitle: '🎉 दैनिक लक्ष्य पूरा!',
     dailyGoalToastDesc: 'आज {n} जोड़ी जप किया — लक्ष्य पूरा!',
+    scoreSaved: '🙏 स्कोर सहेजा!',
+    scoreSavedDesc: '{username} के लिए {n} जोड़ी लीडरबोर्ड पर जमा की।',
+    couldNotSave: 'स्कोर सहेजा नहीं जा सका',
+    couldNotSaveDesc: 'आपका सत्र स्थानीय रूप से सहेजा गया। लीडरबोर्ड से फिर जमा करें।',
   },
   leaderboard: {
     leaderboard: 'लीडरबोर्ड',
+    hallOfChampions: 'चैंपियन्स का हॉल',
     globalLeaderboard: 'वैश्विक लीडरबोर्ड',
     totalGlobalScore: 'कुल वैश्विक स्कोर',
+    totalGlobalMantras: 'कुल वैश्विक जप',
     pairsWorldwide: 'दुनिया भर में जोड़ी पूरी',
     yourScore: 'आपका स्कोर:',
-    enterName: 'अपना नाम दर्ज करें...',
-    submitting: 'भेज रहे हैं...',
+    noScoreYet: 'अभी कोई स्कोर नहीं — पहले जप करें!',
+    submitYourScore: 'अपना स्कोर जमा करें',
+    enterName: 'अपना नाम दर्ज करें…',
+    submitting: 'भेज रहे हैं…',
     submit: 'भेजें',
+    submittedLabel: 'जमा हो गया',
     global: 'वैश्विक',
     topWorldwide: 'दुनिया के टॉप खिलाड़ी',
     topInCountry: 'टॉप खिलाड़ी:',
     noEntries: 'अभी कोई नहीं है। पहले स्कोर जमा करें!',
+    noMatchingPlayers: 'कोई खिलाड़ी नहीं मिला',
     pairs: 'जोड़ी',
+    malas: 'माला',
+    searchPlayers: 'खिलाड़ी खोजें…',
+    youLabel: 'आप',
+    moreSuffix: 'और',
+    toRankPrefix: '#',
+    autoSaved: '🙏 स्कोर स्वतः सहेजा!',
+    autoSavedDesc: '{username} के लिए {score} जोड़ी लीडरबोर्ड पर जमा की।',
+    scoreSubmitted: '🙏 स्कोर जमा हुआ!',
+    scoreSubmittedDesc: '{n} जोड़ी लीडरबोर्ड पर जोड़ी गई।',
   },
   stats: {
     title: 'प्रगति और आँकड़े',
@@ -400,6 +461,8 @@ const hi: Translations = {
     pairsLeftToday: 'जोड़ी बाकी आज',
     days: ['सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि', 'रवि'],
     level: 'स्तर',
+    secsSuffix: 'से.',
+    minsSuffix: 'मि.',
   },
   deityNames: {
     krishna: 'कृष्ण',

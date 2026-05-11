@@ -278,13 +278,15 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
     const success = await submitScoreToLeaderboard(finalScore, false);
     if (success && userRef.current) {
       toast({
-        title: '🙏 Score saved!',
-        description: `${finalScore} pairs submitted to the leaderboard for ${userRef.current.username}.`,
+        title: t.game.scoreSaved,
+        description: t.game.scoreSavedDesc
+          .replace('{n}', String(finalScore))
+          .replace('{username}', userRef.current.username),
       });
     } else if (!success) {
       toast({
-        title: 'Could not save score',
-        description: 'Your session was saved locally. Try submitting again from the leaderboard.',
+        title: t.game.couldNotSave,
+        description: t.game.couldNotSaveDesc,
         variant: 'destructive',
       });
     }
