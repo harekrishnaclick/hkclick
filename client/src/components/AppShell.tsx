@@ -176,6 +176,24 @@ export function AppShell({
             </span>
           </button>
         </div>
+
+        <div className="flex justify-center gap-4 pt-3 border-t border-white/5 mt-1">
+          {[
+            { href: '/about', label: 'About' },
+            { href: '/privacy', label: 'Privacy' },
+            { href: '/terms', label: 'Terms' },
+          ].map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setSidebarOpen(false)}
+              className="text-[#d0c6ab]/50 hover:text-[#d0c6ab] text-[10px] transition-colors"
+              style={{ fontFamily: 'Inter, sans-serif' }}
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -6,10 +6,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/AppShell";
 import { AuthModal } from "@/components/AuthModal";
+import { CookieBanner } from "@/components/CookieBanner";
 import DeityPage from "@/pages/deity";
 import DeityGallery from "@/pages/deities";
 import StatsPage from "@/pages/stats";
 import LeaderboardPage from "@/pages/leaderboard";
+import AboutPage from "@/pages/about";
+import PrivacyPage from "@/pages/privacy";
+import TermsPage from "@/pages/terms";
 import NotFound from "@/pages/not-found";
 import { getTranslations, type Language } from "@/lib/translations";
 
@@ -99,6 +103,15 @@ function AppContent() {
         <Route path="/leaderboard">
           <LeaderboardPage user={user} t={t} />
         </Route>
+        <Route path="/about">
+          <AboutPage />
+        </Route>
+        <Route path="/privacy">
+          <PrivacyPage />
+        </Route>
+        <Route path="/terms">
+          <TermsPage />
+        </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>
             <DeityPage deityKey={key} user={user} isMuted={isMuted} t={t} language={language} />
@@ -106,6 +119,7 @@ function AppContent() {
         ))}
         <Route component={NotFound} />
       </Switch>
+      <CookieBanner />
     </AppShell>
   );
 }
