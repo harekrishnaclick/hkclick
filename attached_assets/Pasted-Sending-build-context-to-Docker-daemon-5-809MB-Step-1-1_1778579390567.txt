@@ -1,0 +1,61 @@
+Sending build context to Docker daemon  5.809MB
+Step 1/15 : FROM node:20-alpine AS builder
+ ---> fb4cd12c85ee
+Step 2/15 : WORKDIR /app
+ ---> Using cache
+ ---> f070fd659378
+Step 3/15 : COPY package*.json ./
+ ---> Using cache
+ ---> 4c82c6219b55
+Step 4/15 : RUN npm ci
+ ---> Running in a370f1559f89
+npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+added 515 packages, and audited 516 packages in 42s
+
+68 packages are looking for funding
+  run `npm fund` for details
+
+22 vulnerabilities (3 low, 11 moderate, 8 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm notice
+npm notice New major version of npm available! 10.8.2 -> 11.14.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.14.1
+npm notice To update run: npm install -g npm@11.14.1
+npm notice
+ ---> Removed intermediate container a370f1559f89
+ ---> ae2b605b564d
+Step 5/15 : COPY . .
+ ---> 3afcc2d4edec
+Step 6/15 : RUN npm run build
+ ---> Running in e6b8ceafaa48
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.19 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 19 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1651 modules transformed.
+x Build failed in 12.04s
+error during build:
+[vite:asset] Could not load /app/attached_assets/generated-image_1755976323185.png (imported by client/src/lib/deityConfigs.ts): ENOENT: no such file or directory, open '/app/attached_assets/generated-image_1755976323185.png'
+    at async open (node:internal/fs/promises:637:25)
+    at async Object.readFile (node:internal/fs/promises:1249:14)
+    at async fileToBuiltUrl (file:///app/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:20428:19)
+    at async Object.load (file:///app/node_modules/vite/dist/node/chunks/dep-C6uTJdX2.js:20328:17)
+    at async PluginDriver.hookFirstAndGetPlugin (file:///app/node_modules/rollup/dist/es/shared/node-entry.js:20689:28)
+    at async file:///app/node_modules/rollup/dist/es/shared/node-entry.js:19809:33
+    at async Queue.work (file:///app/node_modules/rollup/dist/es/shared/node-entry.js:20899:32)
+The command '/bin/sh -c npm run build' returned a non-zero code: 1
+ERROR: Service 'harekrishna-app' failed to build : Build failed
