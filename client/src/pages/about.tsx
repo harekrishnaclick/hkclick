@@ -76,6 +76,22 @@ export default function AboutPage() {
           </p>
         </div>
 
+        <div className="glass-card p-6">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="material-symbols-outlined text-[#ffd700] text-2xl">mail</span>
+            <h2 className="text-[#ffd700] font-bold text-lg" style={{ fontFamily: 'Sora, sans-serif' }}>Contact</h2>
+          </div>
+          <p className="text-[#d0c6ab] text-sm leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
+            Questions, feedback, or privacy requests?{' '}
+            <a
+              href="mailto:harekrishna.click@gmail.com"
+              className="text-[#ffd700] underline underline-offset-2 hover:text-[#fff6df]"
+            >
+              harekrishna.click@gmail.com
+            </a>
+          </p>
+        </div>
+
         <div className="flex gap-3 pt-2">
           <Link
             href="/privacy"

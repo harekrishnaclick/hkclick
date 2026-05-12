@@ -87,7 +87,14 @@ export default function PrivacyPage() {
         <Section icon="contact_support" title="Contact">
           <p>
             If you have questions about this policy or wish to request deletion of your account data, 
-            please reach out via the HareKrishna app community. We will respond within 30 days.
+            email us at{' '}
+            <a
+              href="mailto:harekrishna.click@gmail.com"
+              className="text-[#ffd700] underline underline-offset-2 hover:text-[#fff6df]"
+            >
+              harekrishna.click@gmail.com
+            </a>
+            . We will respond within 30 days.
           </p>
         </Section>
 
