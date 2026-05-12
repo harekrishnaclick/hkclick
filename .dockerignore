@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Git
+.git
+.gitignore
+
+# Local build output (Docker builds its own)
+dist
+
+# Dev/editor files
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+
+# Replit-specific
+.replit
+replit.nix
+.local
+.upm
+
+# Attached assets (images/audio uploaded during dev — app assets live in client/src/assets)
+attached_assets
+
+# Docker files (not needed inside the image)
+Dockerfile
+docker-compose.yml
+.dockerignore
