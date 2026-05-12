@@ -48,6 +48,20 @@ export default function AboutPage() {
           </p>
         </div>
 
+        <div className="glass-card p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="material-symbols-outlined text-[#ffd700] text-2xl">workspace_premium</span>
+            <h2 className="text-[#ffd700] font-bold text-lg" style={{ fontFamily: 'Sora, sans-serif' }}>Credits</h2>
+          </div>
+          <ul className="text-[#d0c6ab] text-sm leading-relaxed space-y-2" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <li className="flex gap-2"><span className="text-[#ffd700]">•</span> <span><strong className="text-[#fff6df]">Deity portraits</strong> — AI-generated sacred imagery created with reverence for each tradition</span></li>
+            <li className="flex gap-2"><span className="text-[#ffd700]">•</span> <span><strong className="text-[#fff6df]">Mantra audio</strong> — AI-synthesised devotional chanting sounds</span></li>
+            <li className="flex gap-2"><span className="text-[#ffd700]">•</span> <span><strong className="text-[#fff6df]">Fonts</strong> — Sora &amp; Space Grotesk via Google Fonts</span></li>
+            <li className="flex gap-2"><span className="text-[#ffd700]">•</span> <span><strong className="text-[#fff6df]">Icons</strong> — Material Symbols by Google</span></li>
+            <li className="flex gap-2"><span className="text-[#ffd700]">•</span> <span><strong className="text-[#fff6df]">Built with</strong> — React, TypeScript, Vite, Tailwind CSS, MongoDB Atlas</span></li>
+          </ul>
+        </div>
+
         <div
           className="glass-card p-5 text-center"
           style={{ background: 'rgba(119,1,208,0.12)', border: '1px solid rgba(220,184,255,0.15)' }}
