@@ -505,7 +505,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
       <div className="stars" />
 
       {/* Page content */}
-      <div className="relative z-10 flex flex-col items-center justify-start h-full pt-4 sm:pt-10 pb-2 sm:pb-6 px-4">
+      <div className="relative z-10 flex flex-col items-center justify-between h-full pt-4 sm:pt-10 pb-2 sm:pb-6 px-4">
         {/* Streak reminder banner */}
         {showStreakBanner && (
           <div
@@ -530,7 +530,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         )}
 
         {/* Deity title */}
-        <div className="text-center mb-2 sm:mb-7 mt-1 sm:mt-2">
+        <div className="text-center sm:mb-7 mt-1 sm:mt-2">
           <p
             className="text-[#d0c6ab] text-[11px] tracking-[0.28em] uppercase mb-2"
             style={{ fontFamily: 'Inter, sans-serif' }}
@@ -550,7 +550,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
 
         {/* Score glass panel */}
         <div
-          className="glass-card w-full max-w-xs sm:max-w-sm md:max-w-md px-8 py-3 sm:py-7 mb-2 sm:mb-7 text-center"
+          className="glass-card w-full max-w-xs sm:max-w-sm md:max-w-md px-8 py-3 sm:py-7 sm:mb-7 text-center"
           style={{ boxShadow: '0 4px 40px rgba(0,0,0,0.45)' }}
         >
           <p
@@ -665,7 +665,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         </div>
 
         {/* Chant buttons */}
-        <div className="flex items-center gap-5 sm:gap-8 mb-2 sm:mb-7">
+        <div className="flex items-center gap-5 sm:gap-8 sm:mb-7">
           {(
             [
               { type: 'button1' as ButtonType, label: localizedButtons[0], color: colors.primary },
@@ -691,8 +691,8 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
                 }}
                 className="chant-btn flex items-center justify-center text-center"
                 style={{
-                  width: 'clamp(118px, 26vw, 172px)',
-                  height: 'clamp(118px, 26vw, 172px)',
+                  width: 'clamp(148px, 40vw, 172px)',
+                  height: 'clamp(148px, 40vw, 172px)',
                   fontSize,
                   background: isExpected
                     ? `radial-gradient(circle at 35% 35%, ${color}50 0%, ${color}20 60%, rgba(13,18,40,0.65) 100%)`
@@ -719,7 +719,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         </div>
 
         {/* Indicator dots */}
-        <div className="flex items-center gap-2.5 mb-2 sm:mb-7">
+        <div className="flex items-center gap-2.5 sm:mb-7">
           {(['button1', 'button2'] as ButtonType[]).map((b) => (
             <div
               key={b}
@@ -741,7 +741,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         </div>
 
         {/* Bento stats */}
-        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md grid grid-cols-3 gap-2.5 mb-2 sm:mb-5">
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md grid grid-cols-3 gap-2.5 sm:mb-5">
           {[
             {
               icon: 'timer',
