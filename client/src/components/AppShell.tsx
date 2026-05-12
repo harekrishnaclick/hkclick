@@ -11,7 +11,7 @@ function PageTransition({ children }: { children: React.ReactNode }) {
   }, [location]);
 
   return (
-    <div key={animKey} className="animate-page-enter">
+    <div key={animKey} className="animate-page-enter h-full">
       {children}
     </div>
   );
@@ -200,7 +200,7 @@ export function AppShell({
 
   return (
     <div
-      className="min-h-screen"
+      className="h-[100svh] md:min-h-screen overflow-hidden md:overflow-auto"
       style={{
         background: 'radial-gradient(ellipse at 60% 0%, #191e35 0%, #0d1228 70%)',
         backgroundAttachment: 'fixed',
@@ -293,7 +293,7 @@ export function AppShell({
       </aside>
 
       {/* Page content */}
-      <main className="pt-14 pb-16 md:pb-0 min-h-screen">
+      <main className="pt-14 pb-16 md:pb-0 h-[100svh] md:h-auto md:min-h-screen overflow-hidden md:overflow-visible">
         <PageTransition>{children}</PageTransition>
       </main>
 

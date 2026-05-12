@@ -432,7 +432,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
   const tagline = t.deityTaglines[deityKey] || '';
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="h-full relative overflow-hidden">
       {/* Particle overlay */}
       {particles.length > 0 && (
         <div className="fixed inset-0 pointer-events-none z-[200]">
@@ -505,7 +505,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
       <div className="stars" />
 
       {/* Page content */}
-      <div className="relative z-10 flex flex-col items-center justify-start min-h-screen pt-10 pb-6 px-4">
+      <div className="relative z-10 flex flex-col items-center justify-start h-full pt-4 sm:pt-10 pb-2 sm:pb-6 px-4">
         {/* Streak reminder banner */}
         {showStreakBanner && (
           <div
@@ -530,7 +530,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         )}
 
         {/* Deity title */}
-        <div className="text-center mb-7 mt-2">
+        <div className="text-center mb-2 sm:mb-7 mt-1 sm:mt-2">
           <p
             className="text-[#d0c6ab] text-[11px] tracking-[0.28em] uppercase mb-2"
             style={{ fontFamily: 'Inter, sans-serif' }}
@@ -550,7 +550,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
 
         {/* Score glass panel */}
         <div
-          className="glass-card w-full max-w-xs sm:max-w-sm md:max-w-md px-8 py-7 mb-7 text-center"
+          className="glass-card w-full max-w-xs sm:max-w-sm md:max-w-md px-8 py-3 sm:py-7 mb-2 sm:mb-7 text-center"
           style={{ boxShadow: '0 4px 40px rgba(0,0,0,0.45)' }}
         >
           <p
@@ -561,7 +561,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
           </p>
 
           <div
-            className={`text-[4rem] sm:text-[5rem] font-bold text-[#fff6df] leading-none ${scoreAnimation ? 'animate-score-increase' : ''}`}
+            className={`text-[2.8rem] sm:text-[5rem] font-bold text-[#fff6df] leading-none ${scoreAnimation ? 'animate-score-increase' : ''}`}
             style={{
               fontFamily: 'Sora, sans-serif',
               textShadow: '0 0 20px rgba(255,246,223,0.35)',
@@ -665,7 +665,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         </div>
 
         {/* Chant buttons */}
-        <div className="flex items-center gap-5 sm:gap-8 mb-7">
+        <div className="flex items-center gap-5 sm:gap-8 mb-2 sm:mb-7">
           {(
             [
               { type: 'button1' as ButtonType, label: localizedButtons[0], color: colors.primary },
@@ -719,7 +719,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         </div>
 
         {/* Indicator dots */}
-        <div className="flex items-center gap-2.5 mb-7">
+        <div className="flex items-center gap-2.5 mb-2 sm:mb-7">
           {(['button1', 'button2'] as ButtonType[]).map((b) => (
             <div
               key={b}
@@ -741,7 +741,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         </div>
 
         {/* Bento stats */}
-        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md grid grid-cols-3 gap-2.5 mb-5">
+        <div className="w-full max-w-xs sm:max-w-sm md:max-w-md grid grid-cols-3 gap-2.5 mb-2 sm:mb-5">
           {[
             {
               icon: 'timer',
