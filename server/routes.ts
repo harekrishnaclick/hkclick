@@ -2,16 +2,34 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { mongoStorage } from "./mongoStorage";
 import { z } from "zod";
+import rateLimit from "express-rate-limit";
 
 const updateScoreSchema = z.object({
   playerName: z.string().min(1).max(50),
   score: z.number().int().min(0),
   country: z.string().length(2).optional(),
+  userId: z.string().optional(),
 });
 
 const authSchema = z.object({
   username: z.string().min(3).max(30),
   password: z.string().min(4).max(100),
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { error: "Too many attempts, please try again later." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const scoreLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { error: "Too many score submissions, please slow down." },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -32,17 +50,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Auth routes
-  
+
   // Register new user
-  app.post("/api/auth/register", async (req, res) => {
+  app.post("/api/auth/register", authLimiter, async (req, res) => {
     try {
       const validatedData = authSchema.parse(req.body);
-      
+
       const existingUser = await mongoStorage.getUserByUsername(validatedData.username);
       if (existingUser) {
         return res.status(400).json({ error: "Username already exists" });
       }
-      
+
       const user = await mongoStorage.createUser(validatedData);
       res.json({ id: user.id, username: user.username });
     } catch (error) {
@@ -56,15 +74,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Login user
-  app.post("/api/auth/login", async (req, res) => {
+  app.post("/api/auth/login", authLimiter, async (req, res) => {
     try {
       const validatedData = authSchema.parse(req.body);
-      
+
       const user = await mongoStorage.validatePassword(validatedData.username, validatedData.password);
       if (!user) {
         return res.status(401).json({ error: "Invalid username or password" });
       }
-      
+
       res.json({ id: user.id, username: user.username });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -77,11 +95,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Leaderboard routes
-  
+
   // Submit or update player score
-  app.post("/api/leaderboard/score", async (req, res) => {
+  app.post("/api/leaderboard/score", scoreLimiter, async (req, res) => {
     try {
       const validatedData = updateScoreSchema.parse(req.body);
+
+      // If a userId is provided, verify it matches the playerName (registered users only)
+      if (validatedData.userId) {
+        const user = await mongoStorage.getUser(validatedData.userId);
+        if (!user || user.username.toLowerCase() !== validatedData.playerName.toLowerCase()) {
+          return res.status(403).json({ error: "Player name does not match your account." });
+        }
+      }
+
       const updatedEntry = await mongoStorage.updatePlayerScore(validatedData);
       res.json(updatedEntry);
     } catch (error) {

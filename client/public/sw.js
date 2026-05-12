@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hare-krishna-v1';
+const CACHE_NAME = 'harekrishna-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -29,7 +29,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {

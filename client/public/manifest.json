@@ -1,23 +1,23 @@
 {
-  "name": "Hare Krishna Clicker",
-  "short_name": "HK Clicker",
-  "description": "Cosmic clicking game - chant HARE KRISHNA and climb the global leaderboard!",
+  "name": "HareKrishna",
+  "short_name": "HareKrishna",
+  "description": "Spiritual chanting companion — chant mantras, track your malas, and climb the global leaderboard.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a1a",
-  "theme_color": "#1a0a2e",
+  "background_color": "#0d1228",
+  "theme_color": "#0d1228",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.svg",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.svg",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

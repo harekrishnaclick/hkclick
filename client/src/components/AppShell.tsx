@@ -205,7 +205,7 @@ export function AppShell({
             textShadow: '0 0 12px rgba(255,215,0,0.5)',
           }}
         >
-          Cosmic Mantra
+          HareKrishna
         </Link>
 
         <div className="flex items-center gap-1">

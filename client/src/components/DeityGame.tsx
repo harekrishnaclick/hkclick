@@ -248,6 +248,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
             playerName: currentUser.username,
             score: finalScore,
             country: countryRef.current,
+            userId: currentUser.id,
           }),
         });
         if (!res.ok) return false;

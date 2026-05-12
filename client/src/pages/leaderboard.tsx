@@ -133,7 +133,7 @@ export default function LeaderboardPage({ user, t }: LeaderboardPageProps) {
     const freshScore = getAutoScore();
     if (!name || freshScore <= 0) return;
     if (!user) localStorage.setItem('hareKrishnaPlayerName', name);
-    submitMutation.mutate({ playerName: name, score: freshScore, country: userCountry });
+    submitMutation.mutate({ playerName: name, score: freshScore, country: userCountry, userId: user?.id });
   };
 
   const currentScore = getAutoScore();

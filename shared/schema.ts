@@ -40,6 +40,7 @@ export const updateScoreSchema = z.object({
   playerName: z.string().min(1).max(50),
   score: z.number().int().min(0),
   country: z.string().length(2).optional(),
+  userId: z.string().optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

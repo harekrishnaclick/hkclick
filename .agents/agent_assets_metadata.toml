@@ -1,0 +1,25 @@
+uploads = []
+
+[[generated]]
+id = "XRsjH20y-solLF6XpWyEG"
+uri = "file://attached_assets/generated_images/harekrishna_icon.png"
+type = "image"
+title = "harekrishna app icon"
+
+[[generated]]
+id = "eBdPpNueWfErrz6N3M357"
+uri = "file://attached_assets/generated_images/harekrishna_og.png"
+type = "image"
+title = "harekrishna og share image"
+
+[[outputs]]
+id = "UsEZwi_XPdN6IF49stDe5"
+uri = "file://attached_assets/generated_images/harekrishna_icon.png"
+type = "image"
+title = "App Icon"
+
+[[outputs]]
+id = "1WnMYeFloj_q5UJXwzYbK"
+uri = "file://attached_assets/generated_images/harekrishna_og.png"
+type = "image"
+title = "OG Share Image"

@@ -34,10 +34,11 @@ interface LeaderboardProps {
   currentScore: number;
   onScoreSubmitted?: () => void;
   loggedInUsername?: string;
+  loggedInUserId?: string;
   t: Translations;
 }
 
-export function Leaderboard({ currentScore, onScoreSubmitted, loggedInUsername, t }: LeaderboardProps) {
+export function Leaderboard({ currentScore, onScoreSubmitted, loggedInUsername, loggedInUserId, t }: LeaderboardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const [userCountry, setUserCountry] = useState('XX');
@@ -95,6 +96,7 @@ export function Leaderboard({ currentScore, onScoreSubmitted, loggedInUsername, 
       playerName: trimmedName,
       score: currentScore,
       country: userCountry,
+      userId: loggedInUserId,
     });
   };
 
