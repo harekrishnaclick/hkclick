@@ -200,7 +200,7 @@ export function AppShell({
 
   return (
     <div
-      className="h-[100svh] md:min-h-screen overflow-hidden md:overflow-auto"
+      className={`min-h-screen ${isDeityRoute ? 'h-[100svh] overflow-hidden' : ''}`}
       style={{
         background: 'radial-gradient(ellipse at 60% 0%, #191e35 0%, #0d1228 70%)',
         backgroundAttachment: 'fixed',
@@ -293,7 +293,7 @@ export function AppShell({
       </aside>
 
       {/* Page content */}
-      <main className="pt-14 pb-16 md:pb-0 h-[100svh] md:h-auto md:min-h-screen overflow-hidden md:overflow-visible">
+      <main className={`pt-14 pb-16 md:pb-0 md:min-h-screen ${isDeityRoute ? 'h-[100svh] overflow-hidden' : 'min-h-screen'}`}>
         <PageTransition>{children}</PageTransition>
       </main>
 
