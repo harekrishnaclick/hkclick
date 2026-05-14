@@ -174,8 +174,10 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
     _countryFetchPromise.then((c) => { countryRef.current = c; });
   }, []);
 
-  const audio1Ref = useRef<HTMLAudioElement | null>(null);
-  const audio2Ref = useRef<HTMLAudioElement | null>(null);
+  const pool1Ref = useRef<HTMLAudioElement[]>([]);
+  const pool2Ref = useRef<HTMLAudioElement[]>([]);
+  const idx1Ref = useRef(0);
+  const idx2Ref = useRef(0);
 
   const { data: globalLeaderboard } = useQuery<LeaderboardEntry[]>({
     queryKey: ['/api/leaderboard/global'],
@@ -191,14 +193,16 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
   }, [deityKey]);
 
   useEffect(() => {
-    const a1 = new Audio(sounds[0]);
-    const a2 = new Audio(sounds[1]);
-    a1.preload = 'auto';
-    a2.preload = 'auto';
-    a1.volume = 0.7;
-    a2.volume = 0.7;
-    audio1Ref.current = a1;
-    audio2Ref.current = a2;
+    const makePool = (url: string) => Array.from({ length: 4 }, () => {
+      const a = new Audio(url);
+      a.preload = 'auto';
+      a.volume = 0.7;
+      return a;
+    });
+    pool1Ref.current = makePool(sounds[0]);
+    pool2Ref.current = makePool(sounds[1]);
+    idx1Ref.current = 0;
+    idx2Ref.current = 0;
   }, [sounds]);
 
   useEffect(() => {
@@ -337,11 +341,13 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
 
       if (!isMuted) {
         try {
-          const base = buttonType === 'button1' ? audio1Ref.current : audio2Ref.current;
-          if (base) {
-            const clone = base.cloneNode() as HTMLAudioElement;
-            clone.volume = 0.7;
-            clone.play().catch(() => {});
+          const pool = buttonType === 'button1' ? pool1Ref.current : pool2Ref.current;
+          const idxRef = buttonType === 'button1' ? idx1Ref : idx2Ref;
+          const audio = pool[idxRef.current];
+          if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+            idxRef.current = (idxRef.current + 1) % pool.length;
           }
         } catch { /* audio not supported */ }
       }
