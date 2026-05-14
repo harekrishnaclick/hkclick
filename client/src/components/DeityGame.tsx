@@ -174,10 +174,9 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
     _countryFetchPromise.then((c) => { countryRef.current = c; });
   }, []);
 
-  const pool1Ref = useRef<HTMLAudioElement[]>([]);
-  const pool2Ref = useRef<HTMLAudioElement[]>([]);
-  const idx1Ref = useRef(0);
-  const idx2Ref = useRef(0);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const buf1Ref = useRef<AudioBuffer | null>(null);
+  const buf2Ref = useRef<AudioBuffer | null>(null);
 
   const { data: globalLeaderboard } = useQuery<LeaderboardEntry[]>({
     queryKey: ['/api/leaderboard/global'],
@@ -192,17 +191,10 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
     localStorage.setItem('cosmicMantra_lastDeity', deityKey);
   }, [deityKey]);
 
+  // Reset buffers when sounds change so they're reloaded on next tap
   useEffect(() => {
-    const makePool = (url: string) => Array.from({ length: 4 }, () => {
-      const a = new Audio(url);
-      a.preload = 'auto';
-      a.volume = 0.7;
-      return a;
-    });
-    pool1Ref.current = makePool(sounds[0]);
-    pool2Ref.current = makePool(sounds[1]);
-    idx1Ref.current = 0;
-    idx2Ref.current = 0;
+    buf1Ref.current = null;
+    buf2Ref.current = null;
   }, [sounds]);
 
   useEffect(() => {
@@ -341,13 +333,25 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
 
       if (!isMuted) {
         try {
-          const pool = buttonType === 'button1' ? pool1Ref.current : pool2Ref.current;
-          const idxRef = buttonType === 'button1' ? idx1Ref : idx2Ref;
-          const audio = pool[idxRef.current];
-          if (audio) {
-            audio.currentTime = 0;
-            audio.play().catch(() => {});
-            idxRef.current = (idxRef.current + 1) % pool.length;
+          // Create AudioContext on first tap (requires user gesture)
+          if (!audioCtxRef.current) {
+            const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+            audioCtxRef.current = ctx;
+            // Load and decode both buffers in background
+            const load = (url: string) =>
+              fetch(url).then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b));
+            load(sounds[0]).then(b => { buf1Ref.current = b; }).catch(() => {});
+            load(sounds[1]).then(b => { buf2Ref.current = b; }).catch(() => {});
+          } else {
+            const ctx = audioCtxRef.current;
+            const buf = buttonType === 'button1' ? buf1Ref.current : buf2Ref.current;
+            if (buf) {
+              if (ctx.state === 'suspended') ctx.resume();
+              const src = ctx.createBufferSource();
+              src.buffer = buf;
+              src.connect(ctx.destination);
+              src.start(0);
+            }
           }
         } catch { /* audio not supported */ }
       }
