@@ -1,0 +1,112 @@
+.06 kB │ gzip:   0.08 kB
+../dist/public/assets/durga-CgaNwgif.js                                        0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/radha-C4QFJS-h.js                                        0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/ganesh-BFJQVAvH.js                                       0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/shivji-DM7MXe6Y.js                                       0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/hanuman-DnyQJmw1.js                                      0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/krishna-CjYSIvc1.js                                      0.06 kB │ gzip:   0.08 kB
+../dist/public/assets/index-dVYQtny1.js                                      407.09 kB │ gzip: 125.71 kB
+✓ built in 17.86s
+
+  dist/index.js  13.7kb
+
+⚡ Done in 28ms
+ ---> Removed intermediate container 011a97397fa5
+ ---> 7210f959e6aa
+Step 7/15 : FROM node:20-alpine AS production
+ ---> fb4cd12c85ee
+Step 8/15 : WORKDIR /app
+ ---> Using cache
+ ---> f070fd659378
+Step 9/15 : COPY package*.json ./
+ ---> Using cache
+ ---> 4c82c6219b55
+Step 10/15 : RUN npm ci
+ ---> Using cache
+ ---> ae2b605b564d
+Step 11/15 : COPY --from=builder /app/dist ./dist
+ ---> acdbeffa4858
+Step 12/15 : EXPOSE 5000
+ ---> Running in 18886f789445
+ ---> Removed intermediate container 18886f789445
+ ---> 0e4e98dd1c1c
+Step 13/15 : ENV NODE_ENV=production
+ ---> Running in 1a6211dbd059
+ ---> Removed intermediate container 1a6211dbd059
+ ---> 9f341336e493
+Step 14/15 : ENV PORT=5000
+ ---> Running in 5c74ed6a633a
+ ---> Removed intermediate container 5c74ed6a633a
+ ---> b9b7f5bbd0f1
+Step 15/15 : CMD ["node", "dist/index.js"]
+ ---> Running in 5be3bd42bfa4
+ ---> Removed intermediate container 5be3bd42bfa4
+ ---> 3c56d19afc9c
+Successfully built 3c56d19afc9c
+Successfully tagged myapp_harekrishna-app:latest
+Recreating myapp_harekrishna-app_1 ... 
+
+ERROR: for myapp_harekrishna-app_1  'ContainerConfig'
+
+ERROR: for harekrishna-app  'ContainerConfig'
+Traceback (most recent call last):
+  File "/usr/bin/docker-compose", line 33, in <module>
+    sys.exit(load_entry_point('docker-compose==1.29.2', 'console_scripts', 'docker-compose')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 81, in main
+    command_func()
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 203, in perform_command
+    handler(command, command_options)
+  File "/usr/lib/python3/dist-packages/compose/metrics/decorator.py", line 18, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1186, in up
+    to_attach = up(False)
+                ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/cli/main.py", line 1166, in up
+    return self.project.up(
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 697, in up
+    results, errors = parallel.parallel_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+             ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/project.py", line 679, in do
+    return service.execute_convergence_plan(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 579, in execute_convergence_plan
+    return self._execute_convergence_recreate(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 499, in _execute_convergence_recreate
+    containers, errors = parallel_execute(
+                         ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 108, in parallel_execute
+    raise error_to_reraise
+  File "/usr/lib/python3/dist-packages/compose/parallel.py", line 206, in producer
+    result = func(obj)
+             ^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 494, in recreate
+    return self.recreate_container(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 612, in recreate_container
+    new_container = self.create_container(
+                    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 330, in create_container
+    container_options = self._get_container_create_options(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 921, in _get_container_create_options
+    container_options, override_options = self._build_container_volume_options(
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 960, in _build_container_volume_options
+    binds, affinity = merge_volume_bindings(
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1548, in merge_volume_bindings
+    old_volumes, old_mounts = get_container_data_volumes(
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/compose/service.py", line 1579, in get_container_data_volumes
+    container.image_config['ContainerConfig'].get('Volumes') or {}
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'ContainerConfig'
