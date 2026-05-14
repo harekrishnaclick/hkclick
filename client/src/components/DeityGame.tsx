@@ -177,6 +177,8 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
   const audioCtxRef = useRef<AudioContext | null>(null);
   const buf1Ref = useRef<AudioBuffer | null>(null);
   const buf2Ref = useRef<AudioBuffer | null>(null);
+  const audioReadyRef = useRef(false);
+  const audioInitingRef = useRef(false);
 
   const { data: globalLeaderboard } = useQuery<LeaderboardEntry[]>({
     queryKey: ['/api/leaderboard/global'],
@@ -191,21 +193,25 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
     localStorage.setItem('cosmicMantra_lastDeity', deityKey);
   }, [deityKey]);
 
-  useEffect(() => {
-    const ctx = new AudioContext();
-    audioCtxRef.current = ctx;
-    const load = async (url: string) => {
-      try {
+  const initAudio = useCallback(async () => {
+    if (audioReadyRef.current || audioInitingRef.current) return;
+    audioInitingRef.current = true;
+    try {
+      const ctx = new AudioContext();
+      await ctx.resume();
+      audioCtxRef.current = ctx;
+      const load = async (url: string) => {
         const res = await fetch(url);
         const raw = await res.arrayBuffer();
         return ctx.decodeAudioData(raw);
-      } catch { return null; }
-    };
-    Promise.all([load(sounds[0]), load(sounds[1])]).then(([b1, b2]) => {
+      };
+      const [b1, b2] = await Promise.all([load(sounds[0]), load(sounds[1])]);
       buf1Ref.current = b1;
       buf2Ref.current = b2;
-    });
-    return () => { ctx.close(); };
+      audioReadyRef.current = true;
+    } catch { /* audio unavailable */ } finally {
+      audioInitingRef.current = false;
+    }
   }, [sounds]);
 
   useEffect(() => {
@@ -344,14 +350,17 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
 
       if (!isMuted) {
         try {
-          const ctx = audioCtxRef.current;
-          const buf = buttonType === 'button1' ? buf1Ref.current : buf2Ref.current;
-          if (ctx && buf) {
-            if (ctx.state === 'suspended') ctx.resume();
-            const src = ctx.createBufferSource();
-            src.buffer = buf;
-            src.connect(ctx.destination);
-            src.start(0);
+          if (!audioReadyRef.current) {
+            initAudio();
+          } else {
+            const ctx = audioCtxRef.current;
+            const buf = buttonType === 'button1' ? buf1Ref.current : buf2Ref.current;
+            if (ctx && buf) {
+              const src = ctx.createBufferSource();
+              src.buffer = buf;
+              src.connect(ctx.destination);
+              src.start(0);
+            }
           }
         } catch (e) {
           console.warn('Audio failed:', e);
@@ -390,7 +399,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
         return buttonType === 'button1' ? 'button2' : 'button1';
       });
     },
-    [isMuted],
+    [isMuted, initAudio],
   );
 
   useEffect(() => {
