@@ -150,6 +150,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
   const [dailyGoal, setDailyGoalState] = useState(() => getDailyGoal());
   const [savedDailyPairs, setSavedDailyPairs] = useState(() => getDailyPairs());
   const particleIdRef = useRef(0);
+  const prevMalaCountRef = useRef<number | null>(null);
 
   const sessionStartRef = useRef(Date.now());
   const lastClickTime = useRef(0);
@@ -392,12 +393,14 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
   );
 
   useEffect(() => {
-    if (malaCount > 0) {
+    if (prevMalaCountRef.current !== null && malaCount > prevMalaCountRef.current) {
       setMalaFlashKey((k) => k + 1);
       setMalaFlash(true);
       const t = setTimeout(() => setMalaFlash(false), 1500);
+      prevMalaCountRef.current = malaCount;
       return () => clearTimeout(t);
     }
+    prevMalaCountRef.current = malaCount;
   }, [malaCount]);
 
   const spawnParticles = useCallback(
@@ -474,28 +477,27 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
       {malaFlash && (
         <div
           key={malaFlashKey}
-          className="fixed inset-0 pointer-events-none z-[190] animate-mala-flash"
-          style={{
-            background:
-              'radial-gradient(ellipse at center, rgba(255,215,0,0.35) 0%, rgba(255,215,0,0.15) 40%, transparent 70%)',
-          }}
+          className="fixed inset-0 pointer-events-none z-[190] animate-mala-flash flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
         >
           <div
-            className="absolute animate-mala-text text-center px-8"
-            style={{ left: '50%', top: '42%' }}
+            className="animate-mala-text text-center px-10 py-7 rounded-2xl"
+            style={{
+              background: 'rgba(13,18,40,0.85)',
+              border: '1.5px solid rgba(255,215,0,0.45)',
+              boxShadow: '0 0 48px rgba(255,215,0,0.25), 0 8px 40px rgba(0,0,0,0.6)',
+              backdropFilter: 'blur(16px)',
+            }}
           >
             <p
               className="text-[#ffd700] font-bold text-3xl sm:text-4xl"
-              style={{
-                fontFamily: 'Sora, sans-serif',
-                textShadow: '0 0 40px rgba(255,215,0,1), 0 0 80px rgba(255,215,0,0.6)',
-              }}
+              style={{ fontFamily: 'Sora, sans-serif', textShadow: '0 0 24px rgba(255,215,0,0.8)' }}
             >
               {t.game.malaCompleteTitle}
             </p>
             <p
               className="text-[#fff6df] text-base mt-2 font-semibold"
-              style={{ fontFamily: 'Inter, sans-serif', textShadow: '0 0 20px rgba(255,246,223,0.8)' }}
+              style={{ fontFamily: 'Inter, sans-serif' }}
             >
               {malaCount} {malaCount !== 1 ? t.game.malaCompletedPlural : t.game.malaCompletedSingle}
             </p>
