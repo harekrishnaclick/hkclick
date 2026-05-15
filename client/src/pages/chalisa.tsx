@@ -3,13 +3,28 @@ import { chalisaVerses, buildWordList } from '@/lib/hanumanChalisa';
 
 const wordList = buildWordList(chalisaVerses);
 const TOTAL = wordList.length;
+const STORAGE_KEY = 'harekrishna_chalisa_progress';
+
+function loadProgress(): number {
+  try {
+    const v = localStorage.getItem(STORAGE_KEY);
+    if (v === null) return 0;
+    const n = parseInt(v, 10);
+    return Number.isFinite(n) && n >= 0 && n < TOTAL ? n : 0;
+  } catch { return 0; }
+}
 
 export default function ChalisaPage() {
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(loadProgress);
   const [completed, setCompleted] = useState(false);
   const activeRef = useRef<HTMLButtonElement | null>(null);
 
   const progress = Math.min(current / TOTAL, 1);
+
+  // Persist progress on every word advance
+  useEffect(() => {
+    try { localStorage.setItem(STORAGE_KEY, String(current)); } catch { /* ignore */ }
+  }, [current]);
 
   // Build flat index: (verseId, lineIdx, wordIdx) -> globalIndex
   const wordIndex = useMemo(() => {
@@ -25,6 +40,7 @@ export default function ChalisaPage() {
     if (current >= TOTAL - 1) {
       setCurrent(TOTAL);
       setCompleted(true);
+      try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
     } else {
       setCurrent((c) => c + 1);
     }
@@ -33,6 +49,7 @@ export default function ChalisaPage() {
   const handleReset = useCallback(() => {
     setCurrent(0);
     setCompleted(false);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
   }, []);
 
   // Scroll active word into view
