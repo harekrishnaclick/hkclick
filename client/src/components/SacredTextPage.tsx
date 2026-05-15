@@ -38,6 +38,17 @@ export default function SacredTextPage({
     } catch { return 0; }
   });
   const [completed, setCompleted] = useState(false);
+  const [fontSize, setFontSize] = useState(() => {
+    try { return parseInt(localStorage.getItem('harekrishna_text_size') || '17', 10); } catch { return 17; }
+  });
+
+  const changeFontSize = useCallback((delta: number) => {
+    setFontSize((prev) => {
+      const next = Math.min(28, Math.max(13, prev + delta));
+      try { localStorage.setItem('harekrishna_text_size', String(next)); } catch { /* ignore */ }
+      return next;
+    });
+  }, []);
   const activeRef = useRef<HTMLButtonElement | null>(null);
 
   const progress = Math.min(current / TOTAL, 1);
@@ -114,9 +125,25 @@ export default function SacredTextPage({
               style={{ fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif" }}>
               {title}
             </h1>
-            <span className="text-white/50 text-xs font-mono">
-              {Math.min(current, TOTAL)}/{TOTAL}
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => changeFontSize(-2)}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all active:scale-90"
+                  style={{ background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.25)', color: 'rgba(255,215,0,0.8)' }}
+                  aria-label="Decrease font size"
+                >A−</button>
+                <button
+                  onClick={() => changeFontSize(2)}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all active:scale-90"
+                  style={{ background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.25)', color: 'rgba(255,215,0,0.8)' }}
+                  aria-label="Increase font size"
+                >A+</button>
+              </div>
+              <span className="text-white/50 text-xs font-mono">
+                {Math.min(current, TOTAL)}/{TOTAL}
+              </span>
+            </div>
           </div>
           <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,215,0,0.12)' }}>
             <div
@@ -163,7 +190,7 @@ export default function SacredTextPage({
                         className="rounded-lg px-2 py-0.5 transition-all duration-200 select-none"
                         style={{
                           fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
-                          fontSize: isActive ? '1.25rem' : '1.05rem',
+                          fontSize: isActive ? `${fontSize + 3}px` : `${fontSize}px`,
                           fontWeight: isActive ? 700 : isDone ? 500 : 400,
                           cursor: isActive ? 'pointer' : 'default',
                           color: isDone
