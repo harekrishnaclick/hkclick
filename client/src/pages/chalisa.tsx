@@ -46,15 +46,15 @@ export default function ChalisaPage() {
     <div className="min-h-screen relative" style={{
       background: 'linear-gradient(135deg, #0a0015 0%, #1a0030 40%, #0d0020 100%)',
     }}>
-      {/* Stars background */}
+      {/* Stars background — deterministic so they don't shuffle on re-render */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {Array.from({ length: 60 }).map((_, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-white"
             style={{
-              width: Math.random() * 2 + 1,
-              height: Math.random() * 2 + 1,
+              width: 1 + (i % 3) * 0.5,
+              height: 1 + (i % 3) * 0.5,
               left: `${(i * 37 + 13) % 100}%`,
               top: `${(i * 53 + 7) % 100}%`,
               opacity: 0.2 + (i % 5) * 0.1,
@@ -114,7 +114,6 @@ export default function ChalisaPage() {
                     const globalIdx = wordIndex.get(`${verse.id}:${li}:${wi}`) ?? -1;
                     const isDone = globalIdx < current;
                     const isActive = globalIdx === current && !completed;
-                    const isUpcoming = globalIdx > current;
 
                     return (
                       <button
