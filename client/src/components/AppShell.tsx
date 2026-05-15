@@ -124,6 +124,43 @@ export function AppShell({
             </Link>
           );
         })}
+
+        <div className="pt-4 pb-1">
+          <p
+            className="text-[#ffd700]/50 text-[10px] font-bold tracking-widest uppercase px-1"
+            style={{ fontFamily: 'Sora, sans-serif' }}
+          >
+            {language === 'hi' ? 'पवित्र ग्रंथ' : 'Sacred Texts'}
+          </p>
+        </div>
+        {[
+          { path: '/chalisa', icon: 'auto_stories', labelEn: 'Hanuman Chalisa', labelHi: 'हनुमान चालीसा' },
+          { path: '/hanuman-ashtak', icon: 'menu_book', labelEn: 'Hanuman Ashtak', labelHi: 'हनुमान अष्टक' },
+          { path: '/shiv-chalisa', icon: 'menu_book', labelEn: 'Shiv Chalisa', labelHi: 'शिव चालीसा' },
+        ].map((text) => {
+          const isActive = location === text.path;
+          return (
+            <Link
+              key={text.path}
+              href={text.path}
+              onClick={() => setSidebarOpen(false)}
+              className={`sidebar-deity-link ${isActive ? 'active' : ''}`}
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {text.icon}
+              </span>
+              <span style={{ fontFamily: "'Noto Sans Devanagari', Inter, sans-serif" }}>
+                {language === 'hi' ? text.labelHi : text.labelEn}
+              </span>
+              {isActive && (
+                <span
+                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ffd700]"
+                  style={{ boxShadow: '0 0 6px rgba(255,215,0,0.8)' }}
+                />
+              )}
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="mt-4 border-t border-white/10 pt-4 space-y-2">
