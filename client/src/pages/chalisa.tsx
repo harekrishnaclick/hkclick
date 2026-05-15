@@ -21,9 +21,11 @@ export default function ChalisaPage() {
 
   const progress = Math.min(current / TOTAL, 1);
 
-  // Persist progress on every word advance
+  // Persist progress — only while mid-way through (not at completion)
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, String(current)); } catch { /* ignore */ }
+    if (current > 0 && current < TOTAL) {
+      try { localStorage.setItem(STORAGE_KEY, String(current)); } catch { /* ignore */ }
+    }
   }, [current]);
 
   // Build flat index: (verseId, lineIdx, wordIdx) -> globalIndex
