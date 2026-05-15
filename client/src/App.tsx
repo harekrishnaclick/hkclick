@@ -15,6 +15,8 @@ import AboutPage from "@/pages/about";
 import PrivacyPage from "@/pages/privacy";
 import TermsPage from "@/pages/terms";
 import ChalisaPage from "@/pages/chalisa";
+import HanumanAshtakPage from "@/pages/hanuman-ashtak";
+import ShivChalisaPage from "@/pages/shiv-chalisa";
 import NotFound from "@/pages/not-found";
 import { getTranslations, type Language } from "@/lib/translations";
 
@@ -115,6 +117,12 @@ function AppContent() {
         </Route>
         <Route path="/chalisa">
           <ChalisaPage />
+        </Route>
+        <Route path="/hanuman-ashtak">
+          <HanumanAshtakPage />
+        </Route>
+        <Route path="/shiv-chalisa">
+          <ShivChalisaPage />
         </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>

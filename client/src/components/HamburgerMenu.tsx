@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Menu, X, User, LogIn, LogOut, Volume2, VolumeX, Languages } from 'lucide-react';
+import { Menu, X, User, LogIn, LogOut, Volume2, VolumeX, Languages, ChevronDown } from 'lucide-react';
 import type { Language, Translations } from '@/lib/translations';
 
 interface AuthUser {
@@ -28,6 +28,19 @@ const deityLinks: DeityLink[] = [
   { key: 'mahavir', path: '/mahavir', icon: '✋' },
 ];
 
+interface SacredTextLink {
+  path: string;
+  icon: string;
+  labelHi: string;
+  labelEn: string;
+}
+
+const sacredTextLinks: SacredTextLink[] = [
+  { path: '/chalisa', icon: '📿', labelHi: 'हनुमान चालीसा', labelEn: 'Hanuman Chalisa' },
+  { path: '/hanuman-ashtak', icon: '🙏', labelHi: 'हनुमान अष्टक', labelEn: 'Hanuman Ashtak' },
+  { path: '/shiv-chalisa', icon: '🔱', labelHi: 'शिव चालीसा', labelEn: 'Shiv Chalisa' },
+];
+
 interface HamburgerMenuProps {
   user: AuthUser | null;
   onLoginClick: () => void;
@@ -42,6 +55,9 @@ interface HamburgerMenuProps {
 export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleMute, language, onToggleLanguage, t }: HamburgerMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [location] = useLocation();
+  const [textsExpanded, setTextsExpanded] = useState(() =>
+    sacredTextLinks.some(l => l.path === location)
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -59,6 +75,8 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  const isOnSacredText = sacredTextLinks.some(l => l.path === location);
 
   return (
     <>
@@ -132,27 +150,53 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
                 </Link>
               );
             })}
-          </div>
 
-          <div className="px-4 pb-2">
-            <Link href="/chalisa">
+            <div className="px-4 pt-4 pb-1">
               <button
-                onClick={() => setIsOpen(false)}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-200 ${
-                  location === '/chalisa'
-                    ? 'bg-golden/15 border-r-2 border-golden text-golden'
-                    : 'text-white/80 hover:bg-white/5 hover:text-white'
+                onClick={() => setTextsExpanded(e => !e)}
+                className={`w-full flex items-center gap-2 text-left transition-colors ${
+                  isOnSacredText ? 'text-golden' : 'text-golden/60 hover:text-golden/80'
                 }`}
               >
-                <span className="text-lg w-7 text-center">📿</span>
-                <span className="text-sm font-medium" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
-                  हनुमान चालीसा
-                </span>
-                {location === '/chalisa' && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-golden shadow-[0_0_8px_rgba(255,215,0,0.8)]" />
-                )}
+                <p className="text-xs orbitron tracking-widest uppercase flex-1">
+                  {language === 'hi' ? 'पवित्र ग्रंथ' : 'Sacred Texts'}
+                </p>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-200 ${textsExpanded ? 'rotate-180' : ''}`}
+                />
               </button>
-            </Link>
+            </div>
+
+            {textsExpanded && (
+              <div className="pb-1">
+                {sacredTextLinks.map((text) => {
+                  const isActive = location === text.path;
+                  return (
+                    <Link key={text.path} href={text.path}>
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-200 ${
+                          isActive
+                            ? 'bg-golden/15 border-r-2 border-golden text-golden'
+                            : 'text-white/80 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <span className="text-lg w-7 text-center">{text.icon}</span>
+                        <span
+                          className="text-sm font-medium"
+                          style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
+                        >
+                          {language === 'hi' ? text.labelHi : text.labelEn}
+                        </span>
+                        {isActive && (
+                          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-golden shadow-[0_0_8px_rgba(255,215,0,0.8)]" />
+                        )}
+                      </button>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="border-t border-golden/20 p-4 space-y-2">
