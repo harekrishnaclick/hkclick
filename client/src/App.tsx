@@ -14,6 +14,7 @@ import LeaderboardPage from "@/pages/leaderboard";
 import AboutPage from "@/pages/about";
 import PrivacyPage from "@/pages/privacy";
 import TermsPage from "@/pages/terms";
+import ChalisaPage from "@/pages/chalisa";
 import NotFound from "@/pages/not-found";
 import { getTranslations, type Language } from "@/lib/translations";
 
@@ -111,6 +112,9 @@ function AppContent() {
         </Route>
         <Route path="/terms">
           <TermsPage />
+        </Route>
+        <Route path="/chalisa">
+          <ChalisaPage />
         </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>

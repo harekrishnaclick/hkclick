@@ -134,6 +134,27 @@ export function HamburgerMenu({ user, onLoginClick, onLogout, isMuted, onToggleM
             })}
           </div>
 
+          <div className="px-4 pb-2">
+            <Link href="/chalisa">
+              <button
+                onClick={() => setIsOpen(false)}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all duration-200 ${
+                  location === '/chalisa'
+                    ? 'bg-golden/15 border-r-2 border-golden text-golden'
+                    : 'text-white/80 hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <span className="text-lg w-7 text-center">📿</span>
+                <span className="text-sm font-medium" style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}>
+                  हनुमान चालीसा
+                </span>
+                {location === '/chalisa' && (
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-golden shadow-[0_0_8px_rgba(255,215,0,0.8)]" />
+                )}
+              </button>
+            </Link>
+          </div>
+
           <div className="border-t border-golden/20 p-4 space-y-2">
             <button
               onClick={onToggleLanguage}
