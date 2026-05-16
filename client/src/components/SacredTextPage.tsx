@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import type { ChalisaVerse } from '@/lib/hanumanChalisa';
 import { buildWordList } from '@/lib/hanumanChalisa';
 
@@ -270,12 +271,12 @@ export default function SacredTextPage({
         ))}
       </div>
 
-      {/* Completion overlay */}
-      {completed && (
+      {/* Completion overlay — rendered via portal to escape CSS transform stacking context */}
+      {completed && createPortal(
         <>
           <Confetti />
           <div
-            className="fixed inset-0 z-[200] flex flex-col items-center justify-center px-6 text-center"
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center px-6 text-center"
             style={{ background: 'rgba(5,0,15,0.88)', backdropFilter: 'blur(16px)' }}
           >
             {/* Glowing circle */}
@@ -341,7 +342,8 @@ export default function SacredTextPage({
               {resetLabel}
             </button>
           </div>
-        </>
+        </>,
+        document.body
       )}
 
       {/* Hint */}
