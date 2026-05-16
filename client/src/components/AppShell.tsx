@@ -134,7 +134,13 @@ export function AppShell({
           </p>
         </div>
         {[
+          { path: '/gayatri-mantra', icon: 'wb_sunny', labelEn: 'Gayatri Mantra', labelHi: 'गायत्री मंत्र' },
+          { path: '/mahamrityunjaya', icon: 'self_improvement', labelEn: 'Mahamrityunjaya', labelHi: 'महामृत्युञ्जय' },
+          { path: '/om-namah-shivaya', icon: 'temple_hindu', labelEn: 'Om Namah Shivaya', labelHi: 'ॐ नमः शिवाय' },
+          { path: '/ganesh-vandana', icon: 'emoji_nature', labelEn: 'Ganesh Vandana', labelHi: 'गणेश वन्दना' },
+          { path: '/saraswati-vandana', icon: 'music_note', labelEn: 'Saraswati Vandana', labelHi: 'सरस्वती वन्दना' },
           { path: '/chalisa', icon: 'auto_stories', labelEn: 'Hanuman Chalisa', labelHi: 'हनुमान चालीसा' },
+          { path: '/bajrang-baan', icon: 'bolt', labelEn: 'Bajrang Baan', labelHi: 'बजरंग बाण' },
           { path: '/hanuman-ashtak', icon: 'menu_book', labelEn: 'Hanuman Ashtak', labelHi: 'हनुमान अष्टक' },
           { path: '/shiv-chalisa', icon: 'menu_book', labelEn: 'Shiv Chalisa', labelHi: 'शिव चालीसा' },
         ].map((text) => {

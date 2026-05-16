@@ -17,6 +17,12 @@ import TermsPage from "@/pages/terms";
 import ChalisaPage from "@/pages/chalisa";
 import HanumanAshtakPage from "@/pages/hanuman-ashtak";
 import ShivChalisaPage from "@/pages/shiv-chalisa";
+import GayatriMantraPage from "@/pages/gayatri-mantra";
+import MahamrityunjayaPage from "@/pages/mahamrityunjaya";
+import OmNamahShivayaPage from "@/pages/om-namah-shivaya";
+import GaneshVandanaPage from "@/pages/ganesh-vandana";
+import SaraswatiVandanaPage from "@/pages/saraswati-vandana";
+import BajrangBaanPage from "@/pages/bajrang-baan";
 import NotFound from "@/pages/not-found";
 import { getTranslations, type Language } from "@/lib/translations";
 
@@ -123,6 +129,24 @@ function AppContent() {
         </Route>
         <Route path="/shiv-chalisa">
           <ShivChalisaPage />
+        </Route>
+        <Route path="/gayatri-mantra">
+          <GayatriMantraPage />
+        </Route>
+        <Route path="/mahamrityunjaya">
+          <MahamrityunjayaPage />
+        </Route>
+        <Route path="/om-namah-shivaya">
+          <OmNamahShivayaPage />
+        </Route>
+        <Route path="/ganesh-vandana">
+          <GaneshVandanaPage />
+        </Route>
+        <Route path="/saraswati-vandana">
+          <SaraswatiVandanaPage />
+        </Route>
+        <Route path="/bajrang-baan">
+          <BajrangBaanPage />
         </Route>
         {deityKeys.map(key => (
           <Route key={key} path={`/${key}`}>
