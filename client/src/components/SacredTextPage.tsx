@@ -273,12 +273,11 @@ export default function SacredTextPage({
 
       {/* Completion overlay — rendered via portal to escape CSS transform stacking context */}
       {completed && createPortal(
-        <>
+        <div
+          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center px-6 text-center"
+          style={{ background: 'rgba(5,0,15,0.88)', backdropFilter: 'blur(16px)' }}
+        >
           <Confetti />
-          <div
-            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center px-6 text-center"
-            style={{ background: 'rgba(5,0,15,0.88)', backdropFilter: 'blur(16px)' }}
-          >
             {/* Glowing circle */}
             <div style={{ animation: 'completionBounce 0.65s cubic-bezier(0.34,1.56,0.64,1) both' }}>
               <div
@@ -341,8 +340,7 @@ export default function SacredTextPage({
             >
               {resetLabel}
             </button>
-          </div>
-        </>,
+        </div>,
         document.body
       )}
 
