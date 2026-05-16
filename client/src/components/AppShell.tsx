@@ -44,6 +44,18 @@ const deityNav = [
   { key: 'durga', path: '/durga', icon: 'brightness_high' },
 ];
 
+const sacredTexts = [
+  { path: '/gayatri-mantra', icon: 'wb_sunny', labelEn: 'Gayatri Mantra', labelHi: 'गायत्री मंत्र' },
+  { path: '/mahamrityunjaya', icon: 'self_improvement', labelEn: 'Mahamrityunjaya', labelHi: 'महामृत्युञ्जय' },
+  { path: '/om-namah-shivaya', icon: 'temple_hindu', labelEn: 'Om Namah Shivaya', labelHi: 'ॐ नमः शिवाय' },
+  { path: '/ganesh-vandana', icon: 'emoji_nature', labelEn: 'Ganesh Vandana', labelHi: 'गणेश वन्दना' },
+  { path: '/saraswati-vandana', icon: 'music_note', labelEn: 'Saraswati Vandana', labelHi: 'सरस्वती वन्दना' },
+  { path: '/chalisa', icon: 'auto_stories', labelEn: 'Hanuman Chalisa', labelHi: 'हनुमान चालीसा' },
+  { path: '/bajrang-baan', icon: 'bolt', labelEn: 'Bajrang Baan', labelHi: 'बजरंग बाण' },
+  { path: '/hanuman-ashtak', icon: 'menu_book', labelEn: 'Hanuman Ashtak', labelHi: 'हनुमान अष्टक' },
+  { path: '/shiv-chalisa', icon: 'menu_book', labelEn: 'Shiv Chalisa', labelHi: 'शिव चालीसा' },
+];
+
 export function AppShell({
   children,
   user,
@@ -57,189 +69,25 @@ export function AppShell({
 }: AppShellProps) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [textsExpanded, setTextsExpanded] = useState(() => {
+    return sacredTexts.some((s) => location === s.path);
+  });
 
   const lastDeity = typeof localStorage !== 'undefined'
     ? (localStorage.getItem('cosmicMantra_lastDeity') || 'krishna')
     : 'krishna';
   const chantHref = `/${lastDeity}`;
 
-  const isDeityRoute =
-    deityNav.some((d) => location === d.path) || location === '/';
+  const isDeityRoute = deityNav.some((d) => location === d.path) || location === '/';
   const isStatsRoute = location === '/stats';
   const isDeityGallery = location === '/deities';
   const isLeaderboard = location === '/leaderboard';
+  const isSacredText = sacredTexts.some((s) => location === s.path);
 
   const activeDeityIcon =
     deityNav.find(
       (d) => location === d.path || (location === '/' && d.path === '/krishna'),
     )?.icon || 'spa';
-
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center gap-3 mb-6 px-1">
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center"
-          style={{
-            background: 'rgba(255,215,0,0.12)',
-            border: '1.5px solid rgba(255,215,0,0.35)',
-          }}
-        >
-          <span className="material-symbols-outlined text-[#ffd700] text-xl">
-            {activeDeityIcon}
-          </span>
-        </div>
-        <div>
-          <p
-            className="text-[#ffd700] text-xs font-bold tracking-widest uppercase"
-            style={{ fontFamily: 'Sora, sans-serif' }}
-          >
-            {t.nav.deities.toUpperCase()}
-          </p>
-          <p className="text-[#d0c6ab] text-[11px]">{t.nav.selectFocus}</p>
-        </div>
-      </div>
-
-      <nav className="flex-1 overflow-y-auto space-y-0.5 scrollbar-thin pr-1">
-        {deityNav.map((deity) => {
-          const isActive =
-            location === deity.path ||
-            (location === '/' && deity.path === '/krishna');
-          return (
-            <Link
-              key={deity.path}
-              href={deity.path}
-              onClick={() => setSidebarOpen(false)}
-              className={`sidebar-deity-link ${isActive ? 'active' : ''}`}
-            >
-              <span className="material-symbols-outlined text-[20px]">
-                {deity.icon}
-              </span>
-              <span>{t.deityNames[deity.key] || deity.key}</span>
-              {isActive && (
-                <span
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ffd700]"
-                  style={{ boxShadow: '0 0 6px rgba(255,215,0,0.8)' }}
-                />
-              )}
-            </Link>
-          );
-        })}
-
-        <div className="pt-4 pb-1">
-          <p
-            className="text-[#ffd700]/50 text-[10px] font-bold tracking-widest uppercase px-1"
-            style={{ fontFamily: 'Sora, sans-serif' }}
-          >
-            {language === 'hi' ? 'पवित्र ग्रंथ' : 'Sacred Texts'}
-          </p>
-        </div>
-        {[
-          { path: '/gayatri-mantra', icon: 'wb_sunny', labelEn: 'Gayatri Mantra', labelHi: 'गायत्री मंत्र' },
-          { path: '/mahamrityunjaya', icon: 'self_improvement', labelEn: 'Mahamrityunjaya', labelHi: 'महामृत्युञ्जय' },
-          { path: '/om-namah-shivaya', icon: 'temple_hindu', labelEn: 'Om Namah Shivaya', labelHi: 'ॐ नमः शिवाय' },
-          { path: '/ganesh-vandana', icon: 'emoji_nature', labelEn: 'Ganesh Vandana', labelHi: 'गणेश वन्दना' },
-          { path: '/saraswati-vandana', icon: 'music_note', labelEn: 'Saraswati Vandana', labelHi: 'सरस्वती वन्दना' },
-          { path: '/chalisa', icon: 'auto_stories', labelEn: 'Hanuman Chalisa', labelHi: 'हनुमान चालीसा' },
-          { path: '/bajrang-baan', icon: 'bolt', labelEn: 'Bajrang Baan', labelHi: 'बजरंग बाण' },
-          { path: '/hanuman-ashtak', icon: 'menu_book', labelEn: 'Hanuman Ashtak', labelHi: 'हनुमान अष्टक' },
-          { path: '/shiv-chalisa', icon: 'menu_book', labelEn: 'Shiv Chalisa', labelHi: 'शिव चालीसा' },
-        ].map((text) => {
-          const isActive = location === text.path;
-          return (
-            <Link
-              key={text.path}
-              href={text.path}
-              onClick={() => setSidebarOpen(false)}
-              className={`sidebar-deity-link ${isActive ? 'active' : ''}`}
-            >
-              <span className="material-symbols-outlined text-[20px]">
-                {text.icon}
-              </span>
-              <span style={{ fontFamily: "'Noto Sans Devanagari', Inter, sans-serif" }}>
-                {language === 'hi' ? text.labelHi : text.labelEn}
-              </span>
-              {isActive && (
-                <span
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ffd700]"
-                  style={{ boxShadow: '0 0 6px rgba(255,215,0,0.8)' }}
-                />
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      <div className="mt-4 border-t border-white/10 pt-4 space-y-2">
-        <button
-          onClick={() => {
-            onLoginClick();
-            setSidebarOpen(false);
-          }}
-          className="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
-          style={{
-            fontFamily: 'Sora, sans-serif',
-            background: user ? 'rgba(119,1,208,0.3)' : 'rgba(119,1,208,0.5)',
-            border: '1px solid rgba(220,184,255,0.2)',
-            color: '#dcb7ff',
-          }}
-        >
-          {user ? user.username : t.menu.loginRegister}
-        </button>
-        {user && (
-          <button
-            onClick={() => {
-              onLogout();
-              setSidebarOpen(false);
-            }}
-            className="w-full py-1.5 text-red-400/80 hover:text-red-300 text-xs transition-colors"
-            style={{ fontFamily: 'Inter, sans-serif' }}
-          >
-            {t.menu.logout}
-          </button>
-        )}
-        <div className="flex justify-between px-1 pt-1">
-          <button
-            onClick={onToggleLanguage}
-            className="flex items-center gap-1.5 text-[#d0c6ab] hover:text-[#fff6df] text-xs transition-colors"
-          >
-            <span className="material-symbols-outlined text-base">language</span>
-            <span style={{ fontFamily: 'Inter, sans-serif' }}>
-              {language === 'en' ? 'हिंदी' : 'English'}
-            </span>
-          </button>
-          <button
-            onClick={onToggleMute}
-            className="flex items-center gap-1.5 text-[#d0c6ab] hover:text-[#fff6df] text-xs transition-colors"
-          >
-            <span className="material-symbols-outlined text-base">
-              {isMuted ? 'volume_off' : 'volume_up'}
-            </span>
-            <span style={{ fontFamily: 'Inter, sans-serif' }}>
-              {isMuted ? t.menu.unmuteSound : t.menu.muteSound}
-            </span>
-          </button>
-        </div>
-
-        <div className="flex justify-center gap-4 pt-3 border-t border-white/5 mt-1">
-          {[
-            { href: '/about', label: 'About' },
-            { href: '/privacy', label: 'Privacy' },
-            { href: '/terms', label: 'Terms' },
-          ].map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setSidebarOpen(false)}
-              className="text-[#d0c6ab]/50 hover:text-[#d0c6ab] text-[10px] transition-colors"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div
@@ -261,10 +109,7 @@ export function AppShell({
         <Link
           href={chantHref}
           className="text-xl font-bold text-[#ffd700] cursor-pointer"
-          style={{
-            fontFamily: 'Sora, sans-serif',
-            textShadow: '0 0 12px rgba(255,215,0,0.5)',
-          }}
+          style={{ fontFamily: 'Sora, sans-serif', textShadow: '0 0 12px rgba(255,215,0,0.5)' }}
         >
           HareKrishna
         </Link>
@@ -298,7 +143,7 @@ export function AppShell({
         </div>
       </header>
 
-      {/* Backdrop (all screen sizes) */}
+      {/* Backdrop */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
@@ -308,31 +153,177 @@ export function AppShell({
 
       {/* Right sidebar */}
       <aside
-        className={`fixed right-0 top-0 h-full w-80 z-[70] p-5 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed right-0 top-0 h-full w-80 z-[70] flex flex-col transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{
-          background: 'rgba(8,13,34,0.88)',
+          background: 'rgba(8,13,34,0.92)',
           backdropFilter: 'blur(24px)',
           borderLeft: '1px solid rgba(255,255,255,0.08)',
         }}
       >
-        <div className="flex items-center justify-between mb-4 pt-14">
-          <span
-            className="text-[#ffd700] text-xs font-bold tracking-widest uppercase"
-            style={{ fontFamily: 'Sora, sans-serif' }}
-          >
-            {t.nav.navigation}
-          </span>
+        {/* Sidebar header — fixed inside aside */}
+        <div className="flex-shrink-0 flex items-center justify-between px-5 pt-16 pb-3"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(255,215,0,0.12)', border: '1.5px solid rgba(255,215,0,0.35)' }}
+            >
+              <span className="material-symbols-outlined text-[#ffd700] text-base">{activeDeityIcon}</span>
+            </div>
+            <span className="text-[#ffd700] text-xs font-bold tracking-widest uppercase"
+              style={{ fontFamily: 'Sora, sans-serif' }}>
+              {t.nav.navigation}
+            </span>
+          </div>
           <button
             onClick={() => setSidebarOpen(false)}
             className="material-symbols-outlined text-[#d0c6ab] hover:text-[#fff6df] text-xl cursor-pointer"
-            aria-label="Close menu"
           >
             close
           </button>
         </div>
-        <SidebarContent />
+
+        {/* Scrollable body */}
+        <div className="flex-1 overflow-y-auto scrollbar-thin px-5 py-4 flex flex-col gap-0.5">
+
+          {/* Deities section */}
+          <p className="text-[#ffd700]/50 text-[10px] font-bold tracking-widest uppercase px-1 mb-1"
+            style={{ fontFamily: 'Sora, sans-serif' }}>
+            {t.nav.deities}
+          </p>
+          {deityNav.map((deity) => {
+            const isActive = location === deity.path || (location === '/' && deity.path === '/krishna');
+            return (
+              <Link
+                key={deity.path}
+                href={deity.path}
+                onClick={() => setSidebarOpen(false)}
+                className={`sidebar-deity-link ${isActive ? 'active' : ''}`}
+              >
+                <span className="material-symbols-outlined text-[20px]">{deity.icon}</span>
+                <span>{t.deityNames[deity.key] || deity.key}</span>
+                {isActive && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ffd700]"
+                    style={{ boxShadow: '0 0 6px rgba(255,215,0,0.8)' }} />
+                )}
+              </Link>
+            );
+          })}
+
+          {/* Sacred Texts collapsible */}
+          <div className="mt-4">
+            <button
+              onClick={() => setTextsExpanded((v) => !v)}
+              className="w-full flex items-center justify-between px-1 mb-1 group"
+            >
+              <p className="text-[#ffd700]/50 text-[10px] font-bold tracking-widest uppercase"
+                style={{ fontFamily: 'Sora, sans-serif' }}>
+                {language === 'hi' ? 'पवित्र ग्रंथ' : 'Sacred Texts'}
+              </p>
+              <span
+                className="material-symbols-outlined text-[#ffd700]/40 group-hover:text-[#ffd700]/70 transition-colors"
+                style={{ fontSize: '16px', transition: 'transform 0.2s', transform: textsExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              >
+                expand_more
+              </span>
+            </button>
+
+            {textsExpanded && (
+              <div className="flex flex-col gap-0.5">
+                {sacredTexts.map((text) => {
+                  const isActive = location === text.path;
+                  return (
+                    <Link
+                      key={text.path}
+                      href={text.path}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`sidebar-deity-link ${isActive ? 'active' : ''}`}
+                    >
+                      <span className="material-symbols-outlined text-[20px]">{text.icon}</span>
+                      <span style={{ fontFamily: "'Noto Sans Devanagari', Inter, sans-serif" }}>
+                        {language === 'hi' ? text.labelHi : text.labelEn}
+                      </span>
+                      {isActive && (
+                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ffd700]"
+                          style={{ boxShadow: '0 0 6px rgba(255,215,0,0.8)' }} />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Spacer pushes footer to bottom of scroll area */}
+          <div className="flex-1 min-h-8" />
+
+          {/* Footer actions */}
+          <div className="border-t border-white/10 pt-4 space-y-2 mt-2">
+            <button
+              onClick={() => { onLoginClick(); setSidebarOpen(false); }}
+              className="w-full py-2.5 rounded-xl text-sm font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
+              style={{
+                fontFamily: 'Sora, sans-serif',
+                background: user ? 'rgba(119,1,208,0.3)' : 'rgba(119,1,208,0.5)',
+                border: '1px solid rgba(220,184,255,0.2)',
+                color: '#dcb7ff',
+              }}
+            >
+              {user ? user.username : t.menu.loginRegister}
+            </button>
+            {user && (
+              <button
+                onClick={() => { onLogout(); setSidebarOpen(false); }}
+                className="w-full py-1.5 text-red-400/80 hover:text-red-300 text-xs transition-colors"
+                style={{ fontFamily: 'Inter, sans-serif' }}
+              >
+                {t.menu.logout}
+              </button>
+            )}
+            <div className="flex justify-between px-1 pt-1">
+              <button
+                onClick={onToggleLanguage}
+                className="flex items-center gap-1.5 text-[#d0c6ab] hover:text-[#fff6df] text-xs transition-colors"
+              >
+                <span className="material-symbols-outlined text-base">language</span>
+                <span style={{ fontFamily: 'Inter, sans-serif' }}>
+                  {language === 'en' ? 'हिंदी' : 'English'}
+                </span>
+              </button>
+              <button
+                onClick={onToggleMute}
+                className="flex items-center gap-1.5 text-[#d0c6ab] hover:text-[#fff6df] text-xs transition-colors"
+              >
+                <span className="material-symbols-outlined text-base">
+                  {isMuted ? 'volume_off' : 'volume_up'}
+                </span>
+                <span style={{ fontFamily: 'Inter, sans-serif' }}>
+                  {isMuted ? t.menu.unmuteSound : t.menu.muteSound}
+                </span>
+              </button>
+            </div>
+
+            <div className="flex justify-center gap-4 pt-3 border-t border-white/5">
+              {[
+                { href: '/about', label: 'About' },
+                { href: '/privacy', label: 'Privacy' },
+                { href: '/terms', label: 'Terms' },
+              ].map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setSidebarOpen(false)}
+                  className="text-[#d0c6ab]/50 hover:text-[#d0c6ab] text-[10px] transition-colors"
+                  style={{ fontFamily: 'Inter, sans-serif' }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </aside>
 
       {/* Page content */}
@@ -361,15 +352,10 @@ export function AppShell({
             className={`flex flex-col items-center justify-center gap-0.5 px-4 py-1 transition-all cursor-pointer ${
               active ? 'text-[#ffd700] scale-110' : 'text-[#d0c6ab] hover:text-[#fff6df]'
             }`}
-            style={
-              active ? { filter: 'drop-shadow(0 0 4px rgba(255,215,0,0.6))' } : {}
-            }
+            style={active ? { filter: 'drop-shadow(0 0 4px rgba(255,215,0,0.6))' } : {}}
           >
             <span className="material-symbols-outlined text-[22px]">{icon}</span>
-            <span
-              className="text-[10px] font-semibold tracking-wider"
-              style={{ fontFamily: 'Inter, sans-serif' }}
-            >
+            <span className="text-[10px] font-semibold tracking-wider" style={{ fontFamily: 'Inter, sans-serif' }}>
               {label}
             </span>
           </Link>

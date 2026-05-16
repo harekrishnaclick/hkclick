@@ -14,6 +14,45 @@ interface SacredTextPageProps {
   storageKey?: string;
 }
 
+const FLOWERS = ['🌸', '🌺', '🌼', '🌻', '🌹', '🏵️', '🌷', '💐'];
+
+function Confetti() {
+  const particles = useMemo(() =>
+    Array.from({ length: 40 }, (_, i) => ({
+      id: i,
+      left: `${(i * 2.5) % 100}%`,
+      delay: `${(i * 0.07).toFixed(2)}s`,
+      duration: `${(2.8 + (i % 7) * 0.3).toFixed(1)}s`,
+      size: `${1.1 + (i % 5) * 0.25}rem`,
+      flower: FLOWERS[i % FLOWERS.length],
+      drift: `${((i % 2 === 0 ? 1 : -1) * (30 + (i % 6) * 18))}px`,
+    })), []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[210] overflow-hidden">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          style={{
+            position: 'absolute',
+            left: p.left,
+            top: '-3rem',
+            fontSize: p.size,
+            animationName: 'confettiFall',
+            animationDuration: p.duration,
+            animationDelay: p.delay,
+            animationTimingFunction: 'ease-in',
+            animationFillMode: 'forwards',
+            ['--drift' as string]: p.drift,
+          }}
+        >
+          {p.flower}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function SacredTextPage({
   verses,
   title,
@@ -45,11 +84,13 @@ export default function SacredTextPage({
   const changeFontSize = useCallback((delta: number) => {
     setFontSize((prev) => {
       const next = Math.min(28, Math.max(13, prev + delta));
-      try { localStorage.setItem('harekrishna_text_size', String(next)); } catch { /* ignore */ }
+      try { localStorage.setItem('harekrishna_text_size', String(next)); } catch {}
       return next;
     });
   }, []);
+
   const activeRef = useRef<HTMLButtonElement | null>(null);
+  const pageTopRef = useRef<HTMLDivElement | null>(null);
 
   const progress = Math.min(current / TOTAL, 1);
 
@@ -63,7 +104,7 @@ export default function SacredTextPage({
 
   useEffect(() => {
     if (storageKey && current > 0 && current < TOTAL) {
-      try { localStorage.setItem(storageKey, String(current)); } catch { /* ignore */ }
+      try { localStorage.setItem(storageKey, String(current)); } catch {}
     }
   }, [current, storageKey, TOTAL]);
 
@@ -73,7 +114,7 @@ export default function SacredTextPage({
       setCurrent(TOTAL);
       setCompleted(true);
       if (storageKey) {
-        try { localStorage.removeItem(storageKey); } catch { /* ignore */ }
+        try { localStorage.removeItem(storageKey); } catch {}
       }
     } else {
       setCurrent((c) => c + 1);
@@ -81,11 +122,14 @@ export default function SacredTextPage({
   }, [current, completed, TOTAL, storageKey]);
 
   const handleReset = useCallback(() => {
-    setCurrent(0);
     setCompleted(false);
+    setCurrent(0);
     if (storageKey) {
-      try { localStorage.removeItem(storageKey); } catch { /* ignore */ }
+      try { localStorage.removeItem(storageKey); } catch {}
     }
+    setTimeout(() => {
+      pageTopRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 80);
   }, [storageKey]);
 
   useEffect(() => {
@@ -94,10 +138,15 @@ export default function SacredTextPage({
     }
   }, [current]);
 
+  const rgb = hexToRgb(accentColor);
+
   return (
     <div className="min-h-screen relative" style={{
       background: 'linear-gradient(135deg, #0a0015 0%, #1a0030 40%, #0d0020 100%)',
     }}>
+      <div ref={pageTopRef} />
+
+      {/* Stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {Array.from({ length: 60 }).map((_, i) => (
           <div
@@ -114,6 +163,7 @@ export default function SacredTextPage({
         ))}
       </div>
 
+      {/* Header */}
       <div className="sticky top-0 z-50" style={{
         background: 'rgba(10,0,21,0.92)',
         backdropFilter: 'blur(16px)',
@@ -121,8 +171,8 @@ export default function SacredTextPage({
       }}>
         <div className="max-w-2xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="orbitron text-golden font-bold text-base sm:text-lg tracking-wider"
-              style={{ fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif" }}>
+            <h1 className="font-bold text-base sm:text-lg tracking-wider"
+              style={{ fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif", color: '#ffd700' }}>
               {title}
             </h1>
             <div className="flex items-center gap-2">
@@ -131,13 +181,11 @@ export default function SacredTextPage({
                   onClick={() => changeFontSize(-2)}
                   className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all active:scale-90"
                   style={{ background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.25)', color: 'rgba(255,215,0,0.8)' }}
-                  aria-label="Decrease font size"
                 >A−</button>
                 <button
                   onClick={() => changeFontSize(2)}
                   className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold transition-all active:scale-90"
                   style={{ background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.25)', color: 'rgba(255,215,0,0.8)' }}
-                  aria-label="Increase font size"
                 >A+</button>
               </div>
               <span className="text-white/50 text-xs font-mono">
@@ -158,12 +206,13 @@ export default function SacredTextPage({
         </div>
       </div>
 
+      {/* Verse content */}
       <div className="max-w-2xl mx-auto px-4 py-6 pb-32 relative z-10">
         {verses.map((verse) => (
           <div key={verse.id} className="mb-6">
             {verse.label ? (
-              <p className="text-center text-xs orbitron tracking-widest mb-3"
-                style={{ color: 'rgba(255,215,0,0.5)' }}>
+              <p className="text-center text-xs tracking-widest mb-3"
+                style={{ color: 'rgba(255,215,0,0.5)', fontFamily: 'Sora, sans-serif' }}>
                 — {verse.label} —
               </p>
             ) : null}
@@ -175,7 +224,7 @@ export default function SacredTextPage({
               }}
             >
               {verse.lines.map((line, li) => (
-                <div key={li} className="flex flex-wrap gap-x-2 gap-y-1.5 mb-2 last:mb-0 justify-center">
+                <div key={li} className="flex flex-wrap gap-x-2 gap-y-2 mb-2 last:mb-0 justify-center">
                   {line.map((word, wi) => {
                     const globalIdx = wordIndex.get(`${verse.id}:${li}:${wi}`) ?? -1;
                     const isDone = globalIdx < current;
@@ -187,28 +236,27 @@ export default function SacredTextPage({
                         ref={isActive ? activeRef : null}
                         onClick={isActive ? handleWordTap : undefined}
                         disabled={!isActive}
-                        className="rounded-lg px-2 py-0.5 transition-all duration-200 select-none"
+                        className="rounded-lg px-2 py-0.5 select-none"
                         style={{
                           fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
                           fontSize: `${fontSize}px`,
-                          fontWeight: isActive ? 700 : isDone ? 500 : 400,
+                          fontWeight: 600,
+                          lineHeight: 1.6,
                           cursor: isActive ? 'pointer' : 'default',
                           color: isDone
-                            ? 'rgba(255,215,0,0.55)'
+                            ? 'rgba(255,215,0,0.62)'
                             : isActive
                             ? '#ffffff'
                             : 'rgba(255,255,255,0.28)',
-                          background: isActive
-                            ? `rgba(${hexToRgb(accentColor)},0.18)`
-                            : 'transparent',
+                          background: isActive ? `rgba(${rgb},0.18)` : 'transparent',
                           border: isActive
-                            ? `1px solid rgba(${hexToRgb(accentColor)},0.55)`
+                            ? `1px solid rgba(${rgb},0.55)`
                             : '1px solid transparent',
                           boxShadow: isActive
-                            ? `0 0 14px rgba(${hexToRgb(accentColor)},0.35), 0 0 4px rgba(255,215,0,0.2)`
+                            ? `0 0 14px rgba(${rgb},0.35), 0 0 4px rgba(255,215,0,0.2)`
                             : 'none',
-                          lineHeight: 1.5,
                           WebkitTapHighlightColor: 'transparent',
+                          transition: 'color 0.15s, background 0.15s, border-color 0.15s, box-shadow 0.15s',
                         }}
                       >
                         {word}
@@ -222,67 +270,81 @@ export default function SacredTextPage({
         ))}
       </div>
 
+      {/* Completion overlay */}
       {completed && (
-        <div
-          className="fixed inset-0 z-[200] flex flex-col items-center justify-center px-6 text-center"
-          style={{
-            background: 'rgba(0,0,0,0.85)',
-            backdropFilter: 'blur(12px)',
-          }}
-        >
-          <div className="relative mb-6">
-            <div
-              className="w-32 h-32 rounded-full flex items-center justify-center text-6xl"
+        <>
+          <Confetti />
+          <div
+            className="fixed inset-0 z-[200] flex flex-col items-center justify-center px-6 text-center"
+            style={{ background: 'rgba(5,0,15,0.88)', backdropFilter: 'blur(16px)' }}
+          >
+            {/* Glowing circle */}
+            <div style={{ animation: 'completionBounce 0.65s cubic-bezier(0.34,1.56,0.64,1) both' }}>
+              <div
+                className="w-36 h-36 rounded-full flex items-center justify-center mb-6"
+                style={{
+                  fontSize: '4.5rem',
+                  background: `radial-gradient(circle, rgba(${rgb},0.3) 0%, rgba(255,215,0,0.1) 60%, transparent 100%)`,
+                  border: '2px solid rgba(255,215,0,0.55)',
+                  animation: 'glowPulseCompletion 2.5s ease-in-out infinite',
+                }}
+              >
+                🙏
+              </div>
+            </div>
+
+            <h2
               style={{
-                background: `radial-gradient(circle, rgba(${hexToRgb(accentColor)},0.25) 0%, rgba(255,215,0,0.08) 70%, transparent 100%)`,
-                border: '2px solid rgba(255,215,0,0.4)',
-                boxShadow: '0 0 60px rgba(255,215,0,0.3), 0 0 120px rgba(249,115,22,0.15)',
+                fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
+                fontSize: '2.2rem',
+                fontWeight: 700,
+                color: '#ffd700',
+                textShadow: '0 0 30px rgba(255,215,0,0.9), 0 0 70px rgba(255,215,0,0.4)',
+                marginBottom: '0.6rem',
+                animation: 'fadeSlideUp 0.5s 0.25s ease-out both',
               }}
             >
-              🙏
-            </div>
+              {completionTitle}
+            </h2>
+
+            <p
+              style={{
+                fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
+                fontSize: '1.15rem',
+                color: 'rgba(255,215,0,0.75)',
+                marginBottom: '0.3rem',
+                animation: 'fadeSlideUp 0.5s 0.4s ease-out both',
+              }}
+            >
+              {completionSubtitle}
+            </p>
+
+            <p
+              className="text-white/40 text-sm orbitron tracking-widest"
+              style={{ marginBottom: '2.5rem', animation: 'fadeSlideUp 0.5s 0.5s ease-out both' }}
+            >
+              {completionEnglish}
+            </p>
+
+            <button
+              onClick={handleReset}
+              className="px-10 py-3 rounded-full font-semibold text-sm orbitron tracking-wider active:scale-95"
+              style={{
+                background: `linear-gradient(135deg, rgba(${rgb},0.35), rgba(255,215,0,0.2))`,
+                border: '1.5px solid rgba(255,215,0,0.55)',
+                color: '#ffd700',
+                boxShadow: '0 0 28px rgba(255,215,0,0.25)',
+                animation: 'fadeSlideUp 0.5s 0.6s ease-out both',
+                transition: 'transform 0.15s, box-shadow 0.15s',
+              }}
+            >
+              {resetLabel}
+            </button>
           </div>
-
-          <h2
-            className="font-bold mb-2"
-            style={{
-              fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
-              fontSize: '2rem',
-              color: '#ffd700',
-              textShadow: '0 0 30px rgba(255,215,0,0.8), 0 0 60px rgba(255,215,0,0.4)',
-            }}
-          >
-            {completionTitle}
-          </h2>
-          <p
-            className="mb-1"
-            style={{
-              fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
-              fontSize: '1.1rem',
-              color: 'rgba(255,215,0,0.7)',
-            }}
-          >
-            {completionSubtitle}
-          </p>
-          <p className="text-white/40 text-sm mb-8 orbitron tracking-widest">
-            {completionEnglish}
-          </p>
-
-          <button
-            onClick={handleReset}
-            className="px-8 py-3 rounded-full font-semibold text-sm orbitron tracking-wider transition-all duration-300 hover:scale-105 active:scale-95"
-            style={{
-              background: `linear-gradient(135deg, rgba(${hexToRgb(accentColor)},0.3), rgba(255,215,0,0.2))`,
-              border: '1px solid rgba(255,215,0,0.5)',
-              color: '#ffd700',
-              boxShadow: '0 0 20px rgba(255,215,0,0.2)',
-            }}
-          >
-            {resetLabel}
-          </button>
-        </div>
+        </>
       )}
 
+      {/* Hint */}
       {current === 0 && !completed && (
         <div className="fixed bottom-8 left-0 right-0 flex justify-center z-40 pointer-events-none">
           <div
