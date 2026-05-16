@@ -317,6 +317,7 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
           timestamp: sessionStartRef.current,
           duration: Math.floor((Date.now() - sessionStartRef.current) / 1000),
         });
+        clearGameState(deityKey);
         submitScoreToLeaderboard(finalScore, true);
       }
     };

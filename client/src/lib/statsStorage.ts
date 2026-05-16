@@ -22,7 +22,10 @@ export interface PersonalRecords {
   earlyBirdStreak: number;
 }
 
-const getDateStr = (ts: number = Date.now()) => new Date(ts).toISOString().split('T')[0];
+const getDateStr = (ts: number = Date.now()) => {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 function getDailyStats(): Record<string, number> {
   try { return JSON.parse(localStorage.getItem(PREFIX + 'daily') || '{}'); }
