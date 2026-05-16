@@ -308,20 +308,11 @@ export function DeityGame({ config, user, isMuted, t, language, deityKey }: Deit
   useEffect(() => {
     return () => {
       const finalScore = currentScoreRef.current;
-      const finalMalas = currentMalaRef.current;
       if (finalScore > 0) {
-        saveSession({
-          deity: deityKey,
-          mantras: finalScore,
-          malas: finalMalas,
-          timestamp: sessionStartRef.current,
-          duration: Math.floor((Date.now() - sessionStartRef.current) / 1000),
-        });
-        clearGameState(deityKey);
         submitScoreToLeaderboard(finalScore, true);
       }
     };
-  }, [deityKey, submitScoreToLeaderboard]);
+  }, [submitScoreToLeaderboard]);
 
   const handleButtonClick = useCallback(
     (buttonType: ButtonType) => {

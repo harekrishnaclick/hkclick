@@ -190,7 +190,7 @@ export default function SacredTextPage({
                         className="rounded-lg px-2 py-0.5 transition-all duration-200 select-none"
                         style={{
                           fontFamily: "'Noto Sans Devanagari', 'Mangal', sans-serif",
-                          fontSize: isActive ? `${fontSize + 3}px` : `${fontSize}px`,
+                          fontSize: `${fontSize}px`,
                           fontWeight: isActive ? 700 : isDone ? 500 : 400,
                           cursor: isActive ? 'pointer' : 'default',
                           color: isDone
@@ -207,7 +207,6 @@ export default function SacredTextPage({
                           boxShadow: isActive
                             ? `0 0 14px rgba(${hexToRgb(accentColor)},0.35), 0 0 4px rgba(255,215,0,0.2)`
                             : 'none',
-                          transform: isActive ? 'scale(1.08)' : 'scale(1)',
                           lineHeight: 1.5,
                           WebkitTapHighlightColor: 'transparent',
                         }}
